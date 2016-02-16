@@ -83,6 +83,7 @@
 		
 		<!-- Orcid social -->
 		<class>org.orcid.persistence.jpa.entities.OrcidSocialEntity</class>
+		<class>org.orcid.persistence.jpa.entities.Name</class>
 		
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 
