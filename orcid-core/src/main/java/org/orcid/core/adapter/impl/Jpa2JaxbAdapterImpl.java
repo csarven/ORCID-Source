@@ -34,6 +34,7 @@ import org.orcid.core.constants.DefaultPreferences;
 import org.orcid.core.locale.LocaleManager;
 import org.orcid.core.manager.ClientDetailsEntityCacheManager;
 import org.orcid.core.manager.LoadOptions;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.manager.ProfileEntityManager;
 import org.orcid.core.oauth.OrcidOauth2TokenDetailService;
@@ -153,6 +154,7 @@ import org.orcid.persistence.jpa.entities.ExternalIdentifierEntity;
 import org.orcid.persistence.jpa.entities.FuzzyDateEntity;
 import org.orcid.persistence.jpa.entities.GivenPermissionByEntity;
 import org.orcid.persistence.jpa.entities.GivenPermissionToEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.OrcidOauth2TokenDetail;
 import org.orcid.persistence.jpa.entities.OrgAffiliationRelationEntity;
 import org.orcid.persistence.jpa.entities.OrgDisambiguatedEntity;
@@ -203,6 +205,9 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
 
     @Resource
     private ProfileEntityManager profileEntityManager;
+    
+    @Resource
+    private NameManager nameManager;
 
     @Resource
     private OrcidOauth2TokenDetailService orcidOauth2TokenService;
@@ -288,7 +293,7 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
     public OrcidClientGroup toOrcidClientGroup(ProfileEntity profileEntity) {
         OrcidClientGroup group = new OrcidClientGroup();
         group.setGroupOrcid(profileEntity.getId());
-        group.setGroupName(profileEntity.getCreditName());
+        group.setGroupName(nameManager.getName(profileEntity.getId()).getCreditName());
         group.setType(profileEntity.getGroupType());
         Set<EmailEntity> emailEntities = profileEntity.getEmails();
         for (EmailEntity emailEntity : emailEntities) {
@@ -434,10 +439,11 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
     }
 
     private PersonalDetails getPersonalDetails(ProfileEntity profileEntity) {
-        PersonalDetails personalDetails = new PersonalDetails();   
-        personalDetails.setGivenNames(getGivenNames(profileEntity));
-        personalDetails.setFamilyName(getFamilyName(profileEntity));
-        personalDetails.setCreditName(getCreditName(profileEntity));
+        PersonalDetails personalDetails = new PersonalDetails();
+        NameEntity nameEntity = nameManager.getName(profileEntity.getId());
+        personalDetails.setGivenNames(getGivenNames(profileEntity, nameEntity));
+        personalDetails.setFamilyName(getFamilyName(profileEntity, nameEntity));
+        personalDetails.setCreditName(getCreditName(profileEntity, nameEntity));
         personalDetails.setOtherNames(getOtherNames(profileEntity));
         return personalDetails;
     }
@@ -893,20 +899,21 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
     }    
 
     private String getGroupDisplayName(ProfileEntity groupProfile) {
-        String creditName = groupProfile.getCreditName();
+        NameEntity nameEntity = nameManager.getName(groupProfile.getId());
+        String creditName = nameEntity.getCreditName();
         if (creditName != null) {
             if (groupProfile.getGroupType() != null) {
                 // It's a member so, it will definitely have a credit name. Use
                 // it regardless of privacy.
                 return creditName;
             }
-            Visibility namesVisibilty = groupProfile.getNamesVisibility();
+            org.orcid.jaxb.model.common_rc2.Visibility namesVisibilty = nameEntity.getVisibility();
             if (Visibility.PUBLIC.equals(namesVisibilty)) {
                 return creditName;
             }
         }
-        String displayName = groupProfile.getGivenNames();
-        String familyName = groupProfile.getFamilyName();
+        String displayName = nameEntity.getGivenName();
+        String familyName = nameEntity.getFamilyName();
         if (StringUtils.isNotBlank(familyName)) {
             displayName += " " + familyName;
         }
@@ -1054,13 +1061,13 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
         return otherNames;
     }
 
-    private GivenNames getGivenNames(ProfileEntity profileEntity) {
-        if (StringUtils.isNotBlank(profileEntity.getGivenNames())) {
+    private GivenNames getGivenNames(ProfileEntity profileEntity, NameEntity nameEntity) {
+        if (StringUtils.isNotBlank(nameEntity.getGivenName())) {
             GivenNames names = new GivenNames();
-            names.setContent(profileEntity.getGivenNames());
+            names.setContent(nameEntity.getGivenName());
             Visibility visibility = OrcidVisibilityDefaults.NAMES_DEFAULT.getVisibility();
-            if(profileEntity.getNamesVisibility() != null) {
-            	visibility = profileEntity.getNamesVisibility();
+            if(nameEntity.getVisibility() != null) {
+            	visibility = Visibility.fromValue(nameEntity.getVisibility().value());
             } 
             names.setVisibility(visibility);
             return names;
@@ -1068,13 +1075,13 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
         return null;
     }
 
-    private FamilyName getFamilyName(ProfileEntity profileEntity) {
-        if (StringUtils.isNotBlank(profileEntity.getFamilyName())) {
+    private FamilyName getFamilyName(ProfileEntity profileEntity, NameEntity nameEntity) {
+        if (StringUtils.isNotBlank(nameEntity.getFamilyName())) {
             FamilyName name = new FamilyName();
-            name.setContent(profileEntity.getFamilyName());
+            name.setContent(nameEntity.getFamilyName());
             Visibility visibility = OrcidVisibilityDefaults.NAMES_DEFAULT.getVisibility();
-            if(profileEntity.getNamesVisibility() != null) {
-            	visibility = profileEntity.getNamesVisibility();
+            if(nameEntity.getVisibility() != null) {
+            	visibility = Visibility.fromValue(nameEntity.getVisibility().value());
             } 
             name.setVisibility(visibility);
             return name;
@@ -1082,14 +1089,14 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
         return null;
     }
 
-    private CreditName getCreditName(ProfileEntity profileEntity) {
-        String creditName = profileEntity.getCreditName();
+    private CreditName getCreditName(ProfileEntity profileEntity, NameEntity nameEntity) {
+        String creditName = nameEntity.getCreditName();
         if (StringUtils.isNotBlank(creditName)) {
             CreditName name = new CreditName();
             name.setContent(creditName);
             Visibility visibility = OrcidVisibilityDefaults.NAMES_DEFAULT.getVisibility();
-            if(profileEntity.getNamesVisibility() != null) {
-            	visibility = profileEntity.getNamesVisibility();
+            if(nameEntity.getVisibility() != null) {
+            	visibility = Visibility.fromValue(nameEntity.getVisibility().value());
             } 
             name.setVisibility(visibility);
             return name;

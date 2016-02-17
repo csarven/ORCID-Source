@@ -30,13 +30,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.orcid.core.constants.OrcidOauth2Constants;
 import org.orcid.core.manager.ClientDetailsEntityCacheManager;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.oauth.service.OrcidAuthorizationEndpoint;
 import org.orcid.core.oauth.service.OrcidOAuth2RequestValidator;
 import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.jaxb.model.message.ScopePathType;
 import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
-import org.orcid.persistence.jpa.entities.ProfileEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.pojo.ajaxForm.OauthAuthorizeForm;
 import org.orcid.pojo.ajaxForm.PojoUtil;
 import org.orcid.pojo.ajaxForm.RequestInfoForm;
@@ -80,6 +81,9 @@ public class OauthControllerBase extends BaseController {
 
     @Resource
     protected OrcidAuthorizationEndpoint authorizationEndpoint;
+    
+    @Resource
+    private NameManager nameManager;
 
     protected @ResponseBody RequestInfoForm generateRequestInfoForm(HttpServletRequest request) throws UnsupportedEncodingException {
         String clientId = request.getParameter("client_id");
@@ -170,13 +174,13 @@ public class OauthControllerBase extends BaseController {
         if(!PojoUtil.isEmpty(loggedUserOrcid)) {
             infoForm.setUserOrcid(loggedUserOrcid);
             
-            ProfileEntity profile = profileEntityCacheManager.retrieve(loggedUserOrcid);
+            NameEntity nameEntity = nameManager.getName(loggedUserOrcid);
             String creditName = "";
             
-            if (!PojoUtil.isEmpty(profile.getCreditName())) {
-                creditName = profile.getCreditName();
+            if (!PojoUtil.isEmpty(nameEntity.getCreditName())) {
+                creditName = nameEntity.getCreditName();
             } else {
-                creditName = PojoUtil.isEmpty(profile.getGivenNames()) ? profile.getFamilyName() : profile.getGivenNames() + " " + profile.getFamilyName();
+                creditName = PojoUtil.isEmpty(nameEntity.getGivenName()) ? nameEntity.getFamilyName() : nameEntity.getGivenName() + " " + nameEntity.getFamilyName();
             }
             
             if(!PojoUtil.isEmpty(creditName)) {
@@ -230,8 +234,8 @@ public class OauthControllerBase extends BaseController {
         if (ClientType.PUBLIC_CLIENT.equals(clientDetails.getClientType())) {
             memberName = PUBLIC_MEMBER_NAME;
         } else if (!PojoUtil.isEmpty(clientDetails.getGroupProfileId())) {
-            ProfileEntity groupProfile = profileEntityCacheManager.retrieve(clientDetails.getGroupProfileId());
-            memberName = groupProfile.getCreditName();
+            NameEntity nameEntity = nameManager.getName(clientDetails.getGroupProfileId());
+            memberName = nameEntity.getCreditName();
         }
         // If the group name is empty, use the same as the client
         // name, since it should be a SSO user

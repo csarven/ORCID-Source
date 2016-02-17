@@ -41,6 +41,7 @@ import org.orcid.core.manager.ClientDetailsEntityCacheManager;
 import org.orcid.core.manager.CustomEmailManager;
 import org.orcid.core.manager.EncryptionManager;
 import org.orcid.core.manager.LoadOptions;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.NotificationManager;
 import org.orcid.core.manager.OrcidProfileManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
@@ -69,6 +70,7 @@ import org.orcid.persistence.dao.ProfileDao;
 import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.CustomEmailEntity;
 import org.orcid.persistence.jpa.entities.EmailType;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.NotificationEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.ProfileEventEntity;
@@ -165,6 +167,9 @@ public class NotificationManagerImpl implements NotificationManager {
 
     @Resource
     private ProfileEntityCacheManager profileEntityCacheManager;
+    
+    @Resource
+    private NameManager nameManager;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationManagerImpl.class);
 
@@ -730,10 +735,11 @@ public class NotificationManagerImpl implements NotificationManager {
      * */
     public String deriveEmailFriendlyName(ProfileEntity profileEntity) {
         String result = LAST_RESORT_ORCID_USER_EMAIL_NAME;
-        if (profileEntity.getGivenNames() != null) {
-            result = profileEntity.getGivenNames();
-            if (!StringUtils.isBlank(profileEntity.getFamilyName())) {
-                result += " " + profileEntity.getFamilyName();
+        NameEntity nameEntity = nameManager.getName(profileEntity.getId());
+        if (nameEntity.getGivenName() != null) {
+            result = nameEntity.getGivenName();
+            if (!StringUtils.isBlank(nameEntity.getFamilyName())) {
+                result += " " + nameEntity.getFamilyName();
             }
         }
         return result;

@@ -39,6 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.orcid.core.JaxbOrcidMessageUtil;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.utils.JsonUtils;
 import org.orcid.jaxb.model.message.OrcidMessage;
 import org.orcid.jaxb.model.message.OrcidWork;
@@ -47,6 +48,7 @@ import org.orcid.jaxb.model.message.WorkType;
 import org.orcid.persistence.dao.GenericDao;
 import org.orcid.persistence.jpa.entities.EmailEntity;
 import org.orcid.persistence.jpa.entities.GivenPermissionToEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.ProfileFundingEntity;
 import org.orcid.persistence.jpa.entities.WorkEntity;
@@ -79,6 +81,9 @@ public class JpaJaxbEntityAdapterToProfileEntityTest extends DBUnitTest {
     @Autowired
     private JpaJaxbEntityAdapter adapter;
 
+    @Autowired
+    private NameManager nameManager;
+    
     @BeforeClass
     public static void initDBUnitData() throws Exception {
         initDBUnitData(Arrays.asList("/data/SecurityQuestionEntityData.xml"));
@@ -126,7 +131,8 @@ public class JpaJaxbEntityAdapterToProfileEntityTest extends DBUnitTest {
         
         ProfileEntity retrievedProfileEntity = profileDao.find(orcidMessage.getOrcidProfile().getOrcidIdentifier().getPath());
         assertNotNull(retrievedProfileEntity);
-        assertEquals("Josiah", retrievedProfileEntity.getGivenNames());
+        NameEntity nameEntity = nameManager.getName(retrievedProfileEntity.getId());
+        assertEquals("Josiah", nameEntity.getGivenName());
 
         // Check all email visibility and values
         Set<EmailEntity> emails = profileEntity.getEmails();
@@ -229,7 +235,8 @@ public class JpaJaxbEntityAdapterToProfileEntityTest extends DBUnitTest {
 
         ProfileEntity retrievedProfileEntity = profileDao.find(orcidMessage.getOrcidProfile().getOrcidIdentifier().getPath());
         assertNotNull(retrievedProfileEntity);
-        assertEquals("Josiah", retrievedProfileEntity.getGivenNames());
+        NameEntity nameEntity = nameManager.getName(retrievedProfileEntity.getId());
+        assertEquals("Josiah", nameEntity.getGivenName());
         assertEquals("abc123", retrievedProfileEntity.getEncryptedPassword());
         assertEquals(1, retrievedProfileEntity.getSecurityQuestion().getId().intValue());
         assertEquals("dMDyJ1Z7Qn6xWClFzA63fQ==", retrievedProfileEntity.getEncryptedSecurityAnswer());

@@ -21,11 +21,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.OrcidProfileManager;
 import org.orcid.jaxb.model.message.Contributor;
 import org.orcid.jaxb.model.message.ContributorOrcid;
@@ -55,6 +58,8 @@ public class CheckAndFixContributorNameVisibility {
     private static Logger LOG = LoggerFactory.getLogger(CheckAndFixContributorNameVisibility.class);
 
     private OrcidProfileManager orcidProfileManager;
+    @Resource
+    private NameManager nameManager;
     private ProfileDao profileDao;
     private TransactionTemplate transactionTemplate;
     @Option(name = "-f", usage = "Path to file containing ORCIDs to resave")
@@ -124,7 +129,8 @@ public class CheckAndFixContributorNameVisibility {
                                 if (contributorOrcid != null) {
                                     String orcid = contributorOrcid.getPath();
                                     ProfileEntity contributorProfile = profileDao.find(orcid);
-                                    if (!Visibility.PUBLIC.equals(contributorProfile.getNamesVisibility())) {
+                                    
+                                    if (!Visibility.PUBLIC.equals(nameManager.getName(contributorProfile.getId()).getVisibility())) {
                                         contributor.setCreditName(null);
                                     }
                                 }

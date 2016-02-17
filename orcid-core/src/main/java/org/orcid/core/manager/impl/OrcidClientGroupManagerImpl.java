@@ -32,6 +32,7 @@ import org.orcid.core.adapter.JpaJaxbEntityAdapter;
 import org.orcid.core.exception.OrcidClientGroupManagementException;
 import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.core.manager.EncryptionManager;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.OrcidClientGroupManager;
 import org.orcid.core.manager.OrcidProfileManager;
 import org.orcid.jaxb.model.clientgroup.ClientType;
@@ -60,6 +61,7 @@ import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientRedirectUriEntity;
 import org.orcid.persistence.jpa.entities.ClientScopeEntity;
 import org.orcid.persistence.jpa.entities.EmailEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.OrcidEntityIdComparator;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.ajaxForm.PojoUtil;
@@ -93,6 +95,9 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
 
     @Resource
     private ClientScopeDao clientScopeDao;
+    
+    @Resource
+    private NameManager nameManager;
 
     @Override
     @Transactional
@@ -227,7 +232,9 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
                 primaryEmailEntity.setVisibility(Visibility.PRIVATE);
                 groupProfileEntity.setPrimaryEmail(primaryEmailEntity);
             }
-            groupProfileEntity.setCreditName(orcidClientGroup.getGroupName());
+            NameEntity nameEntity = nameManager.getName(groupProfileEntity.getId());
+            nameEntity.setCreditName(orcidClientGroup.getGroupName());
+            nameManager.updateName(nameEntity);
             groupProfileEntity.setSalesforeId(orcidClientGroup.getSalesforceId());
             // If group type changed
             if (!groupProfileEntity.getGroupType().equals(orcidClientGroup.getType())) {

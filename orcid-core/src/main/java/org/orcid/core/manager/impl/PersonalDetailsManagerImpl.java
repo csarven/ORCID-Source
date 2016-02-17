@@ -23,6 +23,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.OtherNameManager;
 import org.orcid.core.manager.PersonalDetailsManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
@@ -38,6 +39,7 @@ import org.orcid.jaxb.model.record_rc2.Name;
 import org.orcid.jaxb.model.record_rc2.OtherName;
 import org.orcid.jaxb.model.record_rc2.OtherNames;
 import org.orcid.jaxb.model.record_rc2.PersonalDetails;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.ajaxForm.PojoUtil;
 
@@ -48,25 +50,28 @@ public class PersonalDetailsManagerImpl implements PersonalDetailsManager {
     @Resource
     private OtherNameManager otherNameManager;
     
+    @Resource
+    private NameManager nameManager;
+    
     
     @Override
     public Name getName(String orcid) {
-        ProfileEntity profileEntity = profileEntityCacheManager.retrieve(orcid);    
+        NameEntity nameEntity = nameManager.getName(orcid);
         Name name = new Name();
-        if (profileEntity != null) {
+        if (nameEntity != null) {
             Visibility nameVisibility = Visibility.fromValue(OrcidVisibilityDefaults.NAMES_DEFAULT.getVisibility().value());
-            if(profileEntity.getNamesVisibility() != null) {
-                nameVisibility = Visibility.fromValue(profileEntity.getNamesVisibility().value());
+            if(nameEntity.getVisibility() != null) {
+                nameVisibility = Visibility.fromValue(nameEntity.getVisibility().value());
             }            
             name.setVisibility(nameVisibility);            
-            if (!PojoUtil.isEmpty(profileEntity.getCreditName())) {
-                name.setCreditName(new CreditName(profileEntity.getCreditName()));
+            if (!PojoUtil.isEmpty(nameEntity.getCreditName())) {
+                name.setCreditName(new CreditName(nameEntity.getCreditName()));
             }
-            if (!PojoUtil.isEmpty(profileEntity.getFamilyName())) {
-                name.setFamilyName(new FamilyName(profileEntity.getFamilyName()));
+            if (!PojoUtil.isEmpty(nameEntity.getFamilyName())) {
+                name.setFamilyName(new FamilyName(nameEntity.getFamilyName()));
             }
-            if (!PojoUtil.isEmpty(profileEntity.getGivenNames())) {
-                name.setGivenNames(new GivenNames(profileEntity.getGivenNames()));
+            if (!PojoUtil.isEmpty(nameEntity.getGivenName())) {
+                name.setGivenNames(new GivenNames(nameEntity.getGivenName()));
             }                        
         }
         return name;

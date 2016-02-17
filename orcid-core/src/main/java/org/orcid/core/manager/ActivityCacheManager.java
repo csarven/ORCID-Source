@@ -22,7 +22,7 @@ import org.orcid.jaxb.model.message.Affiliation;
 import org.orcid.jaxb.model.message.Funding;
 import org.orcid.jaxb.model.message.OrcidProfile;
 import org.orcid.jaxb.model.record_rc2.PeerReview;
-import org.orcid.persistence.jpa.entities.ProfileEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.pojo.ajaxForm.WorkForm;
 
 public interface ActivityCacheManager {
@@ -35,7 +35,7 @@ public interface ActivityCacheManager {
     
     public LinkedHashMap<Long, Affiliation> affiliationMap(OrcidProfile profile);
     
-    public String getCreditName(ProfileEntity profile);
+    public String getCreditName(NameEntity nameEntity);
     
-    public String getPublicCreditName(ProfileEntity profile);
+    public String getPublicCreditName(NameEntity nameEntity);
 }

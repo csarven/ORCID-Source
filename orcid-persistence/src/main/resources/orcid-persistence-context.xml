@@ -52,6 +52,8 @@
     <bean id="researcherUrlDao" class="org.orcid.persistence.dao.impl.ResearcherUrlDaoImpl" />
     <bean id="otherNameDao" class="org.orcid.persistence.dao.impl.OtherNameDaoImpl" />
     
+    <bean id="nameDao" class="org.orcid.persistence.dao.impl.NameDaoImpl" />
+    
     <bean id="emailDao" class="org.orcid.persistence.dao.impl.EmailDaoImpl" />
 
     <bean id="hearAboutDao" class="org.orcid.persistence.dao.impl.GenericDaoImpl">

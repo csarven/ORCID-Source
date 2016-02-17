@@ -49,6 +49,7 @@ import org.apache.commons.lang.StringUtils;
 import org.orcid.core.adapter.Jaxb2JpaAdapter;
 import org.orcid.core.constants.DefaultPreferences;
 import org.orcid.core.manager.LoadOptions;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.NotificationManager;
 import org.orcid.core.manager.OrcidGenerationManager;
 import org.orcid.core.manager.OrcidIndexManager;
@@ -117,6 +118,7 @@ import org.orcid.persistence.jpa.entities.EmailEntity;
 import org.orcid.persistence.jpa.entities.EmailEventEntity;
 import org.orcid.persistence.jpa.entities.EmailEventType;
 import org.orcid.persistence.jpa.entities.IndexingStatus;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.OrcidGrantedAuthority;
 import org.orcid.persistence.jpa.entities.OrcidOauth2TokenDetail;
 import org.orcid.persistence.jpa.entities.OrgAffiliationRelationEntity;
@@ -196,6 +198,9 @@ public class OrcidProfileManagerImpl extends OrcidProfileManagerReadOnlyImpl imp
 
     @Resource
     private WorkDao workDao;
+    
+    @Resource
+    private NameManager nameManager;
 
     @Resource
     private OrgManager orgManager;
@@ -1129,8 +1134,9 @@ public class OrcidProfileManagerImpl extends OrcidProfileManagerReadOnlyImpl imp
                 if (contributor.getContributorOrcid() != null) {
                     ProfileEntity profile = profileDao.find(contributor.getContributorOrcid().getPath());
                     if (profile != null) {
-                        if (Visibility.PUBLIC.equals(profile.getNamesVisibility())) {
-                            contributor.setCreditName(new CreditName(profile.getCreditName()));
+                        NameEntity nameEntity = nameManager.getName(profile.getId());
+                        if (Visibility.PUBLIC.equals(nameEntity.getVisibility())) {
+                            contributor.setCreditName(new CreditName(nameEntity.getCreditName()));
                         }
                     }
                 } else if (contributor.getContributorEmail() != null) {
@@ -1141,9 +1147,10 @@ public class OrcidProfileManagerImpl extends OrcidProfileManagerReadOnlyImpl imp
                     EmailEntity emailEntity = emailDao.findCaseInsensitive(email);
                     if (emailEntity != null) {
                         ProfileEntity profileEntity = emailEntity.getProfile();
+                        NameEntity nameEntity = nameManager.getName(profileEntity.getId());
                         contributor.setContributorOrcid(new ContributorOrcid(profileEntity.getId()));
-                        if (Visibility.PUBLIC.equals(profileEntity.getNamesVisibility())) {
-                            contributor.setCreditName(new CreditName(profileEntity.getCreditName()));
+                        if (Visibility.PUBLIC.equals(nameEntity.getVisibility())) {
+                            contributor.setCreditName(new CreditName(nameEntity.getCreditName()));
                         } else {
                             contributor.setCreditName(null);
                         }
@@ -1876,7 +1883,6 @@ public class OrcidProfileManagerImpl extends OrcidProfileManagerReadOnlyImpl imp
      * */
     private void setDefaultVisibility(ProfileEntity profileEntity, boolean useMemberDefaults) {
         if (profileEntity != null) {
-
             if (profileEntity.getBiographyVisibility() == null) {
                 profileEntity.setBiographyVisibility(useMemberDefaults ? OrcidVisibilityDefaults.CREATED_BY_MEMBER_DEFAULT.getVisibility()
                         : OrcidVisibilityDefaults.BIOGRAPHY_DEFAULT.getVisibility());
@@ -1896,11 +1902,7 @@ public class OrcidProfileManagerImpl extends OrcidProfileManagerReadOnlyImpl imp
                 profileEntity.setResearcherUrlsVisibility(useMemberDefaults ? OrcidVisibilityDefaults.CREATED_BY_MEMBER_DEFAULT.getVisibility()
                         : OrcidVisibilityDefaults.RESEARCHER_URLS_DEFAULT.getVisibility());
             }
-
-            if (profileEntity.getNamesVisibility() == null) {
-                profileEntity.setNamesVisibility(OrcidVisibilityDefaults.NAMES_DEFAULT.getVisibility());
-            }
-
+            
             if (profileEntity.getOtherNamesVisibility() == null) {
                 profileEntity.setOtherNamesVisibility(useMemberDefaults ? OrcidVisibilityDefaults.CREATED_BY_MEMBER_DEFAULT.getVisibility()
                         : OrcidVisibilityDefaults.OTHER_NAMES_DEFAULT.getVisibility());

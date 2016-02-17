@@ -31,7 +31,7 @@ import org.orcid.jaxb.model.message.OrcidProfile;
 import org.orcid.jaxb.model.message.Visibility;
 import org.orcid.jaxb.model.record_rc2.PeerReview;
 import org.orcid.jaxb.model.record_rc2.Work;
-import org.orcid.persistence.jpa.entities.ProfileEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.pojo.ajaxForm.PojoUtil;
 import org.orcid.pojo.ajaxForm.WorkForm;
 import org.springframework.cache.annotation.Cacheable;
@@ -43,7 +43,7 @@ public class ActivityCacheManagerImpl extends Object implements ActivityCacheMan
     
     @Resource
     private WorkManager workManager;
-
+    
     @Cacheable(value = "pub-min-works-maps", key = "#profile.getCacheKey()")
     public LinkedHashMap<Long, WorkForm> pubMinWorksMap(OrcidProfile profile) {
         LinkedHashMap<Long, WorkForm> workMap = new LinkedHashMap<>();
@@ -103,13 +103,13 @@ public class ActivityCacheManagerImpl extends Object implements ActivityCacheMan
     }
 
     @Cacheable(value = "credit-name", key = "#profile.getCacheKey()")
-    public String getCreditName(ProfileEntity profile) {
-        if (profile != null) {            
-            if (StringUtils.isNotBlank(profile.getCreditName())) {
-                return profile.getCreditName();
+    public String getCreditName(NameEntity nameEntity) {
+        if (nameEntity != null) {            
+            if (StringUtils.isNotBlank(nameEntity.getCreditName())) {
+                return nameEntity.getCreditName();
             } else {
-                String givenName = profile.getGivenNames();
-                String familyName = profile.getFamilyName();
+                String givenName = nameEntity.getGivenName();
+                String familyName = nameEntity.getFamilyName();
                 String composedCreditName = (PojoUtil.isEmpty(givenName) ? "" : givenName) + " " + (PojoUtil.isEmpty(familyName) ? "" : familyName);
                 return composedCreditName;
             }
@@ -120,15 +120,15 @@ public class ActivityCacheManagerImpl extends Object implements ActivityCacheMan
     }
     
     @Cacheable(value = "pub-credit-name", key = "#profile.getCacheKey()")
-    public String getPublicCreditName(ProfileEntity profile) {
-        if(profile != null) {
-            if (Visibility.PUBLIC.equals(profile.getNamesVisibility()) && StringUtils.isNotBlank(profile.getCreditName())) {
+    public String getPublicCreditName(NameEntity nameEntity) {
+        if(nameEntity != null) {
+            if (Visibility.PUBLIC.equals(nameEntity.getVisibility()) && StringUtils.isNotBlank(nameEntity.getCreditName())) {
                 String publicCreditName = null;
-                if(!PojoUtil.isEmpty(profile.getCreditName())) {
-                    publicCreditName = profile.getCreditName();
+                if(!PojoUtil.isEmpty(nameEntity.getCreditName())) {
+                    publicCreditName = nameEntity.getCreditName();
                 } else {
-                    String givenName = profile.getGivenNames();
-                    String familyName = profile.getFamilyName();
+                    String givenName = nameEntity.getGivenName();
+                    String familyName = nameEntity.getFamilyName();
                     publicCreditName = (PojoUtil.isEmpty(givenName) ? "" : givenName) + " " + (PojoUtil.isEmpty(familyName) ? "" : familyName);
                 }
                 return publicCreditName;

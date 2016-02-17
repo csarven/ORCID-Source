@@ -38,6 +38,7 @@ import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.core.manager.EmailManager;
 import org.orcid.core.manager.ExternalIdentifierManager;
 import org.orcid.core.manager.GroupIdRecordManager;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.OrcidSecurityManager;
 import org.orcid.core.manager.OtherNameManager;
 import org.orcid.core.manager.PeerReviewManager;
@@ -81,6 +82,7 @@ import org.orcid.jaxb.model.record_rc2.ResearcherUrls;
 import org.orcid.jaxb.model.record_rc2.Work;
 import org.orcid.persistence.dao.ProfileDao;
 import org.orcid.persistence.dao.WebhookDao;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -164,6 +166,9 @@ public class PublicV2ApiServiceDelegatorImpl
     
     @Resource
     private AddressManager addressManager;
+    
+    @Resource
+    private NameManager nameManager;
         
     private long getLastModifiedTime(String orcid) {
         Date lastModified = profileEntityManager.getLastModified(orcid);
@@ -222,9 +227,10 @@ public class PublicV2ApiServiceDelegatorImpl
     public Response viewWorkCitation(String orcid, Long putCode) { 
         Work w = (Work) this.viewWork(orcid, putCode).getEntity();
         ProfileEntity entity = profileEntityManager.findByOrcid(orcid);
+        NameEntity nameEntity = nameManager.getName(orcid);
         String creditName = null;
-        if (!entity.getNamesVisibility().isMoreRestrictiveThan(org.orcid.jaxb.model.message.Visibility.PUBLIC)){
-            creditName = entity.getCreditName();
+        if (!nameEntity.getVisibility().isMoreRestrictiveThan(Visibility.PUBLIC)){
+            creditName = nameEntity.getCreditName();
         }
         WorkToCiteprocTranslator tran = new  WorkToCiteprocTranslator();
         CSLItemData item = tran.toCiteproc(w, creditName ,true);

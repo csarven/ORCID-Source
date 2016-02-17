@@ -340,6 +340,9 @@
 	<bean id="researcherUrlManager" class="org.orcid.core.manager.impl.ResearcherUrlManagerImpl" />
 	<bean id="profileKeywordManager" class="org.orcid.core.manager.impl.ProfileKeywordManagerImpl" />
 	<bean id="otherNameManager" class="org.orcid.core.manager.impl.OtherNameManagerImpl" />
+	
+	<bean id="nameManager" class="org.orcid.core.manager.impl.NameManagerImpl" />
+	
 	<bean id="profileEntityManager" class="org.orcid.core.manager.impl.ProfileEntityManagerImpl" />
 	
 	<bean id="profileFundingManager" class="org.orcid.core.manager.impl.ProfileFundingManagerImpl" />

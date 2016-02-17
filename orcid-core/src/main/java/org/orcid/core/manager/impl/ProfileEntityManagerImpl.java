@@ -35,6 +35,7 @@ import org.orcid.core.manager.AffiliationsManager;
 import org.orcid.core.manager.EmailManager;
 import org.orcid.core.manager.EncryptionManager;
 import org.orcid.core.manager.ExternalIdentifierManager;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.OtherNameManager;
 import org.orcid.core.manager.PeerReviewManager;
 import org.orcid.core.manager.PersonalDetailsManager;
@@ -85,6 +86,7 @@ import org.orcid.jaxb.model.record_rc2.Person;
 import org.orcid.persistence.dao.ProfileDao;
 import org.orcid.persistence.jpa.entities.GivenPermissionByEntity;
 import org.orcid.persistence.jpa.entities.GivenPermissionToEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.OrcidOauth2TokenDetail;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.ApplicationSummary;
@@ -148,6 +150,9 @@ public class ProfileEntityManagerImpl implements ProfileEntityManager {
 
     @Resource
     private JpaJaxbGivenPermissionByAdapter jpaJaxbGivenPermissionByAdapter;
+    
+    @Resource
+    private NameManager nameManager;
     
     /**
      * Fetch a ProfileEntity from the database Instead of calling this function,
@@ -218,16 +223,12 @@ public class ProfileEntityManagerImpl implements ProfileEntityManager {
      */
     private ProfileEntity generateProfileEntityWithBio(OrcidProfile orcidProfile) {
         ProfileEntity profile = new ProfileEntity();
-        profile.setCreditName(orcidProfile.getOrcidBio().getPersonalDetails().getCreditName().getContent());
-        profile.setFamilyName(orcidProfile.getOrcidBio().getPersonalDetails().getFamilyName().getContent());
-        profile.setGivenNames(orcidProfile.getOrcidBio().getPersonalDetails().getGivenNames().getContent());
         profile.setBiography(orcidProfile.getOrcidBio().getBiography().getContent());
         profile.setIso2Country(orcidProfile.getOrcidBio().getContactDetails().getAddress().getCountry().getValue());
         profile.setBiographyVisibility(orcidProfile.getOrcidBio().getBiography().getVisibility());
         profile.setKeywordsVisibility(orcidProfile.getOrcidBio().getKeywords().getVisibility());
         profile.setResearcherUrlsVisibility(orcidProfile.getOrcidBio().getResearcherUrls().getVisibility());
         profile.setOtherNamesVisibility(orcidProfile.getOrcidBio().getPersonalDetails().getOtherNames().getVisibility());
-        profile.setNamesVisibility(orcidProfile.getOrcidBio().getPersonalDetails().getCreditName().getVisibility());
         profile.setProfileAddressVisibility(orcidProfile.getOrcidBio().getContactDetails().getAddress().getCountry().getVisibility());
         profile.setId(orcidProfile.getOrcidIdentifier().getPath());
         return profile;
@@ -594,17 +595,17 @@ public class ProfileEntityManagerImpl implements ProfileEntityManager {
 
     @Override
     public String retrivePublicDisplayName(String orcid) {
+        NameEntity nameEntity = nameManager.getName(orcid);
         String publicName = "";
-        ProfileEntity profile = profileEntityCacheManager.retrieve(orcid);
-        if (profile != null) {
-            Visibility namesVisibility = (profile.getNamesVisibility() != null) ? Visibility.fromValue(profile.getNamesVisibility().value())
+        if (nameEntity != null) {
+            Visibility namesVisibility = (nameEntity.getVisibility() != null) ? Visibility.fromValue(nameEntity.getVisibility().value())
                     : Visibility.fromValue(OrcidVisibilityDefaults.NAMES_DEFAULT.getVisibility().value());
             if (Visibility.PUBLIC.equals(namesVisibility)) {
-                if (!PojoUtil.isEmpty(profile.getCreditName())) {
-                    publicName = profile.getCreditName();
+                if (!PojoUtil.isEmpty(nameEntity.getCreditName())) {
+                    publicName = nameEntity.getCreditName();
                 } else {
-                    publicName = PojoUtil.isEmpty(profile.getGivenNames()) ? "" : profile.getGivenNames();
-                    publicName += PojoUtil.isEmpty(profile.getFamilyName()) ? "" : " " + profile.getFamilyName();
+                    publicName = PojoUtil.isEmpty(nameEntity.getGivenName()) ? "" : nameEntity.getGivenName();
+                    publicName += PojoUtil.isEmpty(nameEntity.getFamilyName()) ? "" : " " + nameEntity.getFamilyName();
                 }
             }
         }

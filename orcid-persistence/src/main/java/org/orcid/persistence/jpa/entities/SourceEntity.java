@@ -18,6 +18,7 @@ package org.orcid.persistence.jpa.entities;
 
 import java.io.Serializable;
 
+import javax.annotation.Resource;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,6 +26,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 import org.orcid.jaxb.model.message.Visibility;
+import org.orcid.persistence.dao.NameDao;
 
 /**
  * 
@@ -89,12 +91,12 @@ public class SourceEntity implements Serializable {
         if (sourceProfile != null) {
             // Set the source name
             // If it is a user, check if it have a credit name and is visible
-            if(Visibility.PUBLIC.equals(sourceProfile.getNamesVisibility())) {
-                if (!StringUtils.isEmpty(sourceProfile.getCreditName())) {
-                    return sourceProfile.getCreditName();
+            if(Visibility.PUBLIC.equals(nameEntity.getVisibility())) {
+                if (!StringUtils.isEmpty(nameEntity.getCreditName())) {
+                    return nameEntity.getCreditName();
                 } else {
                     //If credit name is empty
-                    return sourceProfile.getGivenNames() + (StringUtils.isEmpty(sourceProfile.getFamilyName()) ? "" : " " + sourceProfile.getFamilyName());
+                    return nameEntity.getGivenName() + (StringUtils.isEmpty(nameEntity.getFamilyName()) ? "" : " " + nameEntity.getFamilyName());
                 }                
             } else {
                 return null;

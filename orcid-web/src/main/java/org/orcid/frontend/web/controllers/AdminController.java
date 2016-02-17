@@ -35,6 +35,7 @@ import org.orcid.core.manager.EmailManager;
 import org.orcid.core.manager.EncryptionManager;
 import org.orcid.core.manager.ExternalIdentifierManager;
 import org.orcid.core.manager.LoadOptions;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.NotificationManager;
 import org.orcid.core.manager.OrcidClientGroupManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
@@ -45,7 +46,7 @@ import org.orcid.jaxb.model.message.OrcidProfile;
 import org.orcid.jaxb.model.message.OrcidType;
 import org.orcid.password.constants.OrcidPasswordConstants;
 import org.orcid.persistence.dao.GivenPermissionToDao;
-import org.orcid.persistence.jpa.entities.ProfileEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.pojo.AdminChangePassword;
 import org.orcid.pojo.AdminDelegatesRequest;
 import org.orcid.pojo.ProfileDeprecationRequest;
@@ -98,6 +99,8 @@ public class AdminController extends BaseController {
 
     @Resource
     private GivenPermissionToDao givenPermissionToDao;
+    
+    private NameManager nameManager;
 
     @Resource
     private AdminManager adminManager;
@@ -191,19 +194,20 @@ public class AdminController extends BaseController {
             try {
                 boolean wasDeprecated = adminManager.deprecateProfile(result, deprecatedOrcid, primaryOrcid);
                 if (wasDeprecated) {
-                    ProfileEntity deprecated = profileEntityCacheManager.retrieve(deprecatedOrcid);
-                    ProfileEntity primary = profileEntityCacheManager.retrieve(primaryOrcid);
 
                     ProfileDetails deprecatedDetails = new ProfileDetails();
                     deprecatedDetails.setOrcid(deprecatedOrcid);
 
-                    deprecatedDetails.setFamilyName(deprecated.getFamilyName());
-                    deprecatedDetails.setGivenNames(deprecated.getGivenNames());
+                    NameEntity nameEntityDep = nameManager.getName(deprecatedOrcid);
+                    NameEntity nameEntityPri = nameManager.getName(primaryOrcid);
+                    
+                    deprecatedDetails.setFamilyName(nameEntityDep.getFamilyName());
+                    deprecatedDetails.setGivenNames(nameEntityDep.getGivenName());
 
                     ProfileDetails primaryDetails = new ProfileDetails();
                     primaryDetails.setOrcid(primaryOrcid);
-                    primaryDetails.setFamilyName(primary.getFamilyName());
-                    primaryDetails.setGivenNames(primary.getGivenNames());
+                    primaryDetails.setFamilyName(nameEntityPri.getFamilyName());
+                    primaryDetails.setGivenNames(nameEntityPri.getGivenName());
 
                     result.setDeprecatedAccount(deprecatedDetails);
                     result.setPrimaryAccount(primaryDetails);

@@ -30,8 +30,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.manager.ProfileEntityManager;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.test.DBUnitTest;
 import org.orcid.test.OrcidJUnit4ClassRunner;
@@ -46,6 +48,9 @@ public class ProfileEntityManagerImplTest extends DBUnitTest {
 
     @Resource(name = "profileEntityCacheManager")
     ProfileEntityCacheManager profileEntityCacheManager;
+    
+    @Resource
+    private NameManager nameManager;
     
     @BeforeClass
     public static void initDBUnitData() throws Exception {
@@ -70,8 +75,9 @@ public class ProfileEntityManagerImplTest extends DBUnitTest {
         String harrysOrcid = "4444-4444-4444-4444";
         ProfileEntity profileEntity = profileEntityCacheManager.retrieve(harrysOrcid);
         assertNotNull(profileEntity);
-        assertEquals("Harry", profileEntity.getGivenNames());
-        assertEquals("Secombe", profileEntity.getFamilyName());
+        NameEntity nameEntity = nameManager.getName(profileEntity.getId());
+        assertEquals("Harry", nameEntity.getGivenName());
+        assertEquals("Secombe", nameEntity.getFamilyName());
         assertEquals(harrysOrcid, profileEntity.getId());
     }
 

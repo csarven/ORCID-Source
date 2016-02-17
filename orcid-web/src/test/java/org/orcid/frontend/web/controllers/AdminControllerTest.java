@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.orcid.core.manager.EmailManager;
 import org.orcid.core.manager.EncryptionManager;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.OrcidClientGroupManager;
 import org.orcid.core.manager.OrcidProfileManager;
 import org.orcid.core.oauth.OrcidProfileUserDetails;
@@ -51,6 +52,7 @@ import org.orcid.jaxb.model.message.Visibility;
 import org.orcid.persistence.dao.EmailDao;
 import org.orcid.persistence.dao.ProfileDao;
 import org.orcid.persistence.jpa.entities.EmailEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.AdminChangePassword;
 import org.orcid.pojo.ProfileDeprecationRequest;
@@ -85,6 +87,9 @@ public class AdminControllerTest extends BaseControllerTest {
     
     @Resource
     private EmailDao emailDao;
+    
+    @Resource
+    private NameManager nameManager;
     
     @Resource
     OrcidClientGroupManager orcidClientGroupManager;
@@ -211,10 +216,9 @@ public class AdminControllerTest extends BaseControllerTest {
         assertEquals("4444-4444-4444-4442", emails.get("spike@milligan.com"));
         assertEquals("4444-4444-4444-4442", emails.get("michael@bentine.com"));
                 
-        ProfileEntity deprecated = adminController.getProfileEntityManager().findByOrcid("4444-4444-4444-4441");
-                
-        assertEquals("Given Names Deactivated", deprecated.getGivenNames());
-        assertEquals("Family Name Deactivated", deprecated.getFamilyName());                            
+        NameEntity nameEntity = nameManager.getName("4444-4444-4444-4441");
+        assertEquals("Given Names Deactivated", nameEntity.getGivenName());
+        assertEquals("Family Name Deactivated", nameEntity.getFamilyName());                            
     }
 
     @Test         
@@ -269,8 +273,9 @@ public class AdminControllerTest extends BaseControllerTest {
         profileDao.refresh(profileDao.find("4444-4444-4444-4445"));
         ProfileEntity deactivated = profileDao.find("4444-4444-4444-4445");
         assertNotNull(deactivated.getDeactivationDate());
-        assertEquals(deactivated.getFamilyName(), "Family Name Deactivated");
-        assertEquals(deactivated.getGivenNames(), "Given Names Deactivated");
+        NameEntity nameEntity = nameManager.getName("4444-4444-4444-4445");
+        assertEquals(nameEntity.getFamilyName(), "Family Name Deactivated");
+        assertEquals(nameEntity.getGivenName(), "Given Names Deactivated");
 
         // Test try to deactivate an already deactive account
         result = adminController.deactivateOrcidAccount("4444-4444-4444-4445");

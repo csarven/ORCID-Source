@@ -47,6 +47,7 @@ import org.orcid.jaxb.model.message.OrcidType;
 import org.orcid.jaxb.model.message.Visibility;
 import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.IndexingStatus;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.OrcidEntityIdComparator;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.ProfileEventEntity;
@@ -75,6 +76,9 @@ public class ProfileDaoTest extends DBUnitTest {
     @Resource
     private ClientDetailsDao clientDetailsDao;
 
+    @Resource
+    private NameDao nameDao;
+    
     @Resource
     private GenericDao<ProfileEventEntity, Long> profileEventDao;
 
@@ -107,14 +111,16 @@ public class ProfileDaoTest extends DBUnitTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void testfindById() {
         ProfileEntity profile = profileDao.find("4444-4444-4444-4441");
+        NameEntity name = nameDao.getName("4444-4444-4444-4441");
         assertNotNull(profile);
+        assertNotNull(name);
         assertEquals("4444-4444-4444-4441", profile.getId());
         assertEquals("API", profile.getCreationMethod());
         assertNotNull(profile.getCompletedDate());
         assertNotNull(profile.getSubmissionDate());
         assertTrue(profile.getClaimed());
-        assertEquals("One", profile.getGivenNames());
-        assertEquals("User", profile.getFamilyName());
+        assertEquals("One", name.getGivenName());
+        assertEquals("User", name.getFamilyName());
         assertEquals("Spike Milligan", profile.getVocativeName());
     }
     
@@ -461,12 +467,15 @@ public class ProfileDaoTest extends DBUnitTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void testUpdateProfile() {
         ProfileEntity profile = profileDao.find("4444-4444-4444-4441");
+        NameEntity nameEntity = nameDao.getName("4444-4444-4444-4441");
         profile.setBiography("Updated Biography");
         profile.setBiographyVisibility(Visibility.PRIVATE);
-        profile.setCreditName("Updated Credit Name");
-        profile.setNamesVisibility(Visibility.PRIVATE);
-        profile.setGivenNames("Updated Give Name");
-        profile.setFamilyName("Updated Last Name");
+        
+        nameEntity.setCreditName("Updated Credit Name");
+        nameEntity.setVisibility(org.orcid.jaxb.model.common_rc2.Visibility.PRIVATE);
+        nameEntity.setGivenName("Updated Give Name");
+        nameEntity.setFamilyName("Updated Last Name");
+        
         profile.setIso2Country(Iso3166Country.US);
         profile.setKeywordsVisibility(Visibility.PRIVATE);
         profile.setResearcherUrlsVisibility(Visibility.PRIVATE);
@@ -474,13 +483,17 @@ public class ProfileDaoTest extends DBUnitTest {
         profile.setProfileAddressVisibility(Visibility.PRIVATE);
         boolean result = profileDao.updateProfile(profile);
         assertTrue(result);
+        
+        assertNotNull(nameDao.merge(nameEntity));
+        
         profile = profileDao.find("4444-4444-4444-4441");
+        nameEntity = nameDao.getName("4444-4444-4444-4441");
         assertEquals("Updated Biography", profile.getBiography());
         assertEquals(Visibility.PRIVATE.value(), profile.getBiographyVisibility().value());
-        assertEquals("Updated Credit Name", profile.getCreditName());
-        assertEquals(Visibility.PRIVATE.value(), profile.getNamesVisibility().value());
-        assertEquals("Updated Give Name", profile.getGivenNames());
-        assertEquals("Updated Last Name", profile.getFamilyName());
+        assertEquals("Updated Credit Name", nameEntity.getCreditName());
+        assertEquals(Visibility.PRIVATE.value(), nameEntity.getVisibility().value());
+        assertEquals("Updated Give Name", nameEntity.getGivenName());
+        assertEquals("Updated Last Name", nameEntity.getFamilyName());
         assertEquals(Iso3166Country.US, profile.getIso2Country());
         assertEquals(Visibility.PRIVATE.value(), profile.getKeywordsVisibility().value());
         assertEquals(Visibility.PRIVATE.value(), profile.getResearcherUrlsVisibility().value());

@@ -52,7 +52,6 @@ import org.orcid.jaxb.model.message.CompletionDate;
 import org.orcid.jaxb.model.message.ContactDetails;
 import org.orcid.jaxb.model.message.Country;
 import org.orcid.jaxb.model.message.CreationMethod;
-import org.orcid.jaxb.model.message.CreditName;
 import org.orcid.jaxb.model.message.DeactivationDate;
 import org.orcid.jaxb.model.message.DelegateSummary;
 import org.orcid.jaxb.model.message.Delegation;
@@ -63,13 +62,11 @@ import org.orcid.jaxb.model.message.ExternalIdReference;
 import org.orcid.jaxb.model.message.ExternalIdUrl;
 import org.orcid.jaxb.model.message.ExternalIdentifier;
 import org.orcid.jaxb.model.message.ExternalIdentifiers;
-import org.orcid.jaxb.model.message.FamilyName;
 import org.orcid.jaxb.model.message.Funding;
 import org.orcid.jaxb.model.message.FundingContributors;
 import org.orcid.jaxb.model.message.FundingList;
 import org.orcid.jaxb.model.message.FundingTitle;
 import org.orcid.jaxb.model.message.FuzzyDate;
-import org.orcid.jaxb.model.message.GivenNames;
 import org.orcid.jaxb.model.message.GivenPermissionTo;
 import org.orcid.jaxb.model.message.Iso3166Country;
 import org.orcid.jaxb.model.message.Keyword;
@@ -432,9 +429,6 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
 
     private void setPersonalDetails(ProfileEntity profileEntity, PersonalDetails personalDetails) {
         if (personalDetails != null) {
-            setCreditNameDetails(profileEntity, personalDetails.getCreditName());
-            setFamilyName(profileEntity, personalDetails.getFamilyName());
-            setGivenNames(profileEntity, personalDetails.getGivenNames());
             setOtherNames(profileEntity, personalDetails.getOtherNames());
         }
     }
@@ -453,25 +447,6 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
                 }
                 profileEntity.setOtherNames(otherNameEntities);
             }
-        }
-    }
-
-    private void setGivenNames(ProfileEntity profileEntity, GivenNames givenNames) {
-        if (givenNames != null && StringUtils.isNotBlank(givenNames.getContent())) {
-            profileEntity.setGivenNames(givenNames.getContent());
-        }
-    }
-
-    private void setFamilyName(ProfileEntity profileEntity, FamilyName familyName) {
-        if (familyName != null) {
-            profileEntity.setFamilyName(familyName.getContent());
-        }
-    }
-
-    private void setCreditNameDetails(ProfileEntity profileEntity, CreditName creditName) {
-        if (creditName != null) {
-            profileEntity.setNamesVisibility(creditName.getVisibility());
-            profileEntity.setCreditName(creditName.getContent());
         }
     }
 

@@ -33,6 +33,7 @@ import org.orcid.core.manager.AdminManager;
 import org.orcid.core.manager.EmailManager;
 import org.orcid.core.manager.EncryptionManager;
 import org.orcid.core.manager.ExternalIdentifierManager;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.NotificationManager;
 import org.orcid.core.manager.OrcidProfileManager;
 import org.orcid.core.manager.OtherNameManager;
@@ -49,6 +50,7 @@ import org.orcid.persistence.dao.OrgAffiliationRelationDao;
 import org.orcid.persistence.jpa.entities.EmailEntity;
 import org.orcid.persistence.jpa.entities.ExternalIdentifierEntity;
 import org.orcid.persistence.jpa.entities.IndexingStatus;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.OrgAffiliationRelationEntity;
 import org.orcid.persistence.jpa.entities.OtherNameEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
@@ -111,6 +113,9 @@ public class AdminManagerImpl implements AdminManager {
     
     @Resource
     private ProfileKeywordManager profileKeywordManager;
+    
+    @Resource
+    private NameManager nameManager;
     
     @Resource(name = "profileEntityCacheManager")
     ProfileEntityCacheManager profileEntityCacheManager;
@@ -195,14 +200,17 @@ public class AdminManagerImpl implements AdminManager {
                         }
                         
                         // Update deprecated profile
+                        NameEntity nameEntity = new NameEntity();
+                        nameEntity.setCreditName(null);
+                        nameEntity.setGivenName("Given Names Deactivated");
+                        nameEntity.setFamilyName("Family Name Deactivated");
+                        nameEntity.setVisibility(org.orcid.jaxb.model.common_rc2.Visibility.PRIVATE);
+                        nameManager.updateName(nameEntity);
+                        
                         Date deprecationDate = new Date();
                         deprecated.setDeactivationDate(deprecationDate);
                         deprecated.setDeprecatedDate(deprecationDate);
-                        deprecated.setCreditName(null);
-                        deprecated.setGivenNames("Given Names Deactivated");
-                        deprecated.setFamilyName("Family Name Deactivated");
                         deprecated.setOtherNamesVisibility(Visibility.PRIVATE);
-                        deprecated.setNamesVisibility(Visibility.PRIVATE);
                         deprecated.setExternalIdentifiersVisibility(Visibility.PRIVATE);
                         deprecated.setBiographyVisibility(Visibility.PRIVATE);
                         deprecated.setKeywordsVisibility(Visibility.PRIVATE);

@@ -40,6 +40,7 @@ import org.orcid.core.locale.LocaleManager;
 import org.orcid.core.manager.ActivityCacheManager;
 import org.orcid.core.manager.EncryptionManager;
 import org.orcid.core.manager.GroupIdRecordManager;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.OrcidProfileCacheManager;
 import org.orcid.core.manager.PeerReviewManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
@@ -59,6 +60,7 @@ import org.orcid.jaxb.model.record.summary_rc2.ActivitiesSummary;
 import org.orcid.jaxb.model.record_rc2.PeerReview;
 import org.orcid.jaxb.model.record_rc2.Work;
 import org.orcid.persistence.jpa.entities.CountryIsoEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.ajaxForm.AffiliationForm;
 import org.orcid.pojo.ajaxForm.Contributor;
@@ -119,6 +121,9 @@ public class PublicProfileController extends BaseWorkspaceController {
 
     @Resource
     private GroupIdRecordManager groupIdRecordManager;
+    
+    @Resource
+    private NameManager nameManager;
 
     public static int ORCID_HASH_LENGTH = 8;
 
@@ -413,11 +418,11 @@ public class PublicProfileController extends BaseWorkspaceController {
                     if (!PojoUtil.isEmpty(contributor.getOrcid())) {
                         String contributorOrcid = contributor.getOrcid().getValue();
                         if (profileEntManager.orcidExists(contributorOrcid)) {
-                            ProfileEntity profileEntity = profileEntityCacheManager.retrieve(contributorOrcid);
-                            String publicContributorCreditName = cacheManager.getPublicCreditName(profileEntity);
-                            if (profileEntity.getNamesVisibility() != null) {
+                            NameEntity nameEntity = nameManager.getName(contributorOrcid);
+                            String publicContributorCreditName = cacheManager.getPublicCreditName(nameEntity);
+                            if (nameEntity.getVisibility() != null) {
                                 contributor.setCreditName(Text.valueOf(publicContributorCreditName));
-                                contributor.setCreditNameVisibility(org.orcid.pojo.ajaxForm.Visibility.valueOf(profileEntity.getNamesVisibility()));
+                                contributor.setCreditNameVisibility(org.orcid.pojo.ajaxForm.Visibility.valueOf(nameEntity.getVisibility()));
                             } else {
                                 contributor.setCreditName(Text.valueOf(publicContributorCreditName));
                                 contributor.setCreditNameVisibility(org.orcid.pojo.ajaxForm.Visibility.valueOf(OrcidVisibilityDefaults.NAMES_DEFAULT.getVisibility()));

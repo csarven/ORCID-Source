@@ -38,6 +38,7 @@ import org.orcid.core.manager.AddressManager;
 import org.orcid.core.manager.AdminManager;
 import org.orcid.core.manager.EmailManager;
 import org.orcid.core.manager.EncryptionManager;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.NotificationManager;
 import org.orcid.core.manager.OrcidSearchManager;
 import org.orcid.core.manager.OrcidSecurityManager;
@@ -81,6 +82,7 @@ import org.orcid.persistence.dao.ProfileDao;
 import org.orcid.persistence.dao.UserConnectionDao;
 import org.orcid.persistence.jpa.entities.EmailEntity;
 import org.orcid.persistence.jpa.entities.GivenPermissionToEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.OrcidOauth2TokenDetail;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.ProfileSummaryEntity;
@@ -180,6 +182,9 @@ public class ManageProfileController extends BaseWorkspaceController {
 
     @Resource
     OrcidSecurityManager orcidSecurityManager;
+    
+    @Resource
+    private NameManager nameManager;
     
     @Resource
     private AddressManager addressManager;
@@ -304,13 +309,13 @@ public class ManageProfileController extends BaseWorkspaceController {
             permission.setApprovalDate(new Date());
             givenPermissionToDao.merge(permission);
             OrcidProfile currentUser = getEffectiveProfile();
-            ProfileEntity delegateProfile = profileEntityCacheManager.retrieve(delegateOrcid);
             DelegationDetails details = new DelegationDetails();
             details.setApprovalDate(new ApprovalDate(DateUtils.convertToXMLGregorianCalendar(permission.getApprovalDate())));
             DelegateSummary summary = new DelegateSummary();
             details.setDelegateSummary(summary);
             summary.setOrcidIdentifier(new OrcidIdentifier(delegateOrcid));
-            String creditName = delegateProfile.getCreditName();
+            NameEntity nameEntity = nameManager.getName(delegateOrcid);
+            String creditName = nameEntity.getCreditName();
             if (StringUtils.isNotBlank(creditName)) {
                 summary.setCreditName(new CreditName(creditName));
             }
@@ -1083,13 +1088,13 @@ public class ManageProfileController extends BaseWorkspaceController {
                         permission.setApprovalDate(new Date());
                         givenPermissionToDao.merge(permission);
                         OrcidProfile currentUser = getEffectiveProfile();
-                        ProfileEntity delegateProfile = profileEntityCacheManager.retrieve(trustedOrcid);
                         DelegationDetails details = new DelegationDetails();
                         details.setApprovalDate(new ApprovalDate(DateUtils.convertToXMLGregorianCalendar(permission.getApprovalDate())));
                         DelegateSummary summary = new DelegateSummary();
                         details.setDelegateSummary(summary);
                         summary.setOrcidIdentifier(new OrcidIdentifier(trustedOrcid));
-                        String creditName = delegateProfile.getCreditName();
+                        NameEntity nameEntity = nameManager.getName(trustedOrcid);
+                        String creditName = nameEntity.getCreditName();
                         if (StringUtils.isNotBlank(creditName)) {
                             summary.setCreditName(new CreditName(creditName));
                         }

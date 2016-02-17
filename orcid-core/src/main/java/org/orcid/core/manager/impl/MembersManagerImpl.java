@@ -27,6 +27,7 @@ import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.core.manager.EmailManager;
 import org.orcid.core.manager.EncryptionManager;
 import org.orcid.core.manager.MembersManager;
+import org.orcid.core.manager.NameManager;
 import org.orcid.core.manager.OrcidClientGroupManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.manager.ProfileEntityManager;
@@ -38,6 +39,7 @@ import org.orcid.jaxb.model.message.ErrorDesc;
 import org.orcid.persistence.dao.ProfileDao;
 import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientSecretEntity;
+import org.orcid.persistence.jpa.entities.NameEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.ajaxForm.Client;
 import org.orcid.pojo.ajaxForm.Member;
@@ -77,6 +79,9 @@ public class MembersManagerImpl implements MembersManager {
     
     @Resource
     private ProfileDao profileDao;
+    
+    @Resource
+    private NameManager nameManager;
     
     @Override
     public Member createMember(Member newMember) {
@@ -119,8 +124,10 @@ public class MembersManagerImpl implements MembersManager {
             if (profileEntityManager.orcidExists(orcid)) {
                 MemberType groupType = profileEntityManager.getGroupType(orcid);
                 if (groupType != null) {
-                    ProfileEntity memberProfile = profileDao.find(orcid);                    
+                    ProfileEntity memberProfile = profileDao.find(orcid);
+                    NameEntity nameEntity = nameManager.getName(orcid);
                     member = Member.fromProfileEntity(memberProfile);
+                    member.setGroupName(Text.valueOf(nameEntity.getCreditName()));
                     List<ClientDetailsEntity> clients = clientDetailsManager.findByGroupId(orcid);
                     member.setClients(Client.valueOf(clients));
                 } else {
