@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-============================================================================= 
+<!--
+=============================================================================
 
 ORCID (R) Open Source
 http://orcid.org
@@ -10,7 +10,7 @@ Licensed under an MIT-Style License (MIT)
 http://orcid.org/open-source-license
 
 This copyright and license information (including a link to the full license)
-shall be included in its entirety in all copies or substantial portion of 
+shall be included in its entirety in all copies or substantial portion of
 the software.
 =============================================================================
 -->
@@ -64,9 +64,9 @@ the software.
     </organization>
 
     <url>http://orcid.org</url>
-   
+
     <scm>
-        <connection>scm:git:ssh://git@github.com/ORCID/ORCID-Work-in-Progress.git</connection>        
+        <connection>scm:git:ssh://git@github.com/ORCID/ORCID-Work-in-Progress.git</connection>
         <developerConnection>scm:git:git://github.com/ORCID/ORCID-Work-in-Progress.git</developerConnection>
         <url>https://github.com/ORCID/ORCID-Work-in-Progress</url>
     </scm>
@@ -128,7 +128,7 @@ the software.
                     <argLine>-Duser.timezone=GMT</argLine>
                     <runOrder>alphabetical</runOrder>
                     <!-- we need to rewrite our unit test
-                    to be runOrder random and take avantage 
+                    to be runOrder random and take avantage
                     of the speedup below
                     <parallel>classes</parallel>
                     <threadCount>4</threadCount>
@@ -217,12 +217,13 @@ the software.
                         	<exclude>**/src/main/webapp/static/javascript/modernizr.js</exclude>
                         	<exclude>**/src/main/webapp/static/javascript/jquery/**</exclude>
                         	<exclude>**/src/main/webapp/static/javascript/jqueryui/**</exclude>
-                        	<exclude>**/src/main/webapp/static/javascript/jquery-migrate/**</exclude>                        	
+                        	<exclude>**/src/main/webapp/static/javascript/jquery-migrate/**</exclude>
                         	<exclude>**/src/main/webapp/static/javascript/angularjs/**</exclude>
                         	<exclude>**/src/main/webapp/static/javascript/json3/**</exclude>
                         	<exclude>**/src/main/webapp/static/javascript/typeahead/**</exclude>
                         	<exclude>**/src/main/webapp/static/javascript/respond.*.js</exclude>
                         	<exclude>**/src/main/webapp/static/javascript/shibboleth-embedded-ds/**</exclude>
+                          <exclude>**/src/main/webapp/static/javascript/bibtex/**</exclude>
                         	<exclude>**/src/main/webapp/static/fonts/glyphicons*</exclude>
                         	<exclude>**/.externalToolBuilders/**</exclude>
                         	<exclude>**/src/main/webapp/static/css/jquery-*.css</exclude>
@@ -374,7 +375,7 @@ the software.
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.10</version>		
+					<version>1.10</version>
 	            </plugin>
 	        </plugins>
         </pluginManagement>
@@ -460,7 +461,7 @@ the software.
             <groupId>io.takari.junit</groupId>
             <artifactId>takari-cpsuite</artifactId>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
@@ -471,7 +472,7 @@ the software.
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
     </dependencies>
 
     <dependencyManagement>
@@ -934,7 +935,7 @@ the software.
                 <artifactId>bcprov-jdk15on</artifactId>
                 <version>1.53</version>
             </dependency>
-            
+
             <!-- Test -->
             <dependency>
                 <groupId>org.jmock</groupId>
@@ -995,7 +996,7 @@ the software.
                 <artifactId>guava</artifactId>
                 <version>18.0</version>
             </dependency>
-            
+
         </dependencies>
     </dependencyManagement>
 
@@ -1024,7 +1025,7 @@ the software.
             </snapshots>
         </repository>
     </repositories>
-    
+
     <pluginRepositories>
         <pluginRepository>
             <id>m2.java.net</id>
@@ -1044,7 +1045,7 @@ the software.
             </releases>
         </pluginRepository>
     </pluginRepositories>
-    
+
     <profiles>
         <!--  Localhost deployments -->
         <profile>
@@ -1062,7 +1063,7 @@ the software.
                 <tomcat.server.id>TomcatServer</tomcat.server.id>
             </properties>
         </profile>
-        
+
         <!-- QA fullstack deployments -->
         <profile>
             <id>qa-fullstack</id>
