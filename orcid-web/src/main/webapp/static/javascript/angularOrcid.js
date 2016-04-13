@@ -6215,12 +6215,12 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
         $scope.bibtexExportError = false; 
         $scope.scriptsLoaded = false;
         
-        var swagger  = orcidVar.baseUri + "/static/javascript/orcid-js/swagger-js/browser/swagger-client.min.js";
-        var xmle4x   = orcidVar.baseUri + "/static/javascript/orcid-js/citeproc-js/xmle4x.js";                
-        var xmldom   = orcidVar.baseUri + "/static/javascript/orcid-js/citeproc-js/xmldom.js";
-        var citeproc = orcidVar.baseUri + "/static/javascript/orcid-js/citeproc-js/citeproc.js";
-        var orcidx   = orcidVar.baseUri + "/static/javascript/orcid-js/lib/orcid.js";
-        var styles   = orcidVar.baseUri + "/static/javascript/orcid-js/lib/styles.js";
+        var swagger  = orcidVar.baseUri + "/static/javascript/bibtex/orcid-js/swagger-js/browser/swagger-client.min.js";
+        var xmle4x   = orcidVar.baseUri + "/static/javascript/bibtex/orcid-js/citeproc-js/xmle4x.js";                
+        var xmldom   = orcidVar.baseUri + "/static/javascript/bibtex/orcid-js/citeproc-js/xmldom.js";
+        var citeproc = orcidVar.baseUri + "/static/javascript/bibtex/orcid-js/citeproc-js/citeproc.js";
+        var orcidx   = orcidVar.baseUri + "/static/javascript/bibtex/orcid-js/lib/orcid.js";
+        var styles   = orcidVar.baseUri + "/static/javascript/bibtex/orcid-js/lib/styles.js";
         
         var scripts = [swagger, xmle4x, xmldom, citeproc, orcidx, styles];
         
