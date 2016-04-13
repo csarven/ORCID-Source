@@ -4655,7 +4655,8 @@ ul.toggle-menu li:hover ul{
 	min-height: 70px;
 }
 
-.public-profile .bibtex-wizard{
+.public-profile .bibtex-wizard,
+.public-profile .bibtex-export-wizard{
 	padding: 0px 16px 0 0;
 	margin-top: -16px;	
 }
@@ -4664,6 +4665,13 @@ ul.toggle-menu li:hover ul{
 	font-size: 13px;
 	color: #494A4C;
 	top: -8px;	
+}
+
+
+.public-profile .bibtex-export-wizard:before{
+	font-size: 13px;
+	color: #494A4C;
+	top: 0;
 }
 
 .upload-button { /* Hiding input file button to mask it */	
@@ -5035,7 +5043,8 @@ ul.sources-actions li{
 	line-height: 28px;
 }
 
-.green-bg{
+.green-bg,
+.green-bg .glyphicons:before{
 	background: rgb(166, 206, 57) !important;
 	color: #FFF !important;
 }
