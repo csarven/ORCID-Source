@@ -379,8 +379,14 @@ orcidNgModule.directive('appFileTextReader', function($q){
                     var element = event.target;
                     $q.all(slice.call(element.files, 0).map(readFile))
                     .then(function(values){
-                        if(element.multiple) ngModelCtrl.$setViewValue(values);
-                        else ngModelCtrl.$setViewValue(values.length ? values[0] : null);
+                        if(element.multiple){
+                            for(v in values){
+                                ngModelCtrl.$viewValue.push(values[v]);
+                            }
+                        }
+                        else{
+                            ngModelCtrl.$setViewValue(values.length ? values[0] : null);
+                        }
                         scope.updateFn(scope);
                         element.value = null;
                     });
@@ -5478,7 +5484,7 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
     actBulkSrvc.initScope($scope);
     $scope.canReadFiles = false;
     $scope.showBibtexImportWizard = false;
-    $scope.textFiles = null;
+    $scope.textFiles = [];
     $scope.worksFromBibtex = null;
     $scope.workspaceSrvc = workspaceSrvc;
     $scope.worksSrvc = worksSrvc;
@@ -5620,8 +5626,8 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
                     });
                 });
             });
-               $scope.textFiles = null;
-               $scope.bibtexParsingError = false;
+            $scope.textFiles.length = 0;
+            $scope.bibtexParsingError = false;
                
         } catch (err) {
             $scope.bibtexParsingError = true;
