@@ -549,8 +549,8 @@
 							<div class="alert alert-block" ng-if="bibtexExportError">
 								<strong>Something went wrong, please try again...</strong>
 							</div>
-							<div ng-if="bibtexGenerated && !bibtexExportError" class="bottomBuffer">							
-									<a download="orcid.bib" href="{{bibtexURL}}" id="downloadlink">Click to Download</a>
+							<div ng-if="bibtexGenerated && !bibtexExportError" class="bottomBuffer">
+								<p>The exported file was named "orcid.bib", the download should start automatically. If your download does not start automatically please <a download="orcid.bib" href="{{bibtexURL}}" id="downloadBibtex">click here</a>.</p>
 							</div>
 						</div>		
 					</#if>

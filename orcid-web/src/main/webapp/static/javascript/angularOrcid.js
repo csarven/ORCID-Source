@@ -329,6 +329,15 @@ GroupedActivities.prototype.rmByPut = function(putCode) {
 
 var orcidNgModule = angular.module('orcidApp', ['ngCookies','ngSanitize', 'ui.multiselect', 'vcRecaptcha']);
 
+
+orcidNgModule.config([    
+    '$compileProvider',
+    function( $compileProvider )
+    {   
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(data):/); //Whitelisting data in order to get Bibtex Export working    
+    }
+]);
+
 orcidNgModule.directive('ngModelOnblur', function() {
     return {
         restrict: 'A',
@@ -5464,8 +5473,8 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrvc', 'workspaceSrvc', 'actBulkSrvc', 'commonSrvc', '$timeout', '$q', 
-                                      function ($scope, $compile, $filter, worksSrvc, workspaceSrvc, actBulkSrvc, commonSrvc, $timeout, $q) {
+orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrvc', 'workspaceSrvc', 'actBulkSrvc', 'commonSrvc', '$timeout', '$q', '$window', 
+                                      function ($scope, $compile, $filter, worksSrvc, workspaceSrvc, actBulkSrvc, commonSrvc, $timeout, $q, $window) {
     actBulkSrvc.initScope($scope);
     $scope.canReadFiles = false;
     $scope.showBibtexImportWizard = false;
@@ -6236,8 +6245,9 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
     };
     
     $scope.downloadBibtexExport = function(citations){
-        console.log("$scope.downloadBibtexExport");
-        console.log(citations);
+    	
+    	console.log(citations);
+    	
         $scope.bibtexGenerated = false;
         if (citations.length > 0){
             var text = "";
@@ -6247,13 +6257,22 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
             text = text.replace(/<div class="csl-entry">/g, '');
             text = text.replace(/<\/div>/g, '');
             
-            if(window.navigator.msSaveOrOpenBlob) {
-                var fileData = [text];
-                blobObject = new Blob(fileData, {type: 'text/plain'});
-                window.navigator.msSaveOrOpenBlob(blobObject, "orcid.bib");                
-            } else {
-                $scope.bibtexGenerated = true;
-                $scope.bibtexURL = "data:text/plain;charset=utf-8," + encodeURIComponent(text);   
+            if(window.navigator.msSaveOrOpenBlob) { //IE
+            	$scope.$apply(function() {
+	            	$scope.bibtexGenerated = true;
+	                var fileData = [text];
+	                blobObject = new Blob(fileData, {type: 'text/plain'});
+	                window.navigator.msSaveOrOpenBlob(blobObject, "orcid.bib");                
+            	});	    
+            } else {            	 
+            	$scope.$apply(function() {
+            		$scope.bibtexGenerated = true;
+            		$scope.bibtexURL = "data:text/plain;charset=utf-8," + encodeURIComponent(text);
+            		setTimeout(function(){
+            			var link = document.getElementById('downloadBibtex');                		
+                		link.click();	
+            		},1000);    		
+            	});
             }
         }else{
             $scope.$apply(function() {
