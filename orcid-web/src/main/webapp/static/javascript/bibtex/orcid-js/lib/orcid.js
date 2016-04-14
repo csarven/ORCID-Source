@@ -28,6 +28,8 @@
 //
 // Dependencies: swagger-client.js, jquery, citeproc-js [transitive xmle4x.js,xmldom.js] 
 
+//force https for prefix urls.
+//write fun bibtex export blog post. (talk to alice about process)
 
 var orcid = function(){	
 
@@ -38,8 +40,6 @@ var orcid = function(){
 	var pubAPI = baseURI + "/v2.0_rc2";
 	
 	
-	var client = null;
-
     //initialises the swagger client.
     function createPublicV2ORCIDClient(onSuccess){
         if (client == null){
@@ -63,8 +63,10 @@ var orcid = function(){
                rObj.identifierType = obj["external-ids"]["external-id"][0]["external-id-type"];
            }
            var prefix = "";
-           if (rObj.identifierType == "doi" && rObj.ID && rObj.ID.indexOf('http') != 0){
-                prefix = "http://doi.org/";
+            if (rObj.identifierType == "doi" && rObj.ID && rObj.ID.match('^http://')){
+                rObj.ID = rObj.ID.replace(/^http:\/\//i, 'https://'); //force https
+            } else if (rObj.identifierType == "doi" && rObj.ID && rObj.ID.indexOf('http') != 0){
+                prefix = "https://doi.org/";
             } else if (rObj.identifierType == "isbn"){
                 prefix = "http://www.worldcat.org/isbn/";
             } else if (rObj.identifierType == "arxiv"){
@@ -178,6 +180,7 @@ var orcid = function(){
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown ){
+                    jqXHR.failedWork = simpleWork;
                 }
         }).complete(d.resolve);
         return d;
@@ -235,6 +238,7 @@ var orcid = function(){
         //private function that turns XHR results into citeproc citations
         function resolveCiteproc(results){
             var citeprocJSONArray = [];
+            var failArray = [];
             var id = 0;
             if (results[1] == "success" || results[1] == "error"){
                 tmp = results;
@@ -249,9 +253,9 @@ var orcid = function(){
                     removeNullsInObject(citeprocJSONArray[id]);
                     id++;
                 }else{
-                    //log failiures
-                    console.log("failed to resolve:");
-                    console.log(results[r][0]);
+                    //record failiures
+                    console.log(results[r][0].failedWork);
+                    failArray.push(results[r][0].failedWork)
                 }
             }
             if (returnCiteprocObjects){
@@ -263,10 +267,11 @@ var orcid = function(){
                 "properties": {
                     "noteIndex": 0
                 }};
+            // note we can check for failiures by looking at .originalOrder property
             citeproc = orcid.createCiteproc(citeprocJSONObject,null,optionalCitationStyle);
             citeproc.appendCitationCluster(citeprocJSONObject);
             citations = citeproc.makeBibliography()[1];
-            callback(citations);
+            callback(citations,failArray);
         }
         client.apis["Public API v2.0_rc2"].viewActivities({orcid:orcidID}, function(data) {
                 var simpleWorks = orcid.activitiesToSimpleWorks(data);

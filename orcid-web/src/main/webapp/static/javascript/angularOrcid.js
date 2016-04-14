@@ -6244,10 +6244,8 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
         });
     };
     
-    $scope.downloadBibtexExport = function(citations){
-    	
-    	console.log(citations);
-    	
+
+    $scope.downloadBibtexExport = function(citations, failures){
         $scope.bibtexGenerated = false;
         if (citations.length > 0){
             var text = "";
@@ -6278,6 +6276,12 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
             $scope.$apply(function() {
                 $scope.bibtexExportError = true;
             });   
+        }
+        
+        //do something with failures
+        for (f in fails){
+            //fails[f].title
+            //fails[f].ID            
         }
     };
     
