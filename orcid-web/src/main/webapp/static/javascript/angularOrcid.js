@@ -6235,7 +6235,7 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
         });
     };
     
-    $scope.downloadBibtexExport = function(citations){
+    $scope.downloadBibtexExport = function(citations, failures){
         console.log("$scope.downloadBibtexExport");
         console.log(citations);
         $scope.bibtexGenerated = false;
@@ -6259,6 +6259,12 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
             $scope.$apply(function() {
                 $scope.bibtexExportError = true;
             });   
+        }
+        
+        //do something with failures
+        for (f in fails){
+            //fails[f].title
+            //fails[f].ID            
         }
     };
     
