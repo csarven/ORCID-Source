@@ -6229,13 +6229,15 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
                 $scope.loadingScripts = false;
                 $scope.scriptsLoaded = true;
                 orcid.init(function(){
-                    orcid.resolveCitations(orcidVar.orcidId, $scope.downloadBibtexExport, orcid.styleBibtex);
+                    orcid.resolveCitations(orcidVar.orcidId, $scope.downloadBibtexExport, false, orcid.styleBibtex);
                 });
             });            
         });
     };
     
     $scope.downloadBibtexExport = function(citations){
+        console.log("$scope.downloadBibtexExport");
+        console.log(citations);
         $scope.bibtexGenerated = false;
         if (citations.length > 0){
             var text = "";
