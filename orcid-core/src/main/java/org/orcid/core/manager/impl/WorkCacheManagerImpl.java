@@ -27,6 +27,8 @@ import org.orcid.persistence.dao.WorkDao;
 import org.orcid.persistence.jpa.entities.MinimizedWorkEntity;
 import org.orcid.persistence.jpa.entities.WorkLastModifiedEntity;
 import org.orcid.utils.ReleaseNameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
@@ -37,6 +39,8 @@ import net.sf.ehcache.Element;
  *
  */
 public class WorkCacheManagerImpl implements WorkCacheManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkCacheManagerImpl.class);
 
     @Resource
     private WorkDao workDao;
@@ -113,16 +117,32 @@ public class WorkCacheManagerImpl implements WorkCacheManager {
     @Override
     public List<MinimizedWorkEntity> retrieveMinimizedWorks(String orcid, long profileLastModified) {
         List<WorkLastModifiedEntity> workLastModifiedList = retrieveWorkLastModifiedList(orcid, profileLastModified);
+        int numWorks = workLastModifiedList.size();
+        LOGGER.info("Got work last modified list, orcid = {}, size = {}", orcid, numWorks);
+        if (numWorks > 1000) {
+            LOGGER.info("Found hyper-author while retrieving minimized works, orcid= {}", orcid);
+        }
         List<MinimizedWorkEntity> works = workLastModifiedList.stream().map(e -> retrieveMinimizedWork(e.getId(), e.getLastModified().getTime()))
                 .collect(Collectors.toList());
+        int cacheSize = minimizedWorkCache.getSize();
+        int diskStoreSize = minimizedWorkCache.getDiskStoreSize();
+        LOGGER.info("Retrieved minimized works for {}, cacheSize = {}, diskStoreSize = {}", new Object[] { orcid, cacheSize, diskStoreSize });
         return works;
     }
 
     @Override
     public List<MinimizedWorkEntity> retrievePublicMinimizedWorks(String orcid, long profileLastModified) {
         List<WorkLastModifiedEntity> workLastModifiedList = retrievePublicWorkLastModifiedList(orcid, profileLastModified);
+        int numWorks = workLastModifiedList.size();
+        LOGGER.info("Got public work last modified list, orcid = {}, size = {}", orcid, numWorks);
+        if (numWorks > 1000) {
+            LOGGER.info("Found hyper-author while retrieving public minimized works, orcid= {}", orcid);
+        }
         List<MinimizedWorkEntity> works = workLastModifiedList.stream().map(e -> retrieveMinimizedWork(e.getId(), e.getLastModified().getTime()))
                 .collect(Collectors.toList());
+        int cacheSize = minimizedWorkCache.getSize();
+        int diskStoreSize = minimizedWorkCache.getDiskStoreSize();
+        LOGGER.info("Retrieved public minimized works for {}, cacheSize = {}, diskStoreSize = {}", new Object[] { orcid, cacheSize, diskStoreSize });
         return works;
     }
 
