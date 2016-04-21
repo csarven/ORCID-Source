@@ -63,10 +63,13 @@ var orcid = function(){
                rObj.identifierType = obj["external-ids"]["external-id"][0]["external-id-type"];
            }
            var prefix = "";
-            if (rObj.identifierType == "doi" && rObj.ID && rObj.ID.match('^http://')){
-                rObj.ID = rObj.ID.replace(/^http:\/\//i, 'https://'); //force https
-            } else if (rObj.identifierType == "doi" && rObj.ID && rObj.ID.indexOf('http') != 0){
-                prefix = "https://doi.org/";
+            if (rObj.identifierType == "doi" && rObj.ID && rObj.ID.match('^https?://')){
+                //due to bug in browser 303 redirect implemetations forgetting Accept headers,
+                //we resolve directly at crossref and retry at datacite if we get a 404
+                rObj.ID = rObj.ID.replace(/^https?:\/\/(dx\.)?doi\.org\//i, 'https://'); //remove url
+                prefix = "http://data.crossref.org/";
+            } else if (rObj.identifierType == "doi" && rObj.ID){
+                prefix = "http://data.crossref.org/";
             } else if (rObj.identifierType == "isbn"){
                 prefix = "http://www.worldcat.org/isbn/";
             } else if (rObj.identifierType == "arxiv"){
@@ -158,6 +161,7 @@ var orcid = function(){
     }
 
     //returns a Deffered containing an ajax request.
+    //retries failed crossref requests with datacite
     function fetchCiteprocJSONForSimpleWork(simpleWork){
         var d = $.Deferred();
         var r = 
@@ -169,20 +173,50 @@ var orcid = function(){
                 crossDomain: true,
                 url: simpleWork.citeprocURL,
                 dataType: 'json',
+                cache: false,
                 success: function (data, textStatus, jqXHR) {
                     if (data){
                         if (!jqXHR.responseJSON){//fixes weird bug when working with angular and/or some versions of JQuery
                             jqXHR.responseJSON = $.parseJSON(jqXHR.responseText);
                         }
                         jqXHR.responseJSON.originalOrder = simpleWork.originalOrder;  
-                    }else{
-                        console.log("no data: "+simpleWork.citeprocURL);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown ){
                     jqXHR.failedWork = simpleWork;
                 }
-        }).complete(d.resolve);
+        }).done(d.resolve)
+        .fail(function(jqXHR, textStatus, errorThrown){
+            if (jqXHR.status == 404 && simpleWork.citeprocURL.match('crossref')){
+                //if we tried crossref and failed, try datacite instead
+                simpleWork.citeprocURL = simpleWork.citeprocURL.replace(/crossref/i, 'datacite'); 
+                $.ajax({
+                    headers: { 
+                        Accept : "application/vnd.citationstyles.csl+json"
+                    },
+                    type: "GET",
+                    crossDomain: true,
+                    url: simpleWork.citeprocURL,
+                    dataType: 'json',
+                    cache: false,
+                    success: function (data, textStatus, jqXHR) {
+                        if (data){
+                            if (!jqXHR.responseJSON){//fixes weird bug when working with angular and/or some versions of JQuery
+                                jqXHR.responseJSON = $.parseJSON(jqXHR.responseText);
+                            }
+                            jqXHR.responseJSON.originalOrder = simpleWork.originalOrder;  
+                            jqXHR.failedWork = null;
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown ){
+                        jqXHR.failedWork = simpleWork;
+                    }
+                }).always(d.resolve);
+            }else{
+                //propigate the error to the callback.
+                d.resolve([jqXHR, textStatus, errorThrown]);
+            }
+        });
         return d;
     }
 
@@ -236,7 +270,7 @@ var orcid = function(){
     //if oneByOne = true then the callback is called for each citation as it's resolved
     function resolveCitationsFromORCIDID(orcidID, callback, oneByOne, optionalCitationStyle, returnCiteprocObjects){
         //private function that turns XHR results into citeproc citations
-        function resolveCiteproc(results){
+        function resolveCiteproc(results){          
             var citeprocJSONArray = [];
             var failArray = [];
             var id = 0;
@@ -246,16 +280,14 @@ var orcid = function(){
                 results[0] = tmp;
             }
             for (r in results){
-                if (results[r][1] == "success" && results[r][0].responseJSON){
-                    citeprocJSONArray[id] = results[r][0].responseJSON;
+                if (results[r][1] == "success" && results[r][2].responseJSON){
+                    citeprocJSONArray[id] = results[r][2].responseJSON;
                     citeprocJSONArray[id].id = ""+id;
                     //we have to remove nulls as they cause citeproc.js to fail.
                     removeNullsInObject(citeprocJSONArray[id]);
                     id++;
                 }else{
-                    //record failiures
-                    console.log(results[r][0].failedWork);
-                    failArray.push(results[r][0].failedWork)
+                    failArray.push(results[r][0].failedWork);
                 }
             }
             if (returnCiteprocObjects){
