@@ -66,7 +66,7 @@ var orcid = function(){
             if (rObj.identifierType == "doi" && rObj.ID && rObj.ID.match('^https?://')){
                 //due to bug in browser 303 redirect implemetations forgetting Accept headers,
                 //we resolve directly at crossref and retry at datacite if we get a 404
-                rObj.ID = rObj.ID.replace(/^https?:\/\/(dx\.)?doi\.org\//i, 'https://'); //remove url
+                rObj.ID = rObj.ID.replace(/^https?:\/\/(dx\.)?doi\.org\//i, ''); //remove url
                 prefix = "http://data.crossref.org/";
             } else if (rObj.identifierType == "doi" && rObj.ID){
                 prefix = "http://data.crossref.org/";
@@ -98,7 +98,7 @@ var orcid = function(){
                 prefix = "http://papers.ssrn.com/abstract_id=";
             }
             if ( prefix != "" || rObj.identifierType == "handle" || rObj.identifierType == "uri" || rObj.identifierType == "doi"){
-                rObj.URL = prefix + rObj.ID;
+                rObj.URL = prefix + rObj.ID.trim();
             }
             if (rObj.identifierType == "doi"){
                 rObj.citeprocURL = rObj.URL;                
@@ -303,6 +303,9 @@ var orcid = function(){
             citeproc = orcid.createCiteproc(citeprocJSONObject,null,optionalCitationStyle);
             citeproc.appendCitationCluster(citeprocJSONObject);
             citations = citeproc.makeBibliography()[1];
+            console.log("calling callback");
+            console.log(citations);
+            console.log(failArray);
             callback(citations,failArray);
         }
         client.apis["Public API v2.0_rc2"].viewActivities({orcid:orcidID}, function(data) {

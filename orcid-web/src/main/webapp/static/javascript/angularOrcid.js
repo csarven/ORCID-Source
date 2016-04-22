@@ -6225,7 +6225,7 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
     }
     
     $scope.openBibtexExportDialog = function(){
-        
+        console.debug("initiating export");
         $scope.loadingScripts = true;
         $scope.bibtexExportError = false; 
         $scope.scriptsLoaded = false;
@@ -6239,11 +6239,15 @@ orcidNgModule.controller('WorkCtrl', ['$scope', '$compile', '$filter', 'worksSrv
         
         var scripts = [swagger, xmle4x, xmldom, citeproc, orcidx, styles];
         
+        console.debug("getting scripts");
         getScripts(scripts, function(){
+            console.debug("applying");
             $scope.$apply(function() {
                 $scope.loadingScripts = false;
                 $scope.scriptsLoaded = true;
+                console.debug("initiating orcid.js");
                 orcid.init(function(){
+                    console.debug("resolving citations");
                     orcid.resolveCitations(orcidVar.orcidId, $scope.downloadBibtexExport, false, orcid.styleBibtex);
                 });
             });            
