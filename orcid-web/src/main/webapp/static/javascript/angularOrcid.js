@@ -53,13 +53,20 @@ function formatDate(oldDate) {
 
 function getScripts(scripts, callback) {
     var progress = 0;
-    var internalCallback = function () {        
+    var internalCallback = function () { 
+        console.log("internal "+progress);        
         if (++progress == scripts.length - 1) {
+            console.log("calling callback");        
             callback();
         }
     };    
-    scripts.forEach(function(script) {        
-        $.getScript(script, internalCallback);        
+    scripts.forEach(function(script) { 
+        console.log("fetching "+script);
+        $.getScript(script, internalCallback)
+        .fail(function( jqxhr, settings, exception ) {
+            console.log("fail "+exception);
+            console.log(jqxhr);
+            });        
     });
 };
 

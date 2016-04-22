@@ -38,8 +38,8 @@ var orcid = function(){
 	
 	var pubSwagger = baseURI + "/resources/swagger.json";
 	var pubAPI = baseURI + "/v2.0_rc2";
-	
-	
+	var client = null;	
+
     //initialises the swagger client.
     function createPublicV2ORCIDClient(onSuccess){
         if (client == null){
@@ -287,6 +287,9 @@ var orcid = function(){
                     removeNullsInObject(citeprocJSONArray[id]);
                     id++;
                 }else{
+                    //record failiures
+                    console.log(results);
+                    console.log(results[r][0].failedWork);
                     failArray.push(results[r][0].failedWork);
                 }
             }
@@ -303,12 +306,11 @@ var orcid = function(){
             citeproc = orcid.createCiteproc(citeprocJSONObject,null,optionalCitationStyle);
             citeproc.appendCitationCluster(citeprocJSONObject);
             citations = citeproc.makeBibliography()[1];
-            console.log("calling callback");
-            console.log(citations);
-            console.log(failArray);
             callback(citations,failArray);
         }
         client.apis["Public API v2.0_rc2"].viewActivities({orcid:orcidID}, function(data) {
+                if (data && data.obj && data.obj.works)
+                    console.log(data.obj.works.group.length + " works found");
                 var simpleWorks = orcid.activitiesToSimpleWorks(data);
                 if (oneByOne)
                     orcid.fetchCiteprocJSONForSimpleWorksOneByOne(simpleWorks,resolveCiteproc);                 
