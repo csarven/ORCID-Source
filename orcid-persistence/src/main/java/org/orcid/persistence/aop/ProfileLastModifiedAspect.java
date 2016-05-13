@@ -43,7 +43,7 @@ public class ProfileLastModifiedAspect implements PriorityOrdered {
 
     @Resource
     private ProfileDao profileDao;
-
+    
     private boolean enabled = true;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileLastModifiedAspect.class);

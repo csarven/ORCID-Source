@@ -78,6 +78,8 @@ public class ProfileEntityCacheManagerImpl implements ProfileEntityCacheManager 
 
     @Override
     public void put(ProfileEntity profileEntity) {
+        LOG.info("=============== max elements "+profileCache.getCacheConfiguration().getMaxElementsOnDisk());
+        LOG.info("==============="+profileCache.getCacheConfiguration().getMaxBytesLocalDisk());
         put(profileEntity.getId(), profileEntity);
     }
     public void put(String orcid, ProfileEntity profile) {

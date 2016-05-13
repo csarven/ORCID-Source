@@ -39,6 +39,7 @@ import org.orcid.core.manager.AdminManager;
 import org.orcid.core.manager.BiographyManager;
 import org.orcid.core.manager.EmailManager;
 import org.orcid.core.manager.EncryptionManager;
+import org.orcid.core.manager.GivenPermissionToManager;
 import org.orcid.core.manager.NotificationManager;
 import org.orcid.core.manager.OrcidSearchManager;
 import org.orcid.core.manager.OrcidSecurityManager;
@@ -49,6 +50,7 @@ import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.manager.ProfileEntityManager;
 import org.orcid.core.manager.ProfileKeywordManager;
 import org.orcid.core.manager.ResearcherUrlManager;
+import org.orcid.core.manager.UserConnectionManager;
 import org.orcid.core.oauth.OrcidOauth2TokenDetailService;
 import org.orcid.frontend.web.forms.ChangeSecurityQuestionForm;
 import org.orcid.frontend.web.forms.ManagePasswordOptionsForm;
@@ -149,17 +151,11 @@ public class ManageProfileController extends BaseWorkspaceController {
     private ProfileEntityManager profileEntityManager;
 
     @Resource
-    private ProfileDao profileDao;
-
+    private UserConnectionManager userConnectionManager;
+    
     @Resource
-    private GivenPermissionToDao givenPermissionToDao;
-
-    @Resource
-    private EmailDao emailDao;
-
-    @Resource
-    private UserConnectionDao userConnectionDao;
-
+    private GivenPermissionToManager givenPermissionToManager;
+    
     @Resource
     private OrcidSocialManager orcidSocialManager;
 
@@ -208,9 +204,9 @@ public class ManageProfileController extends BaseWorkspaceController {
         this.otherNameManager = otherNameManager;
     }
 
-    public void setGivenPermissionToDao(GivenPermissionToDao givenPermissionToDao) {
-        this.givenPermissionToDao = givenPermissionToDao;
-    }
+    public void setGivenPermissionToManager(GivenPermissionToManager givenPermissionToManager2) {
+        this.givenPermissionToManager = givenPermissionToManager2;
+     }
 
     public void setProfileEntityManager(ProfileEntityManager profileEntityManager) {
         this.profileEntityManager = profileEntityManager;
@@ -254,7 +250,7 @@ public class ManageProfileController extends BaseWorkspaceController {
     @RequestMapping(value = "/search-for-delegate-by-email/{email}/")
     public @ResponseBody Map<String, Boolean> searchForDelegateByEmail(@PathVariable String email) {
         Map<String, Boolean> map = new HashMap<>();
-        EmailEntity emailEntity = emailDao.findCaseInsensitive(email);
+        EmailEntity emailEntity = emailManager.findCaseInsensitive(email);
         if (emailEntity == null) {
             map.put(FOUND, Boolean.FALSE);
             return map;
@@ -291,43 +287,13 @@ public class ManageProfileController extends BaseWorkspaceController {
         }
         String currentUserOrcid = getCurrentUserOrcid();
         String delegateOrcid = addDelegate.getDelegateToManage();
-        GivenPermissionToEntity existing = givenPermissionToDao.findByGiverAndReceiverOrcid(currentUserOrcid, delegateOrcid);
-        if (existing == null) {
-            // Clear the delegate's profile from the cache so that the granting
-            // user is visible to them immediately
-            Date delegateLastModified = profileDao.updateLastModifiedDate(delegateOrcid);
-            GivenPermissionToEntity permission = new GivenPermissionToEntity();
-            permission.setGiver(currentUserOrcid);
-            ProfileSummaryEntity receiver = new ProfileSummaryEntity(delegateOrcid);
-            receiver.setLastModified(delegateLastModified);
-            permission.setReceiver(receiver);
-            permission.setApprovalDate(new Date());
-            givenPermissionToDao.merge(permission);
-            OrcidProfile currentUser = getEffectiveProfile();
-            ProfileEntity delegateProfile = profileEntityCacheManager.retrieve(delegateOrcid);
-            DelegationDetails details = new DelegationDetails();
-            details.setApprovalDate(new ApprovalDate(DateUtils.convertToXMLGregorianCalendar(permission.getApprovalDate())));
-            DelegateSummary summary = new DelegateSummary();
-            details.setDelegateSummary(summary);
-            summary.setOrcidIdentifier(new OrcidIdentifier(delegateOrcid));
-            String creditName = null;
-            if(delegateProfile.getRecordNameEntity() != null) {
-                creditName = delegateProfile.getRecordNameEntity().getCreditName();
-            }        
-                    
-            if (StringUtils.isNotBlank(creditName)) {
-                summary.setCreditName(new CreditName(creditName));
-            }
-            List<DelegationDetails> detailsList = new ArrayList<>(1);
-            detailsList.add(details);
-            notificationManager.sendNotificationToAddedDelegate(currentUser, detailsList);
-        }
+        givenPermissionToManager.grantPermission(currentUserOrcid, delegateOrcid, getEffectiveProfile());
         return addDelegate;
     }
 
     @RequestMapping(value = "/addDelegateByEmail.json")
     public @ResponseBody ManageDelegate addDelegateByEmail(@RequestBody ManageDelegate addDelegate) {
-        EmailEntity emailEntity = emailDao.findCaseInsensitive(addDelegate.getDelegateEmail());
+        EmailEntity emailEntity = emailManager.findCaseInsensitive(addDelegate.getDelegateEmail());
         addDelegate.setDelegateToManage(emailEntity.getProfile().getId());
         return addDelegate(addDelegate);
     }
@@ -349,7 +315,7 @@ public class ManageProfileController extends BaseWorkspaceController {
     @RequestMapping(value = "/socialAccounts.json", method = RequestMethod.GET)
     public @ResponseBody List<UserconnectionEntity> getSocialAccountsJson(HttpServletRequest request) throws NoSuchRequestHandlingMethodException {
         String orcid = getCurrentUserOrcid();
-        List<UserconnectionEntity> userConnectionEntities = userConnectionDao.findByOrcid(orcid);
+        List<UserconnectionEntity> userConnectionEntities = userConnectionManager.findByOrcid(orcid);
         return userConnectionEntities;
     }
 
@@ -362,7 +328,7 @@ public class ManageProfileController extends BaseWorkspaceController {
             manageSocialAccount.getErrors().add(getMessage("check_password_modal.incorrect_password"));
             return manageSocialAccount;
         }
-        userConnectionDao.remove(manageSocialAccount.getIdToManage());
+        userConnectionManager.remove(manageSocialAccount.getIdToManage());
         return manageSocialAccount;
     }
 
@@ -1013,38 +979,7 @@ public class ManageProfileController extends BaseWorkspaceController {
                     // verify it
                     verifyPrimaryEmailIfNeeded(managedOrcid);
                     // Check if the delegation doesnt exists
-                    GivenPermissionToEntity existing = givenPermissionToDao.findByGiverAndReceiverOrcid(managedOrcid, trustedOrcid);
-                    if (existing == null) {
-                        // Clear the delegate's profile from the cache so that
-                        // the granting
-                        // user is visible to them immediately
-                        Date delegateLastModified = profileDao.updateLastModifiedDate(trustedOrcid);
-                        GivenPermissionToEntity permission = new GivenPermissionToEntity();
-                        permission.setGiver(managedOrcid);
-                        ProfileSummaryEntity receiver = new ProfileSummaryEntity(trustedOrcid);
-                        receiver.setLastModified(delegateLastModified);
-                        permission.setReceiver(receiver);
-                        permission.setApprovalDate(new Date());
-                        givenPermissionToDao.merge(permission);
-                        OrcidProfile currentUser = getEffectiveProfile();
-                        ProfileEntity delegateProfile = profileEntityCacheManager.retrieve(trustedOrcid);
-                        DelegationDetails details = new DelegationDetails();
-                        details.setApprovalDate(new ApprovalDate(DateUtils.convertToXMLGregorianCalendar(permission.getApprovalDate())));
-                        DelegateSummary summary = new DelegateSummary();
-                        details.setDelegateSummary(summary);
-                        summary.setOrcidIdentifier(new OrcidIdentifier(trustedOrcid));
-                        String creditName = null;
-                        if(delegateProfile.getRecordNameEntity() != null) {
-                            creditName = delegateProfile.getRecordNameEntity().getCreditName();
-                        }
-                        if (StringUtils.isNotBlank(creditName)) {
-                            summary.setCreditName(new CreditName(creditName));
-                        }
-                        List<DelegationDetails> detailsList = new ArrayList<>(1);
-                        detailsList.add(details);
-                        // Send notifications
-                        notificationManager.sendNotificationToAddedDelegate(currentUser, detailsList);
-                    }
+                    givenPermissionToManager.grantPermission(managedOrcid, trustedOrcid, getEffectiveProfile());
                     mav.addObject("admin_delegate_approved", getMessage("admin.delegate.success", trustedOrcid));
                 } else {
                     // Exception, the email was not for you

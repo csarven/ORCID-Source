@@ -36,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.orcid.core.adapter.Jaxb2JpaAdapter;
 import org.orcid.core.adapter.Jpa2JaxbAdapter;
 import org.orcid.core.locale.LocaleManager;
+import org.orcid.core.manager.OrgDisambiguatedManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.manager.ProfileEntityManager;
 import org.orcid.core.manager.ProfileFundingManager;
@@ -85,22 +86,10 @@ public class FundingsController extends BaseWorkspaceController {
     private static final String DEFAULT_FUNDING_EXTERNAL_IDENTIFIER_TYPE_CODE = "grant_number";
 
     @Resource
-    private ProfileDao profileDao;
-
-    @Resource
     ProfileFundingManager profileFundingManager;
-
+    
     @Resource
-    private Jaxb2JpaAdapter jaxb2JpaAdapter;
-
-    @Resource
-    private Jpa2JaxbAdapter jpa2JaxbAdapter;
-
-    @Resource
-    private OrgDisambiguatedSolrDao orgDisambiguatedSolrDao;
-
-    @Resource
-    private OrgDisambiguatedDao orgDisambiguatedDao;
+    OrgDisambiguatedManager orgDisambiguatedManager;
 
     @Resource
     private LocaleManager localeManager;
@@ -802,7 +791,7 @@ public class FundingsController extends BaseWorkspaceController {
     List<Map<String, String>> searchDisambiguated(@PathVariable("query") String query, @RequestParam(value = "limit") int limit,
             @RequestParam(value = "funders-only") boolean fundersOnly) {
         List<Map<String, String>> datums = new ArrayList<>();
-        for (OrgDisambiguatedSolrDocument orgDisambiguatedDocument : orgDisambiguatedSolrDao.getOrgs(query, 0, limit, fundersOnly)) {
+        for (OrgDisambiguatedSolrDocument orgDisambiguatedDocument : orgDisambiguatedManager.searchSolrForOrgs(query, limit, fundersOnly)) {
             Map<String, String> datum = createDatumFromOrgDisambiguated(orgDisambiguatedDocument);
             datums.add(datum);
         }
@@ -826,7 +815,7 @@ public class FundingsController extends BaseWorkspaceController {
     @RequestMapping(value = "/disambiguated/id/{id}", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, String> getDisambiguated(@PathVariable("id") Long id) {
-        OrgDisambiguatedEntity orgDisambiguatedEntity = orgDisambiguatedDao.find(id);
+        OrgDisambiguatedEntity orgDisambiguatedEntity = orgDisambiguatedManager.find(id);
         Map<String, String> datum = new HashMap<>();
         datum.put("value", orgDisambiguatedEntity.getName());
         datum.put("city", orgDisambiguatedEntity.getCity());

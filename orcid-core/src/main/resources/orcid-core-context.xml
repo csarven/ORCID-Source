@@ -705,5 +705,8 @@
 	<bean id="v1xDisabled" class="java.lang.Boolean">
 		<constructor-arg value="${org.orcid.core.v1_x.disabled}"/>
 	</bean>
+	
+	<bean id="givenPermissionToManager" class="org.orcid.core.manager.impl.GivenPermissionToManagerImpl"/>
+	<bean id="userConnectionManager" class="org.orcid.core.manager.impl.UserConnectionManagerImpl"/>
 
 </beans>

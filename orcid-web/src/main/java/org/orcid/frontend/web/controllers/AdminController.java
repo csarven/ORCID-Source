@@ -103,9 +103,6 @@ public class AdminController extends BaseController {
     private GroupAdministratorController groupAdministratorController;
 
     @Resource
-    private GivenPermissionToDao givenPermissionToDao;
-
-    @Resource
     private AdminManager adminManager;
 
     private static final String INP_STRING_SEPARATOR = " \n\r\t,";

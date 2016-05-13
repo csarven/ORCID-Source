@@ -158,4 +158,19 @@ public class OrgDisambiguatedManagerImpl implements OrgDisambiguatedManager {
         } while (!pairs.isEmpty());
     }
 
+    @Override
+    public OrgDisambiguatedEntity find(Long id) {
+        return orgDisambiguatedDao.find(id);
+    }
+    
+    @Override 
+    public List<OrgDisambiguatedSolrDocument> searchSolrForOrgs(String query, int limit){
+        return orgDisambiguatedSolrDao.getOrgs(query, 0, limit);
+    }
+
+    @Override 
+    public List<OrgDisambiguatedSolrDocument> searchSolrForOrgs(String query, int limit, boolean fundersOnly){
+        return orgDisambiguatedSolrDao.getOrgs(query, 0, limit, fundersOnly);
+    }
+
 }

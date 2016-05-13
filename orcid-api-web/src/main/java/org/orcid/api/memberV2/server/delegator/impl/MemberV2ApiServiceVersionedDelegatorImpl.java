@@ -28,7 +28,6 @@ import org.orcid.core.exception.OrcidDeprecatedException;
 import org.orcid.core.manager.ProfileEntityManager;
 import org.orcid.core.version.V2Convertible;
 import org.orcid.core.version.V2VersionConverterChain;
-import org.orcid.persistence.dao.ProfileDao;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,9 +42,6 @@ public class MemberV2ApiServiceVersionedDelegatorImpl implements
 
     @Resource
     private V2VersionConverterChain v2VersionConverterChain;
-
-    @Resource
-    private ProfileDao profileDao;
 
     @Resource
     private ProfileEntityManager profileEntityManager;
@@ -461,7 +457,8 @@ public class MemberV2ApiServiceVersionedDelegatorImpl implements
 
     private void checkProfileStatus(String orcid) {
         ProfileEntity entity = profileEntityManager.findByOrcid(orcid);
-        if (profileDao.isProfileDeprecated(orcid)) {
+        //TODO: can we not just use entity.getPrimaryRecord() != null and skip the DB check?                
+        if (profileEntityManager.isProfileDeprecated(orcid)) {
             StringBuffer primary = new StringBuffer(baseUrl).append("/").append(entity.getPrimaryRecord().getId());
             Map<String, String> params = new HashMap<String, String>();
             params.put(OrcidDeprecatedException.ORCID, primary.toString());

@@ -18,24 +18,11 @@ package org.orcid.core.manager;
 
 import java.util.List;
 
-import org.orcid.persistence.jpa.entities.OrgDisambiguatedEntity;
-import org.orcid.persistence.solr.entities.OrgDisambiguatedSolrDocument;
+import org.orcid.persistence.jpa.entities.UserconnectionEntity;
+import org.orcid.persistence.jpa.entities.UserconnectionPK;
 
-/**
- * 
- * @author Will Simpson
- * 
- */
-public interface OrgDisambiguatedManager {
+public interface UserConnectionManager {
 
-    void processOrgsForIndexing();
-
-    void processOrgsWithIncorrectPopularity();
-
-    OrgDisambiguatedEntity find(Long id);
-
-    List<OrgDisambiguatedSolrDocument> searchSolrForOrgs(String query, int limit);
-
-    List<OrgDisambiguatedSolrDocument> searchSolrForOrgs(String query, int limit, boolean fundersOnly);
-
+    List<UserconnectionEntity> findByOrcid(String orcid);
+    void remove(UserconnectionPK id);
 }

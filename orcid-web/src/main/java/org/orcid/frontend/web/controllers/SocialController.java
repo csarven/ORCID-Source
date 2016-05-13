@@ -57,9 +57,6 @@ public class SocialController extends BaseController {
     private SocialContext socialContext;
 
     @Resource
-    private EmailDao emailDao;
-
-    @Resource
     private AuthenticationManager authenticationManager;
 
     @Resource

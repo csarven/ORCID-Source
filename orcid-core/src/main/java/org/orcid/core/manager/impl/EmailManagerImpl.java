@@ -228,5 +228,10 @@ public class EmailManagerImpl implements EmailManager {
         
         return emailDao.verifySetCurrentAndPrimary(orcid, email);
     }
+
+    @Override
+    public EmailEntity findCaseInsensitive(String email) {
+        return emailDao.findCaseInsensitive(email);
+    }
     
 }

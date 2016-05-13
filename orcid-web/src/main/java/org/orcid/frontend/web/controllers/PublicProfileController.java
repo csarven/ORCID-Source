@@ -116,9 +116,6 @@ public class PublicProfileController extends BaseWorkspaceController {
     @Resource
     private ProfileEntityManager profileEntManager;
 
-    @Resource
-    private Jpa2JaxbAdapter jpa2JaxbAdapter;
-
     @Resource(name = "languagesMap")
     private LanguagesMap lm;
 

@@ -67,9 +67,6 @@ public class DeveloperToolsController extends BaseWorkspaceController {
     private ProfileEntityManager profileEntityManager;
 
     @Resource
-    private ResearcherUrlDao researcherUrlDao;
-    
-    @Resource
     private ClientDetailsManager clientDetailsManager;
     
     @Resource(name = "profileEntityCacheManager")

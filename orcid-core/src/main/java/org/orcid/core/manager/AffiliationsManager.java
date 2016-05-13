@@ -18,7 +18,9 @@ package org.orcid.core.manager;
 
 import java.util.List;
 
+import org.orcid.jaxb.model.message.Affiliation;
 import org.orcid.jaxb.model.message.AffiliationType;
+import org.orcid.jaxb.model.message.Visibility;
 import org.orcid.jaxb.model.record.summary_rc2.EducationSummary;
 import org.orcid.jaxb.model.record.summary_rc2.EmploymentSummary;
 import org.orcid.jaxb.model.record_rc2.Education;
@@ -156,4 +158,13 @@ public interface AffiliationsManager {
     List<EducationSummary> getEducationSummaryList(String userOrcid, long lastModified);
     
     List<AffiliationForm> getAffiliations(String orcid);
+
+    //used by the front end controllers
+    Long addAffiliationFromFrontEnd(String orcid, Affiliation affiliation);
+
+    void updateAffiliationFromFrontEnd(String orcid, Affiliation affiliation);
+
+    void removeAffiliationFromFrontEnd(String orcid, Long putCode);
+
+    void updateVisibilityFromFrontEnd(String orcid, Long putCode, Visibility vis);
 }

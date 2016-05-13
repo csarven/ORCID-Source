@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.orcid.core.adapter.Jaxb2JpaAdapter;
 import org.orcid.core.adapter.JpaJaxbEducationAdapter;
 import org.orcid.core.adapter.JpaJaxbEmploymentAdapter;
 import org.orcid.core.manager.AffiliationsManager;
@@ -29,7 +30,9 @@ import org.orcid.core.manager.OrcidSecurityManager;
 import org.orcid.core.manager.OrgManager;
 import org.orcid.core.manager.SourceManager;
 import org.orcid.core.manager.validator.ActivityValidator;
+import org.orcid.jaxb.model.message.Affiliation;
 import org.orcid.jaxb.model.message.AffiliationType;
+import org.orcid.jaxb.model.message.OrcidProfile;
 import org.orcid.jaxb.model.message.Visibility;
 import org.orcid.jaxb.model.notification.amended_rc2.AmendedSection;
 import org.orcid.jaxb.model.notification.permission_rc2.Item;
@@ -46,6 +49,7 @@ import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.orcid.pojo.ajaxForm.AffiliationForm;
 import org.orcid.pojo.ajaxForm.PojoUtil;
+import org.orcid.pojo.ajaxForm.Text;
 import org.springframework.cache.annotation.Cacheable;
 
 public class AffiliationsManagerImpl implements AffiliationsManager {
@@ -373,5 +377,35 @@ public class AffiliationsManagerImpl implements AffiliationsManager {
         
         return result;
     }
+    
+    @Resource
+    private Jaxb2JpaAdapter jaxb2JpaAdapter;
+    
+    @Override
+    public Long addAffiliationFromFrontEnd(String orcid, Affiliation affiliation){
+        ProfileEntity userProfile = profileDao.find(orcid);
+        OrgAffiliationRelationEntity orgAffiliationRelationEntity = jaxb2JpaAdapter.getNewOrgAffiliationRelationEntity(affiliation, userProfile);
+        orgAffiliationRelationEntity.setSource(new SourceEntity(userProfile));
+        affiliationsDao.persist(orgAffiliationRelationEntity);
+        return orgAffiliationRelationEntity.getId();
+    }
+    
+    @Override
+    public void updateAffiliationFromFrontEnd(String orcid, Affiliation affiliation){
+        ProfileEntity userProfile = profileDao.find(orcid);
+        OrgAffiliationRelationEntity orgAffiliationRelationEntity = jaxb2JpaAdapter.getUpdatedAffiliationRelationEntity(affiliation);
+        orgAffiliationRelationEntity.setSource(new SourceEntity(userProfile));
+        affiliationsDao.updateOrgAffiliationRelationEntity(orgAffiliationRelationEntity);         
+    }
+    
+    @Override
+    public void removeAffiliationFromFrontEnd(String orcid, Long putCode){
+        affiliationsDao.removeOrgAffiliationRelation(orcid, putCode);
+    }
+    
+    @Override
+    public void updateVisibilityFromFrontEnd(String orcid, Long putCode, Visibility vis){
+        affiliationsDao.updateVisibilityOnOrgAffiliationRelation(orcid, putCode, vis);
+    }    
 
 }

@@ -107,12 +107,6 @@ public class WorkspaceController extends BaseWorkspaceController {
     private OtherNameManager otherNameManager;
 
     @Resource
-    private Jpa2JaxbAdapter jpa2JaxbAdapter;
-
-    @Resource
-    private Jaxb2JpaAdapter jaxb2JpaAdapter;
-
-    @Resource
     private WorkManager workManager;
     
     @Resource

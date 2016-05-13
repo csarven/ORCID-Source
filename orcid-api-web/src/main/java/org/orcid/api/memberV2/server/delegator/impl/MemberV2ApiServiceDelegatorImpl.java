@@ -85,8 +85,6 @@ import org.orcid.jaxb.model.record_rc2.Record;
 import org.orcid.jaxb.model.record_rc2.ResearcherUrl;
 import org.orcid.jaxb.model.record_rc2.ResearcherUrls;
 import org.orcid.jaxb.model.record_rc2.Work;
-import org.orcid.persistence.dao.ProfileDao;
-import org.orcid.persistence.dao.WebhookDao;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -120,12 +118,6 @@ public class MemberV2ApiServiceDelegatorImpl
 
     @Resource
     private PeerReviewManager peerReviewManager;
-
-    @Resource
-    private WebhookDao webhookDao;
-
-    @Resource
-    private ProfileDao profileDao;
 
     @Resource
     private SourceManager sourceManager;

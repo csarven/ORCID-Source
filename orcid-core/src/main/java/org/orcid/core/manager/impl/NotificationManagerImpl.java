@@ -909,4 +909,14 @@ public class NotificationManagerImpl implements NotificationManager {
         return notificationAdapter.toNotification(notificationEntity);
     }
 
+    @Override
+    public int getUnreadCount(String orcid) {
+        return notificationDao.getUnreadCount(orcid);
+    }
+
+    @Override
+    public void flagAsRead(String orcid, Long id) {
+        notificationDao.flagAsRead(orcid, id);
+    }
+
 }

@@ -88,4 +88,8 @@ public interface NotificationManager {
     public boolean sendServiceAnnouncement_1_For_2015(OrcidProfile orcidProfile);
     
     public String createClaimVerificationUrl(String email, String baseUri);
+
+    int getUnreadCount(String orcid);
+
+    void flagAsRead(String orcid, Long id);
 }

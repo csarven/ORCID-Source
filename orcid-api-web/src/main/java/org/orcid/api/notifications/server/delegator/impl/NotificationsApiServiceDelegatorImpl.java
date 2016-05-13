@@ -45,7 +45,6 @@ import org.orcid.core.security.visibility.aop.AccessControl;
 import org.orcid.jaxb.model.message.ScopePathType;
 import org.orcid.jaxb.model.notification.permission_rc2.NotificationPermission;
 import org.orcid.jaxb.model.notification_rc2.Notification;
-import org.orcid.persistence.dao.ProfileDao;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,9 +79,6 @@ public class NotificationsApiServiceDelegatorImpl implements NotificationsApiSer
     @Value("${org.orcid.core.baseUri}")
     private String baseUrl;
     
-    @Resource
-    private ProfileDao profileDao;
-
     @Override
     public Response viewStatusText() {
         return Response.ok(STATUS_OK_MESSAGE).build();
@@ -158,7 +154,7 @@ public class NotificationsApiServiceDelegatorImpl implements NotificationsApiSer
 
     private void checkIfProfileDeprecated(String orcid) {
     	ProfileEntity entity = profileEntityManager.findByOrcid(orcid);
-        if (entity != null && profileDao.isProfileDeprecated(orcid)) {
+        if (entity != null && profileEntityManager.isProfileDeprecated(orcid)) {
             StringBuffer primary = new StringBuffer(baseUrl).append("/").append(entity.getPrimaryRecord().getId());
             Map<String, String> params = new HashMap<String, String>();
             params.put(OrcidDeprecatedException.ORCID, primary.toString());

@@ -170,12 +170,10 @@ public class RegistrationController extends BaseController {
     @Resource
     private NotificationManager notificationManager;
 
-    @Resource
-    private ProfileDao profileDao;
-
+    //TODO: move to using manager
     @Resource
     private EmailDao emailDao;
-
+    
     @Resource
     private RecaptchaVerifier recaptchaVerifier;
 
@@ -707,7 +705,7 @@ public class RegistrationController extends BaseController {
             String orcid = orcidProfile.getOrcidIdentifier().getPath();
             // Force refresh of profile entity to ensure new password value is
             // picked up from DB.
-            profileDao.refresh(profileDao.find(orcid));
+            profileEntityManager.refresh(orcid);
             token = new UsernamePasswordAuthenticationToken(orcid, password);
             token.setDetails(new WebAuthenticationDetails(request));
             Authentication authentication = authenticationManager.authenticate(token);
@@ -999,6 +997,7 @@ public class RegistrationController extends BaseController {
         return new ModelAndView("wrong_user");
     }
 
+    //TODO: move to emailManager
     private ModelAndView buildVerificationView(HttpServletRequest request, String encryptedEmail, RedirectAttributes redirectAttributes)
             throws UnsupportedEncodingException, NoSuchRequestHandlingMethodException {
         try {
@@ -1011,7 +1010,7 @@ public class RegistrationController extends BaseController {
             emailEntity.setVerified(true);
             emailEntity.setCurrent(true);
             emailDao.merge(emailEntity);
-            profileDao.updateLocale(emailOrcid, org.orcid.jaxb.model.message.Locale.fromValue(RequestContextUtils.getLocale(request).toString()));
+            profileEntityManager.updateLocale(emailOrcid, RequestContextUtils.getLocale(request).toString());
             redirectAttributes.addFlashAttribute("emailVerified", true);
         } catch (EncryptionOperationNotPossibleException eonpe) {
             LOGGER.warn("Error decypting verify email from the verify email link");

@@ -63,4 +63,6 @@ public interface EmailManager {
     org.orcid.pojo.ajaxForm.Emails getEmailsAsForm(String orcid);
     
     boolean verifySetCurrentAndPrimary(String orcid, String email);
+
+    EmailEntity findCaseInsensitive(String email);
 }

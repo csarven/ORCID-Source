@@ -94,4 +94,10 @@ public interface ProfileEntityManager {
     boolean claimProfileAndUpdatePreferences(String orcid, String email, Locale locale, Claim claim);
     
     boolean deactivateRecord(String orcid);
+
+    void refresh(String orcid);
+
+    void updateLocale(String orcid, String locale);
+
+    boolean isProfileDeprecated(String orcid);
 }

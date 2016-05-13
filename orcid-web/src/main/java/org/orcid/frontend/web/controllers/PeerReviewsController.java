@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.orcid.core.locale.LocaleManager;
 import org.orcid.core.manager.GroupIdRecordManager;
+import org.orcid.core.manager.OrgDisambiguatedManager;
 import org.orcid.core.manager.PeerReviewManager;
 import org.orcid.core.manager.ProfileEntityManager;
 import org.orcid.frontend.web.util.LanguagesMap;
@@ -76,10 +77,7 @@ public class PeerReviewsController extends BaseWorkspaceController {
     private PeerReviewManager peerReviewManager;
 
     @Resource
-    private OrgDisambiguatedSolrDao orgDisambiguatedSolrDao;
-
-    @Resource
-    private OrgDisambiguatedDao orgDisambiguatedDao;
+    private OrgDisambiguatedManager orgDisambiguatedManager;
 
     @Resource(name = "languagesMap")
     private LanguagesMap lm;    
@@ -604,7 +602,7 @@ public class PeerReviewsController extends BaseWorkspaceController {
     @RequestMapping(value = "/disambiguated/name/{query}", method = RequestMethod.GET)
     public @ResponseBody List<Map<String, String>> searchDisambiguated(@PathVariable("query") String query, @RequestParam(value = "limit") int limit) {
         List<Map<String, String>> datums = new ArrayList<>();
-        for (OrgDisambiguatedSolrDocument orgDisambiguatedDocument : orgDisambiguatedSolrDao.getOrgs(query, 0, limit)) {
+        for (OrgDisambiguatedSolrDocument orgDisambiguatedDocument : orgDisambiguatedManager.searchSolrForOrgs(query, limit)) {
             Map<String, String> datum = createDatumFromOrgDisambiguated(orgDisambiguatedDocument);
             datums.add(datum);
         }
@@ -627,7 +625,7 @@ public class PeerReviewsController extends BaseWorkspaceController {
      */
     @RequestMapping(value = "/disambiguated/id/{id}", method = RequestMethod.GET)
     public @ResponseBody Map<String, String> getDisambiguated(@PathVariable("id") Long id) {
-        OrgDisambiguatedEntity orgDisambiguatedEntity = orgDisambiguatedDao.find(id);
+        OrgDisambiguatedEntity orgDisambiguatedEntity = orgDisambiguatedManager.find(id);
         Map<String, String> datum = new HashMap<>();
         datum.put("value", orgDisambiguatedEntity.getName());
         datum.put("city", orgDisambiguatedEntity.getCity());

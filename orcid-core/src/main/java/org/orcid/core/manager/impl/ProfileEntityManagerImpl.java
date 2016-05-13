@@ -104,6 +104,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * @author Declan Newman (declan) Date: 10/02/2012
@@ -923,6 +924,21 @@ public class ProfileEntityManagerImpl implements ProfileEntityManager {
         notificationManager.sendAmendEmail(deactivated, AmendedSection.UNKNOWN);
         return false;
     }        
+    
+    @Override
+    public void refresh(String orcid){
+        profileDao.refresh(profileDao.find(orcid));
+    }
+
+    @Override
+    public void updateLocale(String orcid, String locale) {
+        profileDao.updateLocale(orcid, org.orcid.jaxb.model.message.Locale.fromValue(locale));
+    }
+
+    @Override
+    public boolean isProfileDeprecated(String orcid) {
+        return profileDao.isProfileDeprecated(orcid);
+    }
 }
 
 class GroupableActivityComparator implements Comparator<GroupableActivity> {

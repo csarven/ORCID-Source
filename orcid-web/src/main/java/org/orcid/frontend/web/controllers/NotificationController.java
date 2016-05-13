@@ -62,6 +62,7 @@ public class NotificationController extends BaseController {
     @Resource
     private NotificationManager notificationManager;
 
+    //TODO: remove
     @Resource
     private NotificationDao notificationDao;
 
@@ -76,9 +77,6 @@ public class NotificationController extends BaseController {
     
     @Resource
     private OrcidUrlManager orcidUrlManager;
-    
-    @Resource
-    private ProfileDao profileDao;
     
     @RequestMapping
     public ModelAndView getNotifications() {
@@ -114,7 +112,7 @@ public class NotificationController extends BaseController {
     @RequestMapping("/unreadCount.json")
     public @ResponseBody int getUnreadCountJson() {
         String currentOrcid = getCurrentUserOrcid();
-        return notificationDao.getUnreadCount(currentOrcid);
+        return notificationManager.getUnreadCount(currentOrcid);
     }
 
     @RequestMapping(value = "/CUSTOM/{id}/notification.html", produces = OrcidApiConstants.HTML_UTF)
@@ -151,14 +149,14 @@ public class NotificationController extends BaseController {
     @RequestMapping(value = "{id}/read.json")
     public @ResponseBody Notification flagAsRead(@PathVariable("id") String id) {
         String currentUserOrcid = getCurrentUserOrcid();
-        notificationDao.flagAsRead(currentUserOrcid, Long.valueOf(id));
+        notificationManager.flagAsRead(currentUserOrcid, Long.valueOf(id));
         return notificationManager.findByOrcidAndId(currentUserOrcid, Long.valueOf(id));
     }
 
     @RequestMapping(value = "{id}/archive.json")
     public @ResponseBody Notification flagAsArchived(@PathVariable("id") String id) {
         String currentUserOrcid = getCurrentUserOrcid();
-        notificationDao.flagAsArchived(currentUserOrcid, Long.valueOf(id));
+        notificationManager.flagAsArchived(currentUserOrcid, Long.valueOf(id));
         return notificationManager.findByOrcidAndId(currentUserOrcid, Long.valueOf(id));
     }
 
@@ -177,6 +175,7 @@ public class NotificationController extends BaseController {
             throw new RuntimeException("Problem decoding " + encryptedId, e);
         }
         Long id = Long.valueOf(idString);
+        //TODO: move to Manager.
         NotificationAddItemsEntity notification = (NotificationAddItemsEntity) notificationDao.find(id);
         String redirectUrl = notification.getAuthorizationUrl();
         String notificationOrcid = notification.getProfile().getId();

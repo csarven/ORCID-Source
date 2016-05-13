@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.orcid.core.manager.EncryptionManager;
+import org.orcid.core.manager.GivenPermissionToManager;
 import org.orcid.core.manager.NotificationManager;
 import org.orcid.core.manager.OrcidIndexManager;
 import org.orcid.core.manager.OrcidProfileManager;
@@ -48,6 +49,7 @@ import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.manager.ProfileEntityManager;
 import org.orcid.core.manager.ProfileKeywordManager;
 import org.orcid.core.manager.ResearcherUrlManager;
+import org.orcid.core.manager.impl.GivenPermissionToManagerImpl;
 import org.orcid.core.manager.impl.OrcidProfileManagerImpl;
 import org.orcid.frontend.web.forms.ChangeSecurityQuestionForm;
 import org.orcid.frontend.web.util.BaseControllerTest;
@@ -110,8 +112,8 @@ public class ManageProfileControllerTest extends BaseControllerTest {
     @Mock
     private ProfileKeywordManager profileKeywordManager;
 
-    @Mock
-    private GivenPermissionToDao givenPermissionToDao;
+    @Resource
+    private GivenPermissionToManager givenPermissionToManager;
 
     @Mock
     private ProfileEntityManager profileEntityManager;        
@@ -137,9 +139,12 @@ public class ManageProfileControllerTest extends BaseControllerTest {
         orcidProfileManagerImpl.setOrcidIndexManager(mockOrcidIndexManager);
         orcidProfileManagerImpl.setNotificationManager(mockNotificationManager);
         controller.setOrcidProfileManager(orcidProfileManager);
-        controller.setGivenPermissionToDao(givenPermissionToDao);
+        controller.setGivenPermissionToManager(givenPermissionToManager);
         controller.setNotificationManager(mockNotificationManager);
         controller.setProfileEntityManager(profileEntityManager);
+        
+        GivenPermissionToManagerImpl givenTo = getTargetObject(givenPermissionToManager, GivenPermissionToManagerImpl.class);
+        givenTo.setNotificationManager(mockNotificationManager);
     }
 
     @Before

@@ -16,26 +16,9 @@
  */
 package org.orcid.core.manager;
 
-import java.util.List;
+import org.orcid.jaxb.model.message.OrcidProfile;
 
-import org.orcid.persistence.jpa.entities.OrgDisambiguatedEntity;
-import org.orcid.persistence.solr.entities.OrgDisambiguatedSolrDocument;
+public interface GivenPermissionToManager {
 
-/**
- * 
- * @author Will Simpson
- * 
- */
-public interface OrgDisambiguatedManager {
-
-    void processOrgsForIndexing();
-
-    void processOrgsWithIncorrectPopularity();
-
-    OrgDisambiguatedEntity find(Long id);
-
-    List<OrgDisambiguatedSolrDocument> searchSolrForOrgs(String query, int limit);
-
-    List<OrgDisambiguatedSolrDocument> searchSolrForOrgs(String query, int limit, boolean fundersOnly);
-
+    void grantPermission(String managedOrcid, String trustedOrcid, OrcidProfile currentUser);
 }

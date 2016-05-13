@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.orcid.core.adapter.Jaxb2JpaAdapter;
 import org.orcid.core.adapter.Jpa2JaxbAdapter;
 import org.orcid.core.manager.AffiliationsManager;
+import org.orcid.core.manager.OrgDisambiguatedManager;
 import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.security.visibility.OrcidVisibilityDefaults;
 import org.orcid.jaxb.model.message.Affiliation;
@@ -69,33 +70,16 @@ public class AffiliationsController extends BaseWorkspaceController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AffiliationsController.class);
 
     private static final String AFFILIATIONS_MAP = "AFFILIATIONS_MAP";
-
+    
     @Resource
-    private Jpa2JaxbAdapter jpa2JaxbAdapter;
-
-    @Resource
-    private Jaxb2JpaAdapter jaxb2JpaAdapter;
-
-    @Resource
-    private OrgAffiliationRelationDao orgRelationAffiliationDao;
-
-    @Resource
-    private ProfileDao profileDao;
-
-    @Resource
-    private OrgAffiliationRelationDao orgAffiliationRelationDao;
-
-    @Resource
-    private OrgDisambiguatedSolrDao orgDisambiguatedSolrDao;
-
-    @Resource
-    private OrgDisambiguatedDao orgDisambiguatedDao;
+    OrgDisambiguatedManager orgDisambiguatedManager;
     
     @Resource
     private AffiliationsManager affiliationsManager;
     
     @Resource
     private ProfileEntityCacheManager profileEntityCacheManager;
+    
 
     /**
      * Removes a affiliation from a profile
@@ -117,7 +101,7 @@ public class AffiliationsController extends BaseWorkspaceController {
                 }
             }
             currentProfile.getOrcidActivities().setAffiliations(affiliations);
-            orgRelationAffiliationDao.removeOrgAffiliationRelation(currentProfile.getOrcidIdentifier().getPath(), Long.valueOf(affiliation.getPutCode().getValue()));
+            affiliationsManager.removeAffiliationFromFrontEnd(currentProfile.getOrcidIdentifier().getPath(), Long.valueOf(affiliation.getPutCode().getValue()));
         }
 
         return affiliation;
@@ -290,12 +274,8 @@ public class AffiliationsController extends BaseWorkspaceController {
      * @param affiliationForm
      * */
     private void addAffiliation(AffiliationForm affiliationForm) {
-        // Persist to DB
-        ProfileEntity userProfile = profileDao.find(getEffectiveUserOrcid());
-        OrgAffiliationRelationEntity orgAffiliationRelationEntity = jaxb2JpaAdapter.getNewOrgAffiliationRelationEntity(affiliationForm.toAffiliation(), userProfile);
-        orgAffiliationRelationEntity.setSource(new SourceEntity(userProfile));
-        orgAffiliationRelationDao.persist(orgAffiliationRelationEntity);
-        affiliationForm.setPutCode(Text.valueOf(orgAffiliationRelationEntity.getId().toString()));
+        Long putcode = affiliationsManager.addAffiliationFromFrontEnd(getEffectiveUserOrcid(), affiliationForm.toAffiliation());
+        affiliationForm.setPutCode(Text.valueOf(putcode));
     }
     
     /**
@@ -304,19 +284,13 @@ public class AffiliationsController extends BaseWorkspaceController {
      * @throws Exception 
      * */
     private void editAffiliation(AffiliationForm affiliationForm) throws Exception {
-    	Object params[] = {};
-        if(PojoUtil.isEmpty(affiliationForm.getPutCode())) {
-            throw new IllegalArgumentException(getMessage("web.orcid.affiliation_noputcode.exception", params));
-        }
         OrcidProfile currentProfile = getEffectiveProfile();
         if (!currentProfile.getOrcidIdentifier().getPath().equals(affiliationForm.getSource()))
             throw new Exception(getMessage("web.orcid.activity_incorrectsource.exception"));
-
-        ProfileEntity userProfile = profileDao.find(getEffectiveUserOrcid());
-        OrgAffiliationRelationEntity orgAffiliationRelationEntity = jaxb2JpaAdapter.getUpdatedAffiliationRelationEntity(affiliationForm.toAffiliation());
-        orgAffiliationRelationEntity.setSource(new SourceEntity(userProfile));
-        orgAffiliationRelationDao.updateOrgAffiliationRelationEntity(orgAffiliationRelationEntity);
-        affiliationForm.setPutCode(Text.valueOf(orgAffiliationRelationEntity.getId().toString()));                
+        if(PojoUtil.isEmpty(affiliationForm.getPutCode())) {
+            throw new IllegalArgumentException(getMessage("web.orcid.affiliation_noputcode.exception", new Object[0]));
+        }        
+        affiliationsManager.updateAffiliationFromFrontEnd(getEffectiveUserOrcid(), affiliationForm.toAffiliation());
     }            
 
     /**
@@ -374,8 +348,9 @@ public class AffiliationsController extends BaseWorkspaceController {
                     // same affiliation
                     if (orcidAffiliation.getPutCode().equals(affiliation.getPutCode().getValue())) {
                         // Update the privacy of the affiliation
-                        orgRelationAffiliationDao.updateVisibilityOnOrgAffiliationRelation(currentProfile.getOrcidIdentifier().getPath(), Long.valueOf(affiliation.getPutCode().getValue()), affiliation
-                                .getVisibility().getVisibility());
+                        affiliationsManager.updateVisibilityFromFrontEnd(currentProfile.getOrcidIdentifier().getPath(), 
+                                Long.valueOf(affiliation.getPutCode().getValue()), 
+                                affiliation.getVisibility().getVisibility());
                     }
                 }
             }
@@ -390,7 +365,7 @@ public class AffiliationsController extends BaseWorkspaceController {
     public @ResponseBody
     List<Map<String, String>> searchDisambiguated(@PathVariable("query") String query, @RequestParam(value = "limit") int limit) {
         List<Map<String, String>> datums = new ArrayList<>();
-        for (OrgDisambiguatedSolrDocument orgDisambiguatedDocument : orgDisambiguatedSolrDao.getOrgs(query, 0, limit)) {
+        for (OrgDisambiguatedSolrDocument orgDisambiguatedDocument : orgDisambiguatedManager.searchSolrForOrgs(query, limit)) {
             Map<String, String> datum = createDatumFromOrgDisambiguated(orgDisambiguatedDocument);
             datums.add(datum);
         }
@@ -415,7 +390,7 @@ public class AffiliationsController extends BaseWorkspaceController {
     @RequestMapping(value = "/disambiguated/id/{id}", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, String> getDisambiguated(@PathVariable("id") Long id) {
-        OrgDisambiguatedEntity orgDisambiguatedEntity = orgDisambiguatedDao.find(id);
+        OrgDisambiguatedEntity orgDisambiguatedEntity = orgDisambiguatedManager.find(id);
         Map<String, String> datum = new HashMap<>();
         datum.put("value", orgDisambiguatedEntity.getName());
         datum.put("city", orgDisambiguatedEntity.getCity());
