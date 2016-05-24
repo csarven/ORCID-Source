@@ -699,6 +699,18 @@ the software.
                 <artifactId>jersey-apache-client</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
+            <!-- http://mvnrepository.com/artifact/javax.ws.rs/jsr311-api -->
+		    <dependency>
+		        <groupId>javax.ws.rs</groupId>
+		        <artifactId>jsr311-api</artifactId>
+		        <version>1.1.1</version>
+		    </dependency>
+       		<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-jersey-jaxrs</artifactId>
+				<version>1.5.9</version>
+			</dependency>
+            
 
             <!-- Web -->
             <dependency>
