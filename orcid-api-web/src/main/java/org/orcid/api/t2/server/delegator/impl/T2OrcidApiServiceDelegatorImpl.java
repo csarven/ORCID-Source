@@ -62,7 +62,7 @@ import org.orcid.jaxb.model.message.SourceName;
 import org.orcid.jaxb.model.message.SourceOrcid;
 import org.orcid.jaxb.model.message.SubmissionDate;
 import org.orcid.persistence.dao.WebhookDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.WebhookEntity;
 import org.orcid.persistence.jpa.entities.keys.WebhookEntityPk;
@@ -426,7 +426,7 @@ public class T2OrcidApiServiceDelegatorImpl extends OrcidApiServiceDelegatorImpl
             OAuth2Request authorizationRequest = ((OAuth2Authentication) authentication).getOAuth2Request();
             Source sponsor = new Source();
             String sponsorId = authorizationRequest.getClientId();
-            ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(sponsorId);
+            OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(sponsorId);
             if (clientDetails != null) {
                 sponsor.setSourceName(new SourceName(clientDetails.getClientName()));
                 if (OrcidStringUtils.isClientId(sponsorId)) {
@@ -463,7 +463,7 @@ public class T2OrcidApiServiceDelegatorImpl extends OrcidApiServiceDelegatorImpl
 
         ProfileEntity profile = profileEntityCacheManager.retrieve(orcid);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        ClientDetailsEntity clientDetails = null;
+        OrcidClientDetailsEntity clientDetails = null;
         String clientId = null;
         if (OAuth2Authentication.class.isAssignableFrom(authentication.getClass())) {
             OAuth2Request authorizationRequest = ((OAuth2Authentication) authentication).getOAuth2Request();

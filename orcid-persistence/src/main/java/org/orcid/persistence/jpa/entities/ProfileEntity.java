@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.SortedSet;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -36,6 +35,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
@@ -80,11 +81,11 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
     private String orcid;
     private OrcidType orcidType;
     private MemberType groupType;
-    private SortedSet<OtherNameEntity> otherNames;
-    private SortedSet<ResearcherUrlEntity> researcherUrls;
-    private SortedSet<ProfileKeywordEntity> keywords;
+    private Set<OtherNameEntity> otherNames;
+    private Set<ResearcherUrlEntity> researcherUrls;
+    private Set<ProfileKeywordEntity> keywords;
     private Set<ExternalIdentifierEntity> externalIdentifiers;
-    private SortedSet<OrgAffiliationRelationEntity> orgAffiliationRelations;
+    private Set<OrgAffiliationRelationEntity> orgAffiliationRelations;
     private Set<EmailEntity> emails;
 
     // Security fields
@@ -113,17 +114,17 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
     private Collection<OrcidGrantedAuthority> authorities;
     private Set<GivenPermissionToEntity> givenPermissionTo;
     private Set<GivenPermissionByEntity> givenPermissionBy;
-    private SortedSet<ProfileFundingEntity> profileFunding;
+    private Set<ProfileFundingEntity> profileFunding;
     private Set<AddressEntity> addresses;
-    private SortedSet<WorkEntity> works;
-    private SortedSet<PeerReviewEntity> peerReviews;
+    private Set<WorkEntity> works;
+    private Set<PeerReviewEntity> peerReviews;
     private Locale locale = Locale.EN;
     private Boolean sendChangeNotifications;
     private Boolean sendAdministrativeChangeNotifications;
     private Boolean sendOrcidNews;
     private Boolean sendMemberUpdateRequests;
-    private SortedSet<ClientDetailsEntity> clients;
-    private SortedSet<OrcidOauth2TokenDetail> tokenDetails;
+    private Set<OrcidClientDetailsEntity> clients;
+    private Set<OrcidOauth2TokenDetail> tokenDetails;
     private IndexingStatus indexingStatus = IndexingStatus.PENDING;
     private Set<ProfileEventEntity> profileEvents;
     private boolean enableDeveloperTools;
@@ -232,6 +233,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * @return the completedDate
      */
     @Column(name = "completed_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getCompletedDate() {
         return completedDate;
     }
@@ -248,6 +250,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * @return the submissionDate
      */
     @Column(name = "submission_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getSubmissionDate() {
         return submissionDate;
     }
@@ -261,6 +264,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
     }
 
     @Column(name = "last_indexed_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getLastIndexedDate() {
         return lastIndexedDate;
     }
@@ -311,7 +315,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = PROFILE, orphanRemoval = true)
     @Sort(type = SortType.NATURAL)
-    public SortedSet<OtherNameEntity> getOtherNames() {
+    public Set<OtherNameEntity> getOtherNames() {
         return otherNames;
     }
 
@@ -319,17 +323,17 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * @param otherNames
      *            the otherNames to set
      */
-    public void setOtherNames(SortedSet<OtherNameEntity> otherNames) {
+    public void setOtherNames(Set<OtherNameEntity> otherNames) {
         this.otherNames = otherNames;
     }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = PROFILE, orphanRemoval = true)
     @Sort(type = SortType.NATURAL)
-    public SortedSet<ProfileKeywordEntity> getKeywords() {
+    public Set<ProfileKeywordEntity> getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(SortedSet<ProfileKeywordEntity> keywords) {
+    public void setKeywords(Set<ProfileKeywordEntity> keywords) {
         this.keywords = keywords;
     }
 
@@ -338,7 +342,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = PROFILE, orphanRemoval = true)
     @Sort(type = SortType.NATURAL)
-    public SortedSet<OrgAffiliationRelationEntity> getOrgAffiliationRelations() {
+    public Set<OrgAffiliationRelationEntity> getOrgAffiliationRelations() {
         return orgAffiliationRelations;
     }
 
@@ -346,7 +350,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * @param affiliations
      *            the affiliations to set
      */
-    public void setOrgAffiliationRelations(SortedSet<OrgAffiliationRelationEntity> affiliations) {
+    public void setOrgAffiliationRelations(Set<OrgAffiliationRelationEntity> affiliations) {
         this.orgAffiliationRelations = affiliations;
     }
 
@@ -405,7 +409,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
         this.externalIdentifiers = externalIdentifiers;
     }
 
-    @OneToMany(mappedBy = "giver", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     public Set<GivenPermissionToEntity> getGivenPermissionTo() {
         return givenPermissionTo;
     }
@@ -414,7 +418,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
         this.givenPermissionTo = givenPermissionTo;
     }
 
-    @OneToMany(mappedBy = "receiver", cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.MERGE })
+    @OneToMany(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.MERGE })
     public Set<GivenPermissionByEntity> getGivenPermissionBy() {
         return givenPermissionBy;
     }
@@ -428,7 +432,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = PROFILE, orphanRemoval = true)
     @Sort(type = SortType.COMPARATOR, comparator = ProfileFundingEntityDisplayIndexComparatorDesc.class)
-    public SortedSet<ProfileFundingEntity> getProfileFunding() {
+    public Set<ProfileFundingEntity> getProfileFunding() {
         return profileFunding;
     }
 
@@ -436,7 +440,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * @param grants
      *            the grants to set
      */
-    public void setProfileFunding(SortedSet<ProfileFundingEntity> funding) {
+    public void setProfileFunding(Set<ProfileFundingEntity> funding) {
         this.profileFunding = funding;
     }
 
@@ -445,7 +449,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      */
     @OneToMany(mappedBy = PROFILE, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Sort(type = SortType.COMPARATOR, comparator = WorkEntityDisplayIndexComparatorDesc.class)
-    public SortedSet<WorkEntity> getWorks() {
+    public Set<WorkEntity> getWorks() {
         return works;
     }
 
@@ -453,7 +457,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * @param works
      *            the works to set
      */
-    public void setWorks(SortedSet<WorkEntity> works) {
+    public void setWorks(Set<WorkEntity> works) {
         this.works = works;
     }
 
@@ -462,7 +466,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * */
     @OneToMany(mappedBy = PROFILE, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Sort(type = SortType.COMPARATOR, comparator = PeerReviewEntityDisplayIndexComparatorDesc.class)
-    public SortedSet<PeerReviewEntity> getPeerReviews() {
+    public Set<PeerReviewEntity> getPeerReviews() {
         return peerReviews;
     }
 
@@ -470,7 +474,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * @param peerReviews
      *            the peer reviews set
      * */
-    public void setPeerReviews(SortedSet<PeerReviewEntity> peerReviews) {
+    public void setPeerReviews(Set<PeerReviewEntity> peerReviews) {
         this.peerReviews = peerReviews;
     }
 
@@ -488,7 +492,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
     @Sort(type = SortType.NATURAL)
-    public SortedSet<ResearcherUrlEntity> getResearcherUrls() {
+    public Set<ResearcherUrlEntity> getResearcherUrls() {
         return researcherUrls;
     }
 
@@ -496,7 +500,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * @param researcherUrls
      *            the researcherUrls to set
      */
-    public void setResearcherUrls(SortedSet<ResearcherUrlEntity> researcherUrls) {
+    public void setResearcherUrls(Set<ResearcherUrlEntity> researcherUrls) {
         this.researcherUrls = researcherUrls;
     }
 
@@ -538,6 +542,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
     }
 
     @Column(name = "account_expiry")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getAccountExpiry() {
         return accountExpiry;
     }
@@ -618,6 +623,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
     }
 
     @Column(name = "credentials_expiry")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getCredentialsExpiry() {
         return credentialsExpiry;
     }
@@ -682,21 +688,21 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
     @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
     @JoinColumn(name = "group_orcid")
     @Sort(type = SortType.COMPARATOR, comparator = OrcidEntityIdComparator.class)
-    public SortedSet<ClientDetailsEntity> getClients() {
+    public Set<OrcidClientDetailsEntity> getClients() {
         return clients;
     }
 
-    public void setClients(SortedSet<ClientDetailsEntity> clients) {
+    public void setClients(Set<OrcidClientDetailsEntity> clients) {
         this.clients = clients;
     }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = PROFILE)
     @Sort(type = SortType.NATURAL)
-    public SortedSet<OrcidOauth2TokenDetail> getTokenDetails() {
+    public Set<OrcidOauth2TokenDetail> getTokenDetails() {
         return tokenDetails;
     }
 
-    public void setTokenDetails(SortedSet<OrcidOauth2TokenDetail> tokenDetails) {
+    public void setTokenDetails(Set<OrcidOauth2TokenDetail> tokenDetails) {
         this.tokenDetails = tokenDetails;
     }
 
@@ -711,7 +717,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
         this.indexingStatus = indexingStatus;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "orcid")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public Set<ProfileEventEntity> getProfileEvents() {
         return profileEvents;
     }
@@ -749,6 +755,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
     }
     
     @Column(name = "profile_deactivation_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getDeactivationDate() {
         return deactivationDate;
     }
@@ -778,6 +785,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
      * @return the deprecation date for this record
      * */
     @Column(name = "deprecated_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getDeprecatedDate() {
         return deprecatedDate;
     }
@@ -800,6 +808,7 @@ public class ProfileEntity extends BaseEntity<String> implements UserDetails {
     }
 
     @Column(name = "developer_tools_enabled_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getDeveloperToolsEnabledDate() {
         return developerToolsEnabledDate;
     }

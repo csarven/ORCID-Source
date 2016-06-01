@@ -49,7 +49,7 @@ public class OrcidGrantedAuthority extends BaseEntity<OrcidGrantedAuthorityPk> i
 
     @Id
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "orcid", nullable = false, updatable = false, insertable = false)
+    //@JoinColumn(name = "orcid", nullable = false, updatable = false, insertable = false)
     public ProfileEntity getProfileEntity() {
         return profileEntity;
     }

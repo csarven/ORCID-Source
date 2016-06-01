@@ -35,7 +35,7 @@ import org.orcid.core.oauth.service.OrcidAuthorizationEndpoint;
 import org.orcid.core.oauth.service.OrcidOAuth2RequestValidator;
 import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.jaxb.model.message.ScopePathType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.RecordNameEntity;
 import org.orcid.pojo.ajaxForm.OauthAuthorizeForm;
@@ -228,7 +228,7 @@ public class OauthControllerBase extends BaseController {
         }
 
         // Check if the client has persistent tokens enabled
-        ClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(clientId);
         if (clientDetails.isPersistentTokensEnabled()) {
             infoForm.setClientHavePersistentTokens(true);
         }
@@ -381,7 +381,7 @@ public class OauthControllerBase extends BaseController {
      * @throws IllegalArgumentException
      */
     protected boolean hasPersistenTokensEnabled(String clientId) throws IllegalArgumentException {
-        ClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(clientId);
         if (clientDetails == null)
             throw new IllegalArgumentException(getMessage("web.orcid.oauth_invalid_client.exception"));
         return clientDetails.isPersistentTokensEnabled();

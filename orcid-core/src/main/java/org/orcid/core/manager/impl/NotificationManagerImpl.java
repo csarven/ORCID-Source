@@ -67,7 +67,7 @@ import org.orcid.jaxb.model.notification_rc2.NotificationType;
 import org.orcid.persistence.dao.GenericDao;
 import org.orcid.persistence.dao.NotificationDao;
 import org.orcid.persistence.dao.ProfileDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.CustomEmailEntity;
 import org.orcid.persistence.jpa.entities.EmailType;
 import org.orcid.persistence.jpa.entities.NotificationEntity;
@@ -658,7 +658,7 @@ public class NotificationManagerImpl implements NotificationManager {
                 htmlBody = htmlBody.replace(WILDCARD_MEMBER_NAME, creatorName);
                 htmlBody = htmlBody.replace(EmailConstants.WILDCARD_VERIFICATION_URL, verificationUrl);
                 if (htmlBody.contains(WILDCARD_WEBSITE) || htmlBody.contains(WILDCARD_DESCRIPTION)) {
-                    ClientDetailsEntity clientDetails = customEmail.getClientDetailsEntity();
+                    OrcidClientDetailsEntity clientDetails = customEmail.getClientDetailsEntity();
                     htmlBody = htmlBody.replace(WILDCARD_WEBSITE, clientDetails.getClientWebsite());
                     htmlBody = htmlBody.replace(WILDCARD_DESCRIPTION, clientDetails.getClientDescription());
                 }
@@ -668,7 +668,7 @@ public class NotificationManagerImpl implements NotificationManager {
                 body = body.replace(WILDCARD_MEMBER_NAME, creatorName);
                 body = body.replace(EmailConstants.WILDCARD_VERIFICATION_URL, verificationUrl);
                 if (body.contains(WILDCARD_WEBSITE) || body.contains(WILDCARD_DESCRIPTION)) {
-                    ClientDetailsEntity clientDetails = customEmail.getClientDetailsEntity();
+                    OrcidClientDetailsEntity clientDetails = customEmail.getClientDetailsEntity();
                     body = body.replace(WILDCARD_WEBSITE, clientDetails.getClientWebsite());
                     body = body.replace(WILDCARD_DESCRIPTION, clientDetails.getClientDescription());
                 }
@@ -773,7 +773,7 @@ public class NotificationManagerImpl implements NotificationManager {
             }
         }
 
-        ClientDetailsEntity clientDetailsEntity = clientDetailsEntityCacheManager.retrieve(amenderId);
+        OrcidClientDetailsEntity clientDetailsEntity = clientDetailsEntityCacheManager.retrieve(amenderId);
         if (clientDetailsEntity != null) {
             return clientDetailsEntity.getClientName();
         }

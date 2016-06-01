@@ -43,7 +43,7 @@ import org.orcid.jaxb.model.message.ErrorDesc;
 import org.orcid.jaxb.model.message.OrcidProfile;
 import org.orcid.jaxb.model.message.OrcidType;
 import org.orcid.jaxb.model.message.ScopePathType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.ajaxForm.Client;
 import org.orcid.pojo.ajaxForm.PojoUtil;
@@ -398,7 +398,7 @@ public class GroupAdministratorController extends BaseWorkspaceController {
     public @ResponseBody
     boolean resetClientSecret(@RequestBody String clientId) {
         //Verify this client belongs to the member
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
         if(clientDetails == null)
             return false;
         ProfileEntity groupProfile = profileEntityCacheManager.retrieve(clientDetails.getGroupProfileId());

@@ -50,7 +50,7 @@ import org.orcid.jaxb.model.clientgroup.RedirectUris;
 import org.orcid.jaxb.model.message.*;
 import org.orcid.persistence.jpa.entities.AddressEntity;
 import org.orcid.persistence.jpa.entities.BaseEntity;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientRedirectUriEntity;
 import org.orcid.persistence.jpa.entities.EmailEntity;
 import org.orcid.persistence.jpa.entities.ExternalIdentifierEntity;
@@ -161,7 +161,7 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
     }
 
     @Override
-    public OrcidClient toOrcidClient(ClientDetailsEntity clientDetailsEntity) {
+    public OrcidClient toOrcidClient(OrcidClientDetailsEntity clientDetailsEntity) {
         OrcidClient client = new OrcidClient();
         client.setClientId(clientDetailsEntity.getId());
         client.setType(clientDetailsEntity.getClientType());
@@ -203,7 +203,7 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
         for (EmailEntity emailEntity : emailEntities) {
             group.setEmail(emailEntity.getId());
         }
-        for (ClientDetailsEntity clientDetailsEntity : profileEntity.getClients()) {
+        for (OrcidClientDetailsEntity clientDetailsEntity : profileEntity.getClients()) {
             OrcidClient client = toOrcidClient(clientDetailsEntity);
             group.getOrcidClient().add(client);
         }
@@ -496,7 +496,7 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
             return null;
         }
         Source source = new Source();
-        ClientDetailsEntity sourceClient = sourceEntity.getSourceClient();
+        OrcidClientDetailsEntity sourceClient = sourceEntity.getSourceClient();
         if (sourceClient != null && !OrcidStringUtils.isValidOrcid(sourceClient.getClientId())) {
             source.setSourceClientId(new SourceClientId(getOrcidIdBase(sourceClient.getClientId())));
         } else {
@@ -731,7 +731,7 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
                 email.setVisibility(emailEntity.getVisibility());
                 SourceEntity source = emailEntity.getSource();
                 if (source != null) {
-                    ClientDetailsEntity sourceClient = source.getSourceClient();
+                    OrcidClientDetailsEntity sourceClient = source.getSourceClient();
                     if (sourceClient != null && OrcidStringUtils.isClientId(sourceClient.getClientId())) {
                         email.setSourceClientId(sourceClient.getClientId());
                     } else {
@@ -765,7 +765,7 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
             Source sponsor = new Source();
             SourceName sponsorName = new SourceName(sourceEntity.getSourceName());
             sponsor.setSourceName(sponsorName);
-            ClientDetailsEntity sourceClient = sourceEntity.getSourceClient();
+            OrcidClientDetailsEntity sourceClient = sourceEntity.getSourceClient();
             if (sourceClient != null && !OrcidStringUtils.isValidOrcid(sourceClient.getClientId())) {
                 SourceClientId sourceClientId = new SourceClientId(getOrcidIdBase(sourceClient.getId()));
                 sponsor.setSourceClientId(sourceClientId);
@@ -792,7 +792,7 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
             for (OrcidOauth2TokenDetail tokenDetail : tokenDetails) {
                 if (tokenDetail.getTokenDisabled() == null || !tokenDetail.getTokenDisabled()) {
                     org.orcid.pojo.ApplicationSummary applicationSummary = new org.orcid.pojo.ApplicationSummary();
-                    ClientDetailsEntity acceptedClient = clientDetailsEntityCacheManager.retrieve(tokenDetail.getClientDetailsId());
+                    OrcidClientDetailsEntity acceptedClient = clientDetailsEntityCacheManager.retrieve(tokenDetail.getClientDetailsId());
 
                     if (acceptedClient != null) {
                         OrcidIdBase idBase = getOrcidIdBase(acceptedClient.getClientId());

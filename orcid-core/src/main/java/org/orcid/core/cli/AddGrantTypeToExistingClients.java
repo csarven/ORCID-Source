@@ -26,7 +26,7 @@ import org.kohsuke.args4j.Option;
 import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.persistence.jpa.entities.ClientAuthorisedGrantTypeEntity;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.pojo.ajaxForm.PojoUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -89,11 +89,11 @@ public class AddGrantTypeToExistingClients {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                List<ClientDetailsEntity> clients = clientDetailsManager.getAll();
-                for (ClientDetailsEntity client : clients) {
+                List<OrcidClientDetailsEntity> clients = clientDetailsManager.getAll();
+                for (OrcidClientDetailsEntity client : clients) {
                     // Only updater clients should be updated
                     if (isInAllowedClientTypes(client)) {
-                        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(client.getId());
+                        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(client.getId());
                         updateGrantTypes(clientDetails);
                     }
                 }
@@ -101,7 +101,7 @@ public class AddGrantTypeToExistingClients {
         });
     }
     
-    private boolean isInAllowedClientTypes(ClientDetailsEntity client) {
+    private boolean isInAllowedClientTypes(OrcidClientDetailsEntity client) {
         //Ignore the public client
         if(client.getClientType() == null) {
             return false;
@@ -118,7 +118,7 @@ public class AddGrantTypeToExistingClients {
         return false;
     }
     
-    private void updateGrantTypes(ClientDetailsEntity clientDetails) {        
+    private void updateGrantTypes(OrcidClientDetailsEntity clientDetails) {        
         for(String grantType : grantTypes) {            
             boolean alreadyHaveGrantType = false;
             for (String existingGrantType : clientDetails.getAuthorizedGrantTypes()) {

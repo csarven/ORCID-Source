@@ -31,7 +31,7 @@ import org.orcid.jaxb.model.clientgroup.RedirectUris;
 import org.orcid.jaxb.model.message.ScopePathType;
 import org.orcid.persistence.dao.ClientRedirectDao;
 import org.orcid.persistence.dao.OrcidPropsDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientRedirectUriEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -170,7 +170,7 @@ public class ThirdPartyLinkManagerImpl implements ThirdPartyLinkManager {
         for (ClientRedirectUriEntity entity : entitiesWithPredefinedScopes) {
 
             if (rut.value().equals(entity.getRedirectUriType())) {
-                ClientDetailsEntity clientDetails = entity.getClientDetailsEntity();
+                OrcidClientDetailsEntity clientDetails = entity.getClientDetailsEntity();
                 RedirectUri redirectUri = new RedirectUri(entity.getRedirectUri());
                 String prefefinedScopes = entity.getPredefinedClientScope();
                 redirectUri.setScope(new ArrayList<ScopePathType>(ScopePathType.getScopesFromSpaceSeparatedString(prefefinedScopes)));

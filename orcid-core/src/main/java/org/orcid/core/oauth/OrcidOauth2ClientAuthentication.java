@@ -16,7 +16,7 @@
  */
 package org.orcid.core.oauth;
 
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -31,10 +31,10 @@ public class OrcidOauth2ClientAuthentication implements Authentication {
      * 
      */
     private static final long serialVersionUID = 1L;
-    private ClientDetailsEntity clientDetails;
+    private OrcidClientDetailsEntity clientDetails;
     private boolean authenticated = false;
 
-    public OrcidOauth2ClientAuthentication(ClientDetailsEntity clientDetails) {
+    public OrcidOauth2ClientAuthentication(OrcidClientDetailsEntity clientDetails) {
         this.clientDetails = clientDetails;
     }
 

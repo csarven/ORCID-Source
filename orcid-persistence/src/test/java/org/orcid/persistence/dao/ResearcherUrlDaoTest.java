@@ -34,7 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.orcid.jaxb.model.common_rc2.Visibility;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.ResearcherUrlEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
@@ -102,7 +102,7 @@ public class ResearcherUrlDaoTest extends DBUnitTest {
         ResearcherUrlEntity newRUrl = new ResearcherUrlEntity();
         newRUrl.setDateCreated(new Date());
         newRUrl.setLastModified(new Date());
-        newRUrl.setSource(new SourceEntity(new ClientDetailsEntity("APP-5555555555555555")));
+        newRUrl.setSource(new SourceEntity(new OrcidClientDetailsEntity("APP-5555555555555555")));
         newRUrl.setUrl("www.4443.com");
         newRUrl.setUrlName("test");
         newRUrl.setUser(new ProfileEntity("4444-4444-4444-4443"));
@@ -138,7 +138,7 @@ public class ResearcherUrlDaoTest extends DBUnitTest {
             ResearcherUrlEntity newRUrl = new ResearcherUrlEntity();
             newRUrl.setDateCreated(new Date());
             newRUrl.setLastModified(new Date());
-            newRUrl.setSource(new SourceEntity(new ClientDetailsEntity("4444-4444-4444-4443")));
+            newRUrl.setSource(new SourceEntity(new OrcidClientDetailsEntity("4444-4444-4444-4443")));
             newRUrl.setUrl("http://www.researcherurl2.com?id=1");
             newRUrl.setUrlName("test");
             newRUrl.setUser(new ProfileEntity("4444-4444-4444-4443"));

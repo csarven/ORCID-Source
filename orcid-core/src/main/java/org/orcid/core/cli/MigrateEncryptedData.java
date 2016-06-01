@@ -23,7 +23,7 @@ import java.util.List;
 import org.orcid.core.manager.EncryptionManager;
 import org.orcid.persistence.dao.ClientDetailsDao;
 import org.orcid.persistence.dao.ProfileDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,15 +94,15 @@ public class MigrateEncryptedData {
     private void migrateClientDetails() {
         Date start = new Date();
         @SuppressWarnings("unchecked")
-        List<ClientDetailsEntity> clientDetailsEntities = Collections.EMPTY_LIST;
+        List<OrcidClientDetailsEntity> clientDetailsEntities = Collections.EMPTY_LIST;
         do {
             clientDetailsEntities = clientDetailsDao.findLastModifiedBefore(start, CHUNK_SIZE);
-            for (final ClientDetailsEntity clientDetails : clientDetailsEntities) {
+            for (final OrcidClientDetailsEntity clientDetails : clientDetailsEntities) {
                 LOG.info("Migrating secret for client: {}", clientDetails.getClientId());
                 transactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
-                        ClientDetailsEntity retrievedClientDetails = clientDetailsDao.find(clientDetails.getClientId());
+                        OrcidClientDetailsEntity retrievedClientDetails = clientDetailsDao.find(clientDetails.getClientId());
                         String unencryptedClientSecret = retrievedClientDetails.getClientSecret();
                         String encryptedClientSecret = encryptionManager.encryptForInternalUse(unencryptedClientSecret);
                         retrievedClientDetails.setClientSecretForJpa(encryptedClientSecret);

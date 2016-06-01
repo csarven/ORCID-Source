@@ -22,7 +22,7 @@ import java.util.Set;
 import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.security.aop.LockedException;
 import org.orcid.jaxb.model.message.ScopePathType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
@@ -58,7 +58,7 @@ public class OrcidOAuth2RequestValidator extends DefaultOAuth2RequestValidator {
         }
     }
     
-    public void validateClientIsEnabled(ClientDetailsEntity clientDetails) throws LockedException {
+    public void validateClientIsEnabled(OrcidClientDetailsEntity clientDetails) throws LockedException {
         ProfileEntity memberEntity = profileEntityCacheManager.retrieve(clientDetails.getGroupProfileId());
         //If it is locked
         if(!memberEntity.isAccountNonLocked()) {

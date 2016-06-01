@@ -56,7 +56,7 @@ import org.orcid.persistence.dao.ClientDetailsDao;
 import org.orcid.persistence.dao.GenericDao;
 import org.orcid.persistence.dao.NotificationDao;
 import org.orcid.persistence.dao.ProfileDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.EmailEntity;
 import org.orcid.persistence.jpa.entities.NotificationEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
@@ -177,7 +177,7 @@ public class NotificationManagerTest {
     }
 
     private void createClient() {
-		ClientDetailsEntity clientEntity = new ClientDetailsEntity();
+		OrcidClientDetailsEntity clientEntity = new OrcidClientDetailsEntity();
 		clientEntity.setId("8888-8888-8888-8880");
 		clientEntity.setGroupProfileId("4444-4444-4444-4446");
 		clientEntity.setClientName("Test Name");

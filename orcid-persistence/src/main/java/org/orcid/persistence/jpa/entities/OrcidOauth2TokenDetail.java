@@ -26,6 +26,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -111,6 +113,7 @@ public class OrcidOauth2TokenDetail extends BaseEntity<Long> implements ProfileA
     }
 
     @Column(name = "refresh_token_expiration")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getRefreshTokenExpiration() {
         return refreshTokenExpiration;
     }
@@ -192,6 +195,7 @@ public class OrcidOauth2TokenDetail extends BaseEntity<Long> implements ProfileA
     }
 
     @Column(name = "token_expiration")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getTokenExpiration() {
         return tokenExpiration;
     }

@@ -86,10 +86,10 @@ import org.springframework.security.oauth2.provider.OAuth2Request;
  */
 public class OrcidSecurityManagerImpl implements OrcidSecurityManager {
 
-    @Resource
+    //@Resource
     private SourceManager sourceManager;
 
-    @Resource
+    //@Resource
     private OrcidOauth2TokenDetailService orcidOauthTokenDetailService;
 
     @Resource

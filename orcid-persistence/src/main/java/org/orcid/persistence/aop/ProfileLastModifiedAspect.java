@@ -40,7 +40,7 @@ import com.google.common.collect.ImmutableMap;
  * 
  */
 @Aspect
-@Component(value = "profileLastModifiedAspect")
+//@Component(value = "profileLastModifiedAspect")
 public class ProfileLastModifiedAspect implements PriorityOrdered {
 
     private static final int PRECEDENCE = 50;

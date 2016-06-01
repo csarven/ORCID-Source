@@ -32,7 +32,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.core.manager.EncryptionManager;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientSecretEntity;
 import org.orcid.utils.DateUtils;
 import org.orcid.utils.NullUtils;
@@ -127,7 +127,7 @@ public class CreateNewClientSecrets {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientDetailsId);
+                OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientDetailsId);
                 createNewClientSecret(clientDetails);
             }
         });
@@ -138,7 +138,7 @@ public class CreateNewClientSecrets {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                for (ClientDetailsEntity clientDetails : clientDetailsManager.getAll()) {
+                for (OrcidClientDetailsEntity clientDetails : clientDetailsManager.getAll()) {
                     createNewClientSecret(clientDetails);
                 }
             }
@@ -160,7 +160,7 @@ public class CreateNewClientSecrets {
 
     }
 
-    private void createNewClientSecret(ClientDetailsEntity clientDetails) {
+    private void createNewClientSecret(OrcidClientDetailsEntity clientDetails) {
         String clientSecret = UUID.randomUUID().toString();
         clientDetails.getClientSecrets().add(new ClientSecretEntity(encryptionManager.encryptForInternalUse(clientSecret), clientDetails));
         clientDetails.setLastModified(now);

@@ -107,7 +107,7 @@ import org.orcid.persistence.dao.OrgAffiliationRelationDao;
 import org.orcid.persistence.dao.OrgDisambiguatedDao;
 import org.orcid.persistence.jpa.entities.AddressEntity;
 import org.orcid.persistence.jpa.entities.BiographyEntity;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.EmailEntity;
 import org.orcid.persistence.jpa.entities.EndDateEntity;
 import org.orcid.persistence.jpa.entities.ExternalIdentifierEntity;
@@ -213,14 +213,14 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
     }
 
     private void setWorks(ProfileEntity profileEntity, OrcidWorks orcidWorks) {
-        SortedSet<WorkEntity> workEntities = getWorkEntities(profileEntity, orcidWorks);
+        Set<WorkEntity> workEntities = getWorkEntities(profileEntity, orcidWorks);
         profileEntity.setWorks(workEntities);
     }
 
-    private SortedSet<WorkEntity> getWorkEntities(ProfileEntity profileEntity, OrcidWorks orcidWorks) {
-        SortedSet<WorkEntity> existingWorkEntities = profileEntity.getWorks();        
+    private Set<WorkEntity> getWorkEntities(ProfileEntity profileEntity, OrcidWorks orcidWorks) {
+        Set<WorkEntity> existingWorkEntities = profileEntity.getWorks();        
         Map<String, WorkEntity> existingWorkEntitiesMap = createWorkEntitiesMap(existingWorkEntities);
-        SortedSet<WorkEntity> workEntities = null;
+        Set<WorkEntity> workEntities = null;
         if (existingWorkEntities == null) {
             workEntities = new TreeSet<WorkEntity>();
         } else {
@@ -241,7 +241,7 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
         return workEntities;
     }
 
-    private Map<String, WorkEntity> createWorkEntitiesMap(SortedSet<WorkEntity> workEntities) {
+    private Map<String, WorkEntity> createWorkEntitiesMap(Set<WorkEntity> workEntities) {
         Map<String, WorkEntity> map = new HashMap<>();
         if (workEntities != null) {
             for (WorkEntity workEntity : workEntities) {
@@ -339,7 +339,7 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
     
     
     private void setFundings(ProfileEntity profileEntity, FundingList orcidFundings) {
-        SortedSet<ProfileFundingEntity> existingProfileFundingEntities = profileEntity.getProfileFunding();
+        Set<ProfileFundingEntity> existingProfileFundingEntities = profileEntity.getProfileFunding();
         if (existingProfileFundingEntities == null) {
             existingProfileFundingEntities = new TreeSet<>();
         }
@@ -396,7 +396,7 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
 
     private void setResearcherUrls(ProfileEntity profileEntity, ResearcherUrls researcherUrls) {
         String sourceId = getSourceId();
-        SortedSet<ResearcherUrlEntity> existingResearcherUrlEntities = profileEntity.getResearcherUrls();
+        Set<ResearcherUrlEntity> existingResearcherUrlEntities = profileEntity.getResearcherUrls();
         
         Iterator<ResearcherUrlEntity> existingIt = null;
         if(existingResearcherUrlEntities != null) {
@@ -508,7 +508,7 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
     private void setOtherNames(ProfileEntity profileEntity, OtherNames otherNames) {        
         String sourceId = getSourceId();
         
-        SortedSet<OtherNameEntity> existingOtherNameEntities = profileEntity.getOtherNames();
+        Set<OtherNameEntity> existingOtherNameEntities = profileEntity.getOtherNames();
         
         Iterator<OtherNameEntity> existingIt = null;
         if(existingOtherNameEntities != null) {
@@ -623,7 +623,7 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
     private void setKeywords(ProfileEntity profileEntity, Keywords keywords) {
         String sourceId = getSourceId();
         
-        SortedSet<ProfileKeywordEntity> existingProfileKeywordEntities = profileEntity.getKeywords();
+        Set<ProfileKeywordEntity> existingProfileKeywordEntities = profileEntity.getKeywords();
         
         Iterator<ProfileKeywordEntity> existingIt = null;
         if(existingProfileKeywordEntities != null){
@@ -917,7 +917,7 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
             Source source = orcidHistory.getSource();
             if (source != null) {
                 SourceEntity sourceEntity = new SourceEntity();
-                ClientDetailsEntity clientDetailsEntity = new ClientDetailsEntity();
+                OrcidClientDetailsEntity clientDetailsEntity = new OrcidClientDetailsEntity();
                 clientDetailsEntity.setId(source.retrieveSourcePath());
                 sourceEntity.setSourceClient(clientDetailsEntity);
                 profileEntity.setSource(sourceEntity);
@@ -945,7 +945,7 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
     }
 
     private void setOrgAffiliationRelations(ProfileEntity profileEntity, Affiliations affiliations) {
-        SortedSet<OrgAffiliationRelationEntity> existingOrgAffiliationEntities = profileEntity.getOrgAffiliationRelations();
+        Set<OrgAffiliationRelationEntity> existingOrgAffiliationEntities = profileEntity.getOrgAffiliationRelations();
         if (existingOrgAffiliationEntities == null) {
             existingOrgAffiliationEntities = new TreeSet<>();
         }
@@ -1327,7 +1327,7 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
         if (source != null) {
             String sourcePath = source.retrieveSourcePath();
             if (StringUtils.isNotEmpty(sourcePath) && !sourcePath.equals(Source.NULL_SOURCE_PROFILE)) {
-                ClientDetailsEntity cde = clientDetailsDao.find(sourcePath);
+                OrcidClientDetailsEntity cde = clientDetailsDao.find(sourcePath);
                 if (cde != null && cde.getClientType() != null) {
                     return new SourceEntity(cde);
                 }

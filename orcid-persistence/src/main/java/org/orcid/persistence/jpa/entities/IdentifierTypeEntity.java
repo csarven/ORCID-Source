@@ -39,7 +39,7 @@ public class IdentifierTypeEntity extends BaseEntity<Long>{
     private String id_resolution_prefix;
     private Boolean id_deprecated = Boolean.FALSE;
     
-    private ClientDetailsEntity sourceClient;
+    private OrcidClientDetailsEntity sourceClient;
     
     @Column(name = "id_name")
     public String getName() {
@@ -91,11 +91,11 @@ public class IdentifierTypeEntity extends BaseEntity<Long>{
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_source_id")
-    public ClientDetailsEntity getSourceClient() {
+    public OrcidClientDetailsEntity getSourceClient() {
         return sourceClient;
     }
 
-    public void setSourceClient(ClientDetailsEntity sourceClient) {
+    public void setSourceClient(OrcidClientDetailsEntity sourceClient) {
         this.sourceClient = sourceClient;
     }
 

@@ -30,6 +30,8 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.orcid.persistence.jpa.entities.keys.WebhookEntityPk;
@@ -37,7 +39,7 @@ import org.orcid.persistence.jpa.entities.keys.WebhookEntityPk;
 /**
  * @author Will Simpson
  */
-@Entity
+//@Entity
 @Table(name = "webhook")
 @IdClass(WebhookEntityPk.class)
 @NamedNativeQueries( {
@@ -50,7 +52,7 @@ public class WebhookEntity extends BaseEntity<WebhookEntityPk> implements Profil
 
     private ProfileEntity profile;
     private String uri;
-    private ClientDetailsEntity clientDetails;
+    private OrcidClientDetailsEntity clientDetails;
     private Date lastSent;
     private Date profileLastModified;
     private Date lastFailed;
@@ -97,15 +99,16 @@ public class WebhookEntity extends BaseEntity<WebhookEntityPk> implements Profil
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_details_id", nullable = false)
-    public ClientDetailsEntity getClientDetails() {
+    public OrcidClientDetailsEntity getClientDetails() {
         return clientDetails;
     }
 
-    public void setClientDetails(ClientDetailsEntity clientDetails) {
+    public void setClientDetails(OrcidClientDetailsEntity clientDetails) {
         this.clientDetails = clientDetails;
     }
 
     @Column(name = "last_failed")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getLastFailed() {
         return lastFailed;
     }
@@ -115,6 +118,7 @@ public class WebhookEntity extends BaseEntity<WebhookEntityPk> implements Profil
     }
 
     @Column(name = "last_sent")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getLastSent() {
         return lastSent;
     }
@@ -141,6 +145,7 @@ public class WebhookEntity extends BaseEntity<WebhookEntityPk> implements Profil
     }
 
     @Column(name = "disabled_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getDisabledDate() {
         return disabledDate;
     }
@@ -159,6 +164,7 @@ public class WebhookEntity extends BaseEntity<WebhookEntityPk> implements Profil
     }
 
     @Column(name = "profile_last_modified")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getProfileLastModified() {
         return profileLastModified;
     }

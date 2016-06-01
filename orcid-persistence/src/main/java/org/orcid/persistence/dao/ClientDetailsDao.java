@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.orcid.jaxb.model.clientgroup.ClientType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientSecretEntity;
 
 /**
@@ -28,9 +28,9 @@ import org.orcid.persistence.jpa.entities.ClientSecretEntity;
  * @author Declan Newman
  * 
  */
-public interface ClientDetailsDao extends GenericDao<ClientDetailsEntity, String> {
+public interface ClientDetailsDao extends GenericDao<OrcidClientDetailsEntity, String> {
 
-    ClientDetailsEntity findByClientId(String clientId, long lastModified);
+    OrcidClientDetailsEntity findByClientId(String clientId, long lastModified);
 
     Date getLastModified(String clientId);
     
@@ -48,11 +48,11 @@ public interface ClientDetailsDao extends GenericDao<ClientDetailsEntity, String
     
     boolean belongsTo(String clientId, String groupId);
     
-    List<ClientDetailsEntity> findByGroupId(String groupId);
+    List<OrcidClientDetailsEntity> findByGroupId(String groupId);
     
     public void removeClient(String clientId);
     
-    public ClientDetailsEntity getPublicClient(String ownerId);
+    public OrcidClientDetailsEntity getPublicClient(String ownerId);
     
     String getMemberName(String clientId);
 }

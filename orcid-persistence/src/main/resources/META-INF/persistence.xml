@@ -70,7 +70,7 @@
         <class>org.orcid.persistence.jpa.entities.IdentifierTypeEntity</class>        
 
         <!-- OAuth entities -->
-        <class>org.orcid.persistence.jpa.entities.ClientDetailsEntity</class>
+        <class>org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity</class>
         <class>org.orcid.persistence.jpa.entities.ClientAuthorisedGrantTypeEntity</class>
         <class>org.orcid.persistence.jpa.entities.ClientGrantedAuthorityEntity</class>
         <class>org.orcid.persistence.jpa.entities.ClientRedirectUriEntity</class>

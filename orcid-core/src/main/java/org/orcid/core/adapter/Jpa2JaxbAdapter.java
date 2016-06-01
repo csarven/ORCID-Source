@@ -25,7 +25,7 @@ import org.orcid.jaxb.model.message.DisambiguatedOrganization;
 import org.orcid.jaxb.model.message.Funding;
 import org.orcid.jaxb.model.message.OrcidIdBase;
 import org.orcid.jaxb.model.message.OrcidProfile;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.OrcidOauth2TokenDetail;
 import org.orcid.persistence.jpa.entities.OrgDisambiguatedEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
@@ -46,7 +46,7 @@ public interface Jpa2JaxbAdapter {
 
     OrcidClientGroup toOrcidClientGroup(ProfileEntity profileEntity);
 
-    OrcidClient toOrcidClient(ClientDetailsEntity clientDetailsEntity);
+    OrcidClient toOrcidClient(OrcidClientDetailsEntity clientDetailsEntity);
     
     Funding getFunding(ProfileFundingEntity profileFundingEntity);
 

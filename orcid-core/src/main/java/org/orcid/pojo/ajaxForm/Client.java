@@ -24,7 +24,7 @@ import java.util.Set;
 import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.jaxb.model.clientgroup.OrcidClient;
 import org.orcid.jaxb.model.clientgroup.RedirectUris;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientRedirectUriEntity;
 
 public class Client implements ErrorsInterface, Serializable {
@@ -44,7 +44,7 @@ public class Client implements ErrorsInterface, Serializable {
     private List<RedirectUri> redirectUris;
     private Set<String> scopes;
 
-    public static Client valueOf(ClientDetailsEntity clientDetails) {
+    public static Client valueOf(OrcidClientDetailsEntity clientDetails) {
         Client client = new Client();
         if (clientDetails != null) {
             client.setClientId(Text.valueOf(clientDetails.getClientId()));
@@ -71,9 +71,9 @@ public class Client implements ErrorsInterface, Serializable {
         return client;
     }
     
-    public static List<Client> valueOf(List<ClientDetailsEntity> clientDetails) {
+    public static List<Client> valueOf(List<OrcidClientDetailsEntity> clientDetails) {
         List<Client> clients = new ArrayList<Client>();
-        for(ClientDetailsEntity entity : clientDetails) {
+        for(OrcidClientDetailsEntity entity : clientDetails) {
             clients.add(Client.valueOf(entity));
         }
         return clients;

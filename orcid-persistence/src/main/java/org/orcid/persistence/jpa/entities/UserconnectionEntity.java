@@ -22,6 +22,8 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
@@ -125,6 +127,7 @@ public class UserconnectionEntity extends BaseEntity<UserconnectionPK> implement
     }
 
     @Column(name = "last_login")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getLastLogin() {
         return this.lastLogin;
     }

@@ -43,7 +43,7 @@ import org.orcid.jaxb.model.record_rc2.Relationship;
 import org.orcid.jaxb.model.record_rc2.Work;
 import org.orcid.jaxb.model.record_rc2.WorkTitle;
 import org.orcid.jaxb.model.record_rc2.WorkType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.orcid.test.OrcidJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
@@ -83,7 +83,7 @@ public class WorkManagerTest extends BaseTest {
     
     @Test
     public void testAddWorkToUnclaimedRecordPreserveWorkVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));        
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));        
         Work work = getWork();
         
         work = workManager.createWork(unclaimedOrcid, work, true);        
@@ -96,7 +96,7 @@ public class WorkManagerTest extends BaseTest {
     
     @Test
     public void testAddWorkToClaimedRecordPreserveUserDefaultVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));        
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));        
         Work work = getWork();
         
         work = workManager.createWork(claimedOrcid, work, true);        

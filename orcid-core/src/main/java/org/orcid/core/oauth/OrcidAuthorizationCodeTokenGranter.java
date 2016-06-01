@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 import org.orcid.core.manager.ClientDetailsEntityCacheManager;
 import org.orcid.core.oauth.service.OrcidOAuth2RequestValidator;
 import org.orcid.persistence.dao.OrcidOauth2AuthoriziationCodeDetailDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.OrcidOauth2AuthoriziationCodeDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +88,7 @@ public class OrcidAuthorizationCodeTokenGranter extends AbstractTokenGranter {
         }
 
         //Validate the client is active
-        ClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(tokenRequest.getClientId());                        
+        OrcidClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(tokenRequest.getClientId());                        
         orcidOAuth2RequestValidator.validateClientIsEnabled(clientDetails);
         
         //Validate scopes

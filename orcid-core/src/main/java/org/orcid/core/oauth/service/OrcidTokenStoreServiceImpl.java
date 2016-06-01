@@ -33,7 +33,7 @@ import org.orcid.core.manager.ProfileEntityCacheManager;
 import org.orcid.core.oauth.OrcidOAuth2Authentication;
 import org.orcid.core.oauth.OrcidOauth2TokenDetailService;
 import org.orcid.core.oauth.OrcidOauth2UserAuthentication;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.OrcidOauth2TokenDetail;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.ajaxForm.PojoUtil;
@@ -313,7 +313,7 @@ public class OrcidTokenStoreServiceImpl implements TokenStore {
 
     private OAuth2Authentication getOAuth2AuthenticationFromDetails(OrcidOauth2TokenDetail details) {
         if (details != null) {
-            ClientDetailsEntity clientDetailsEntity = clientDetailsEntityCacheManager.retrieve(details.getClientDetailsId());
+            OrcidClientDetailsEntity clientDetailsEntity = clientDetailsEntityCacheManager.retrieve(details.getClientDetailsId());
             Authentication authentication = null;
             AuthorizationRequest request = null;
             if (clientDetailsEntity != null) {
@@ -373,7 +373,7 @@ public class OrcidTokenStoreServiceImpl implements TokenStore {
 
         Set<String> resourceIds = authorizationRequest.getResourceIds();
         if(resourceIds == null || resourceIds.isEmpty()) {
-            ClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(clientId);
+            OrcidClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(clientId);
             resourceIds = clientDetails.getResourceIds();
         }
         

@@ -36,7 +36,7 @@ import org.orcid.jaxb.model.clientgroup.OrcidClient;
 import org.orcid.jaxb.model.clientgroup.OrcidClientGroup;
 import org.orcid.jaxb.model.message.ErrorDesc;
 import org.orcid.persistence.dao.ProfileDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientSecretEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.ajaxForm.Client;
@@ -124,7 +124,7 @@ public class MembersManagerImpl implements MembersManager {
                 if (groupType != null) {
                     ProfileEntity memberProfile = profileDao.find(orcid);                    
                     member = Member.fromProfileEntity(memberProfile);
-                    List<ClientDetailsEntity> clients = clientDetailsManager.findByGroupId(orcid);
+                    List<OrcidClientDetailsEntity> clients = clientDetailsManager.findByGroupId(orcid);
                     member.setClients(Client.valueOf(clients));
                 } else {
                     member.getErrors().add(getMessage("manage_members.orcid_is_not_a_member"));
@@ -139,7 +139,7 @@ public class MembersManagerImpl implements MembersManager {
     @Override
     public Client getClient(String clientId) {
         Client result = new Client();
-        ClientDetailsEntity clientDetailsEntity = clientDetailsManager.findByClientId(clientId);        
+        OrcidClientDetailsEntity clientDetailsEntity = clientDetailsManager.findByClientId(clientId);        
         if (clientDetailsEntity != null) {            
             result = Client.valueOf(clientDetailsEntity);
             //Set member name

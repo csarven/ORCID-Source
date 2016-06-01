@@ -75,7 +75,7 @@ import org.orcid.jaxb.model.record_rc2.Work;
 import org.orcid.jaxb.model.record_rc2.ExternalIDs;
 import org.orcid.jaxb.model.record_rc2.WorkTitle;
 import org.orcid.jaxb.model.record_rc2.WorkType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.ProfileFundingEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
@@ -150,7 +150,7 @@ public class SourceInActivitiesTest extends BaseTest {
         assertNotNull(work1.getSource().retrieveSourcePath());
         assertEquals(userOrcid, work1.getSource().retrieveSourcePath());
         
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));
         Work work2 = getWork(userOrcid);
         assertNotNull(work2);
         assertNotNull(work2.getWorkTitle());
@@ -160,7 +160,7 @@ public class SourceInActivitiesTest extends BaseTest {
         assertNotNull(work2.getSource().retrieveSourcePath());
         assertEquals(CLIENT_1_ID, work2.getSource().retrieveSourcePath());
 
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_2_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_2_ID)));
         Work work3 = getWork(userOrcid);
         assertNotNull(work3);
         assertNotNull(work3.getWorkTitle());
@@ -220,13 +220,13 @@ public class SourceInActivitiesTest extends BaseTest {
         assertFalse(PojoUtil.isEmpty(funding1.getTitle()));
         assertEquals(userOrcid, funding1.getSource().getSourceId());
 
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));
         ProfileFundingEntity funding2 = getProfileFundingEntity(userOrcid);
         assertNotNull(funding2);
         assertFalse(PojoUtil.isEmpty(funding2.getTitle()));
         assertEquals(CLIENT_1_ID, funding2.getSource().getSourceId());
 
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_2_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_2_ID)));
         ProfileFundingEntity funding3 = getProfileFundingEntity(userOrcid);
         assertNotNull(funding3);
         assertFalse(PojoUtil.isEmpty(funding3.getTitle()));
@@ -325,7 +325,7 @@ public class SourceInActivitiesTest extends BaseTest {
         assertFalse(PojoUtil.isEmpty(peerReview1.getSubjectName().getTitle().getContent()));
         assertEquals(userOrcid, peerReview1.retrieveSourcePath());
         
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));
         PeerReview peerReview2 = getPeerReview(userOrcid);
         assertNotNull(peerReview2);
         assertNotNull(peerReview2.getSubjectName());
@@ -333,7 +333,7 @@ public class SourceInActivitiesTest extends BaseTest {
         assertFalse(PojoUtil.isEmpty(peerReview2.getSubjectName().getTitle().getContent()));
         assertEquals(CLIENT_1_ID, peerReview2.retrieveSourcePath());
         
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_2_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_2_ID)));
         PeerReview peerReview3 = getPeerReview(userOrcid);
         assertNotNull(peerReview3);
         assertNotNull(peerReview3.getSubjectName());
@@ -373,12 +373,12 @@ public class SourceInActivitiesTest extends BaseTest {
         assertNotNull(education1);        
         assertEquals(userOrcid, education1.retrieveSourcePath());
         
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));
         Education education2 = getEducation(userOrcid);
         assertNotNull(education2);        
         assertEquals(CLIENT_1_ID, education2.retrieveSourcePath());
         
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_2_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_2_ID)));
         Education education3 = getEducation(userOrcid);
         assertNotNull(education3);        
         assertEquals(CLIENT_2_ID, education3.retrieveSourcePath());

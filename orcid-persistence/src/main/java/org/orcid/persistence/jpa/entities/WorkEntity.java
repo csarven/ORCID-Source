@@ -29,6 +29,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.orcid.jaxb.model.message.CitationType;
 import org.orcid.jaxb.model.message.Iso3166Country;
@@ -109,6 +111,7 @@ public class WorkEntity extends WorkBaseEntity implements Comparable<WorkEntity>
     }
 
     @Column(name = "added_to_profile_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getAddedToProfileDate() {
         return addedToProfileDate;
     }

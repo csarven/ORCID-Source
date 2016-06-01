@@ -19,7 +19,7 @@ package org.orcid.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 
 public class IdentifierType implements Serializable{
 
@@ -37,7 +37,7 @@ public class IdentifierType implements Serializable{
         return "IdentifierType [name=" + name + ", id=" + id + ", validationRegex=" + validationRegex + ", resolutionPrefix=" + resolutionPrefix + ", dateCreated="
                 + dateCreated + ", lastModified=" + lastModified + ", sourceClient=" + sourceClient + ", deprecated=" + deprecated + "]";
     }
-    private ClientDetailsEntity sourceClient;
+    private OrcidClientDetailsEntity sourceClient;
     
     public String getName() {
         return name;
@@ -81,10 +81,10 @@ public class IdentifierType implements Serializable{
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
     }
-    public ClientDetailsEntity getSourceClient() {
+    public OrcidClientDetailsEntity getSourceClient() {
         return sourceClient;
     }
-    public void setSourceClient(ClientDetailsEntity sourceClient) {
+    public void setSourceClient(OrcidClientDetailsEntity sourceClient) {
         this.sourceClient = sourceClient;
     }
     private Boolean deprecated = Boolean.FALSE;

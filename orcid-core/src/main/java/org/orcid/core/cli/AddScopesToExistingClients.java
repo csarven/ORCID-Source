@@ -27,7 +27,7 @@ import org.kohsuke.args4j.Option;
 import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.jaxb.model.message.ScopePathType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientScopeEntity;
 import org.orcid.pojo.ajaxForm.PojoUtil;
 import org.springframework.context.ApplicationContext;
@@ -97,18 +97,18 @@ public class AddScopesToExistingClients {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
             	if(PojoUtil.isEmpty(clientIds) || !PojoUtil.isEmpty(clientTypes)) {
-            		List<ClientDetailsEntity> clients = clientDetailsManager.getAll();
-                    for (ClientDetailsEntity client : clients) {
+            		List<OrcidClientDetailsEntity> clients = clientDetailsManager.getAll();
+                    for (OrcidClientDetailsEntity client : clients) {
                         // Only updater clients should be updated
                         if (isInAllowedClientTypes(client)) {
-                            ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(client.getId());
+                            OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(client.getId());
                             updateScopes(clientDetails);
                         }
                     }
             	}
                 
                 for (String clientId : clientIdSet) {
-                	ClientDetailsEntity client = clientDetailsManager.findByClientId(clientId);
+                	OrcidClientDetailsEntity client = clientDetailsManager.findByClientId(clientId);
                 	if(client == null) {
                 		System.out.println();
                 		System.out.println("Client with Id "+ clientId+ " doesnot exist. Ignoring!!");
@@ -120,7 +120,7 @@ public class AddScopesToExistingClients {
         });
     }
     
-    private boolean isInAllowedClientTypes(ClientDetailsEntity client) {
+    private boolean isInAllowedClientTypes(OrcidClientDetailsEntity client) {
         //Ignore the public client
         if(client.getClientType() == null || ClientType.PUBLIC_CLIENT.equals(client.getClientType())) {
             return false;
@@ -137,7 +137,7 @@ public class AddScopesToExistingClients {
         return false;
     }
     
-    private void updateScopes(ClientDetailsEntity clientDetails) {        
+    private void updateScopes(OrcidClientDetailsEntity clientDetails) {        
         for(ScopePathType scope : scopes) {            
             boolean alreadyHaveReadPublicScope = false;
             for (ClientScopeEntity existingScope : clientDetails.getClientScopes()) {

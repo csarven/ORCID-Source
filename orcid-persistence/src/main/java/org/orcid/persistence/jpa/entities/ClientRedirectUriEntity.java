@@ -45,7 +45,7 @@ public class ClientRedirectUriEntity extends BaseEntity<ClientRedirectUriPk> imp
     private static final long serialVersionUID = 1L;
     private String redirectUri;
     private String predefinedClientScope;
-    private ClientDetailsEntity clientDetailsEntity;
+    private OrcidClientDetailsEntity clientDetailsEntity;
     private String redirectUriType;
     private String uriActType;
     private String uriGeoArea;
@@ -53,7 +53,7 @@ public class ClientRedirectUriEntity extends BaseEntity<ClientRedirectUriPk> imp
     public ClientRedirectUriEntity() {
     }
 
-    public ClientRedirectUriEntity(String redirectUri, ClientDetailsEntity clientDetailsEntity) {
+    public ClientRedirectUriEntity(String redirectUri, OrcidClientDetailsEntity clientDetailsEntity) {
         this.redirectUri = redirectUri;
         this.clientDetailsEntity = clientDetailsEntity;
     }
@@ -91,11 +91,11 @@ public class ClientRedirectUriEntity extends BaseEntity<ClientRedirectUriPk> imp
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH, CascadeType.DETACH })
     @JoinColumn(name = "client_details_id")
-    public ClientDetailsEntity getClientDetailsEntity() {
+    public OrcidClientDetailsEntity getClientDetailsEntity() {
         return clientDetailsEntity;
     }
 
-    public void setClientDetailsEntity(ClientDetailsEntity clientDetailsEntity) {
+    public void setClientDetailsEntity(OrcidClientDetailsEntity clientDetailsEntity) {
         this.clientDetailsEntity = clientDetailsEntity;
     }
 

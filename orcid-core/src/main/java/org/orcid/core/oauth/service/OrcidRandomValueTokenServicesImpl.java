@@ -31,7 +31,7 @@ import org.orcid.core.oauth.OrcidRandomValueTokenServices;
 import org.orcid.core.security.aop.LockedException;
 import org.orcid.jaxb.model.message.ScopePathType;
 import org.orcid.persistence.dao.OrcidOauth2AuthoriziationCodeDetailDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -192,7 +192,7 @@ public class OrcidRandomValueTokenServicesImpl extends DefaultTokenServices impl
             Map<String, Object> additionalInfo = accessToken.getAdditionalInformation();
             if(additionalInfo != null) {
                 String clientId = (String)additionalInfo.get(OrcidOauth2Constants.CLIENT_ID);
-                ClientDetailsEntity clientEntity = clientDetailsEntityCacheManager.retrieve(clientId);
+                OrcidClientDetailsEntity clientEntity = clientDetailsEntityCacheManager.retrieve(clientId);
                 try {
                     orcidOAuth2RequestValidator.validateClientIsEnabled(clientEntity);
                 } catch (LockedException le) {

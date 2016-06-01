@@ -33,7 +33,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.IdentifierTypeEntity;
 import org.orcid.test.DBUnitTest;
 import org.orcid.test.OrcidJUnit4ClassRunner;
@@ -110,7 +110,7 @@ public class IdentifierTypeDaoTest extends DBUnitTest{
         int startSize = list.size();
         IdentifierTypeEntity e1 = new IdentifierTypeEntity();
         e1.setName("TEST_B");
-        ClientDetailsEntity sourceClient = new ClientDetailsEntity();
+        OrcidClientDetailsEntity sourceClient = new OrcidClientDetailsEntity();
         sourceClient.setId("APP-6666666666666666");
         e1.setSourceClient(sourceClient);
         idTypeDao.addIdentifierType(e1);

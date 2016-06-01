@@ -51,7 +51,7 @@ public class OrcidOauth2AuthoriziationCodeDetail extends BaseEntity<String> impl
     private String redirectUri;
     private String responseType;
     private String state;
-    private ClientDetailsEntity clientDetailsEntity;
+    private OrcidClientDetailsEntity clientDetailsEntity;
     private boolean isPersistent;
     private long version;
 
@@ -173,11 +173,11 @@ public class OrcidOauth2AuthoriziationCodeDetail extends BaseEntity<String> impl
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_details_id")
-    public ClientDetailsEntity getClientDetailsEntity() {
+    public OrcidClientDetailsEntity getClientDetailsEntity() {
         return clientDetailsEntity;
     }
 
-    public void setClientDetailsEntity(ClientDetailsEntity clientDetailsEntity) {
+    public void setClientDetailsEntity(OrcidClientDetailsEntity clientDetailsEntity) {
         this.clientDetailsEntity = clientDetailsEntity;
     }
 

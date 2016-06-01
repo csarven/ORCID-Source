@@ -49,7 +49,7 @@ import org.orcid.jaxb.model.record_rc2.GivenNames;
 import org.orcid.jaxb.model.record_rc2.Name;
 import org.orcid.jaxb.model.record_rc2.OtherName;
 import org.orcid.jaxb.model.record_rc2.Work;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 
@@ -73,7 +73,7 @@ public class OrcidSecurityManagerTest extends BaseTest {
     public void before() {
         orcidSecurityManager.setSourceManager(sourceManager);
         orcidSecurityManager.setProfileEntityCacheManager(profileEntityCacheManager);
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity("APP-5555555555555555")));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity("APP-5555555555555555")));
     }
     
     @After
@@ -356,7 +356,7 @@ public class OrcidSecurityManagerTest extends BaseTest {
     
     @Test
     public void testUnclaimedRecordOnClaimPeriodButAccessedByCreator() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity("APP-0000000000000000")));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity("APP-0000000000000000")));
         SecurityContextTestUtils.setUpSecurityContextForClientOnly("APP-0000000000000000");
         ProfileEntity entity = createProfileEntity();
         entity.setSubmissionDate(new Date());
@@ -367,7 +367,7 @@ public class OrcidSecurityManagerTest extends BaseTest {
     
     @Test(expected = OrcidNotClaimedException.class)
     public void testUnclaimedRecordOnClaimPeriodButAccessedByAnyMember() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity("APP-1111111111111111")));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity("APP-1111111111111111")));
         SecurityContextTestUtils.setUpSecurityContextForClientOnly("APP-1111111111111111");
         ProfileEntity entity = createProfileEntity();
         entity.setSubmissionDate(new Date());
@@ -435,7 +435,7 @@ public class OrcidSecurityManagerTest extends BaseTest {
         entity.setDeprecatedDate(null);
         entity.setId("0000-0000-0000-0000");
         entity.setRecordLocked(false);
-        entity.setSource(new SourceEntity(new ClientDetailsEntity("APP-0000000000000000")));
+        entity.setSource(new SourceEntity(new OrcidClientDetailsEntity("APP-0000000000000000")));
         entity.setSubmissionDate(null);
         return entity;
     }

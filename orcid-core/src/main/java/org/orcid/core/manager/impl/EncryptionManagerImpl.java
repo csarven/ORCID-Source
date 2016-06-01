@@ -65,12 +65,12 @@ public class EncryptionManagerImpl implements EncryptionManager, PasswordEncoder
         this.internalEncryptor = internalEncryptor;
     }
 
-    @Required
+    //@Required
     public void setLegacyExternalEncryptor(PBEStringEncryptor legacyExternalEncryptor) {
         this.legacyExternalEncryptor = legacyExternalEncryptor;
     }
 
-    @Required
+    //@Required
     public void setExternalEncryptor(PBEStringEncryptor externalEncryptor) {
         this.externalEncryptor = externalEncryptor;
     }

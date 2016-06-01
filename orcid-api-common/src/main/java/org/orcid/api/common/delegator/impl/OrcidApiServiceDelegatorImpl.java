@@ -49,7 +49,7 @@ import org.orcid.jaxb.model.message.OrcidProfile;
 import org.orcid.jaxb.model.message.OrcidSearchResult;
 import org.orcid.jaxb.model.message.OrcidSearchResults;
 import org.orcid.jaxb.model.message.ScopePathType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -320,7 +320,7 @@ public class OrcidApiServiceDelegatorImpl implements OrcidApiServiceDelegator {
 
     @Override
     public Response redirectClientToGroup(String clientId) {
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
         if (clientDetails == null) {
             return Response.status(Status.NOT_FOUND).build();
         }

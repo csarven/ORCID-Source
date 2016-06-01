@@ -38,7 +38,7 @@ import org.orcid.jaxb.model.common_rc2.Country;
 import org.orcid.jaxb.model.common_rc2.Iso3166Country;
 import org.orcid.jaxb.model.common_rc2.Visibility;
 import org.orcid.jaxb.model.record_rc2.Address;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.orcid.test.OrcidJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
@@ -78,7 +78,7 @@ public class AddressManagerTest extends BaseTest {
     
     @Test
     public void testAddAddressToUnclaimedRecordPreserveAddressVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));   
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));   
         Address address = getAddress();
         
         address = addressManager.createAddress(unclaimedOrcid, address, true);
@@ -90,7 +90,7 @@ public class AddressManagerTest extends BaseTest {
     
     @Test
     public void testAddAddressToClaimedRecordPreserveUserDefaultVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));                
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));                
         Address address = getAddress();
         
         address = addressManager.createAddress(claimedOrcid, address, true);

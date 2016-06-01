@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.orcid.jaxb.model.clientgroup.RedirectUriType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientRedirectUriEntity;
 import org.orcid.persistence.jpa.entities.ClientSecretEntity;
 
@@ -40,7 +40,7 @@ public class SSOCredentials implements ErrorsInterface, Serializable {
     Text clientSecret;
     Set<RedirectUri> redirectUris;
     
-    public static SSOCredentials toSSOCredentials(ClientDetailsEntity clientDetails) {
+    public static SSOCredentials toSSOCredentials(OrcidClientDetailsEntity clientDetails) {
         SSOCredentials result = new SSOCredentials();        
         if(clientDetails != null) {
             result.setClientName(Text.valueOf(clientDetails.getClientName()));

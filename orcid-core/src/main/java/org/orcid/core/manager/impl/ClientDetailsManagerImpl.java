@@ -42,7 +42,7 @@ import org.orcid.persistence.dao.ClientDetailsDao;
 import org.orcid.persistence.dao.ClientRedirectDao;
 import org.orcid.persistence.dao.ClientSecretDao;
 import org.orcid.persistence.jpa.entities.ClientAuthorisedGrantTypeEntity;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientGrantedAuthorityEntity;
 import org.orcid.persistence.jpa.entities.ClientRedirectUriEntity;
 import org.orcid.persistence.jpa.entities.ClientResourceIdEntity;
@@ -91,8 +91,8 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
      *             any other reason.
      */
     @Override
-    public ClientDetailsEntity loadClientByClientId(String clientId) throws OAuth2Exception {
-        ClientDetailsEntity clientDetails = findByClientId(clientId);
+    public OrcidClientDetailsEntity loadClientByClientId(String clientId) throws OAuth2Exception {
+        OrcidClientDetailsEntity clientDetails = findByClientId(clientId);
         if (clientDetails != null) {
             if (!clientDetails.getClientId().equals(clientId))
                 LOGGER.error("Client getClientId doesn't match. Requested: " + clientId + " Returned: " + clientDetails.getClientId());
@@ -110,7 +110,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
      * This can be called to create an initial client without the caller having
      * any knowledge of the clientId, and, or the client secret. This will then
      * be randomly generated and returned to the caller as part of the
-     * {@link ClientDetailsEntity}
+     * {@link OrcidClientDetailsEntity}
      * 
      * @param name
      *            The client name
@@ -134,7 +134,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
      * @return
      */
     @Override
-    public ClientDetailsEntity createClientDetails(String groupOrcid, String name, String description, String website, ClientType clientType, Set<String> clientScopes,
+    public OrcidClientDetailsEntity createClientDetails(String groupOrcid, String name, String description, String website, ClientType clientType, Set<String> clientScopes,
             Set<String> clientResourceIds, Set<String> clientAuthorizedGrantTypes, Set<RedirectUri> clientRegisteredRedirectUris, List<String> clientGrantedAuthorities) {
         ProfileEntity groupProfileEntity = profileEntityCacheManager.retrieve(groupOrcid);
         if (groupProfileEntity == null) {
@@ -148,7 +148,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
     }
 
     /**
-     * Creates a new {@link ClientDetailsEntity} using the component parts, and
+     * Creates a new {@link OrcidClientDetailsEntity} using the component parts, and
      * not the underyling entity directly.
      * 
      * @param name
@@ -178,7 +178,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
      * @return
      */
     @Override
-    public ClientDetailsEntity createClientDetails(String orcid, String name, String description, String website, String clientId, String clientSecret,
+    public OrcidClientDetailsEntity createClientDetails(String orcid, String name, String description, String website, String clientId, String clientSecret,
             ClientType clientType, Set<String> clientScopes, Set<String> clientResourceIds, Set<String> clientAuthorizedGrantTypes,
             Set<RedirectUri> clientRegisteredRedirectUris, List<String> clientGrantedAuthorities) {        
         ProfileEntity profileEntity = profileEntityCacheManager.retrieve(orcid);
@@ -191,7 +191,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
     }
 
     /**
-     * Creates a new {@link ClientDetailsEntity} using the actual entity. This
+     * Creates a new {@link OrcidClientDetailsEntity} using the actual entity. This
      * is called by
      * {@link #createClientDetails(String, String, String, java.util.Set, java.util.Set, java.util.Set, java.util.Set, java.util.List)}
      * to create a new entity
@@ -200,7 +200,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
      * @return
      */
     @Override
-    public ClientDetailsEntity createClientDetails(ClientDetailsEntity clientDetailsEntity) {
+    public OrcidClientDetailsEntity createClientDetails(OrcidClientDetailsEntity clientDetailsEntity) {
         persist(clientDetailsEntity);
         return findByClientId(clientDetailsEntity.getId());
     }
@@ -216,7 +216,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
         clientDetailsDao.updateLastModified(clientId);
     }
 
-    private Set<ClientScopeEntity> getClientScopeEntities(Set<String> clientScopeStrings, ClientDetailsEntity clientDetailsEntity) {
+    private Set<ClientScopeEntity> getClientScopeEntities(Set<String> clientScopeStrings, OrcidClientDetailsEntity clientDetailsEntity) {
         Set<ClientScopeEntity> clientScopeEntities = new HashSet<ClientScopeEntity>(clientScopeStrings.size());
         for (String clientScope : clientScopeStrings) {
             ClientScopeEntity clientScopeEntity = new ClientScopeEntity();
@@ -227,7 +227,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
         return clientScopeEntities;
     }
 
-    private Set<ClientResourceIdEntity> getClientResourceIds(Set<String> clientResourceIds, ClientDetailsEntity clientDetailsEntity) {
+    private Set<ClientResourceIdEntity> getClientResourceIds(Set<String> clientResourceIds, OrcidClientDetailsEntity clientDetailsEntity) {
         Set<ClientResourceIdEntity> clientResourceIdEntities = new HashSet<ClientResourceIdEntity>(clientResourceIds.size());
         for (String clientResourceId : clientResourceIds) {
             ClientResourceIdEntity clientResourceIdEntity = new ClientResourceIdEntity();
@@ -238,7 +238,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
         return clientResourceIdEntities;
     }
 
-    private List<ClientGrantedAuthorityEntity> getClientGrantedAuthorities(List<String> clientGrantedAuthorities, ClientDetailsEntity clientDetailsEntity) {
+    private List<ClientGrantedAuthorityEntity> getClientGrantedAuthorities(List<String> clientGrantedAuthorities, OrcidClientDetailsEntity clientDetailsEntity) {
         List<ClientGrantedAuthorityEntity> clientGrantedAuthorityEntities = new ArrayList<ClientGrantedAuthorityEntity>(clientGrantedAuthorities.size());
         for (String clientGrantedAuthority : clientGrantedAuthorities) {
             ClientGrantedAuthorityEntity clientGrantedAuthorityEntity = new ClientGrantedAuthorityEntity();
@@ -249,7 +249,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
         return clientGrantedAuthorityEntities;
     }
 
-    private SortedSet<ClientRedirectUriEntity> getClientRegisteredRedirectUris(Set<RedirectUri> clientRegisteredRedirectUris, ClientDetailsEntity clientDetailsEntity) {
+    private SortedSet<ClientRedirectUriEntity> getClientRegisteredRedirectUris(Set<RedirectUri> clientRegisteredRedirectUris, OrcidClientDetailsEntity clientDetailsEntity) {
         SortedSet<ClientRedirectUriEntity> clientRedirectUriEntities = new TreeSet<ClientRedirectUriEntity>();
         for (RedirectUri clientRegisteredRedirectUri : clientRegisteredRedirectUris) {
             ClientRedirectUriEntity clientRedirectUriEntity = new ClientRedirectUriEntity();
@@ -266,7 +266,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
         return clientRedirectUriEntities;
     }
 
-    private Set<ClientAuthorisedGrantTypeEntity> getClientAuthorizedGrantTypes(Set<String> clientAuthorizedGrantTypes, ClientDetailsEntity clientDetailsEntity) {
+    private Set<ClientAuthorisedGrantTypeEntity> getClientAuthorizedGrantTypes(Set<String> clientAuthorizedGrantTypes, OrcidClientDetailsEntity clientDetailsEntity) {
         Set<ClientAuthorisedGrantTypeEntity> clientAuthorisedGrantTypeEntities = new HashSet<ClientAuthorisedGrantTypeEntity>(clientAuthorizedGrantTypes.size());
         for (String clientAuthorisedGrantType : clientAuthorizedGrantTypes) {
             ClientAuthorisedGrantTypeEntity grantTypeEntity = new ClientAuthorisedGrantTypeEntity();
@@ -277,10 +277,10 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
         return clientAuthorisedGrantTypeEntities;
     }
 
-    public ClientDetailsEntity populateClientDetailsEntity(String clientId, ProfileEntity profileEntity, String name, String description, String website,
+    public OrcidClientDetailsEntity populateClientDetailsEntity(String clientId, ProfileEntity profileEntity, String name, String description, String website,
             String clientSecret, ClientType clientType, Set<String> clientScopes, Set<String> clientResourceIds, Set<String> clientAuthorizedGrantTypes,
             Set<RedirectUri> clientRegisteredRedirectUris, List<String> clientGrantedAuthorities) {
-        ClientDetailsEntity clientDetailsEntity = new ClientDetailsEntity();
+        OrcidClientDetailsEntity clientDetailsEntity = new OrcidClientDetailsEntity();
         clientDetailsEntity.setId(clientId);
         clientDetailsEntity.setClientType(clientType);
         clientDetailsEntity.setClientName(name);
@@ -299,8 +299,8 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
     }
 
     @Override
-    public ClientDetailsEntity findByClientId(String clientId) {
-        ClientDetailsEntity result = null;
+    public OrcidClientDetailsEntity findByClientId(String clientId) {
+        OrcidClientDetailsEntity result = null;
         try {
             Date lastModified = clientDetailsDao.getLastModified(clientId);
             result = clientDetailsDao.findByClientId(clientId, lastModified.getTime());
@@ -317,7 +317,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
     }
     
     @Override
-    public OrcidClient toOrcidClient(ClientDetailsEntity clientEntity) {
+    public OrcidClient toOrcidClient(OrcidClientDetailsEntity clientEntity) {
     	return jpaJaxbAdapter.toOrcidClient(clientEntity);
     }
 
@@ -327,14 +327,14 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
     }
 
     @Override
-    public void persist(ClientDetailsEntity clientDetails) {
+    public void persist(OrcidClientDetailsEntity clientDetails) {
         clientDetailsDao.persist(clientDetails);
         clientDetailsDao.updateLastModified(clientDetails.getId());
     }
 
     @Override
-    public ClientDetailsEntity merge(ClientDetailsEntity clientDetails) {
-        ClientDetailsEntity result = clientDetailsDao.merge(clientDetails);
+    public OrcidClientDetailsEntity merge(OrcidClientDetailsEntity clientDetails) {
+        OrcidClientDetailsEntity result = clientDetailsDao.merge(clientDetails);
         clientDetailsDao.updateLastModified(result.getId());
         return result;
     }
@@ -345,7 +345,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
     }
 
     @Override
-    public List<ClientDetailsEntity> getAll() {
+    public List<OrcidClientDetailsEntity> getAll() {
         return clientDetailsDao.getAll();
     }
 
@@ -386,9 +386,9 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
     public void cleanOldClientKeys() {
         LOGGER.info("Starting cron to delete non primary client keys");
         Date currentDate = new Date();
-        List<ClientDetailsEntity> allClientDetails = this.getAll();
+        List<OrcidClientDetailsEntity> allClientDetails = this.getAll();
         if (allClientDetails != null && allClientDetails != null) {
-            for (ClientDetailsEntity clientDetails : allClientDetails) {
+            for (OrcidClientDetailsEntity clientDetails : allClientDetails) {
                 String clientId = clientDetails.getClientId();
                 LOGGER.info("Deleting non primary keys for client: {}", clientId);
                 Set<ClientSecretEntity> clientSecrets = clientDetails.getClientSecrets();
@@ -433,7 +433,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
      * @return A list containing all clients that belongs to the given group
      * */
     @Override
-    public List<ClientDetailsEntity> findByGroupId(String groupId) {
+    public List<OrcidClientDetailsEntity> findByGroupId(String groupId) {
         return clientDetailsDao.findByGroupId(groupId);
     }
 
@@ -445,7 +445,7 @@ public class ClientDetailsManagerImpl implements ClientDetailsManager {
      * @return the public client that belongs to the given user
      * */
     @Override
-    public ClientDetailsEntity getPublicClient(String ownerId) {
+    public OrcidClientDetailsEntity getPublicClient(String ownerId) {
         return clientDetailsDao.getPublicClient(ownerId);
     }
     

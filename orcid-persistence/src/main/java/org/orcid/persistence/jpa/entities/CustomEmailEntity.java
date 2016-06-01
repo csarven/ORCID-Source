@@ -35,7 +35,7 @@ import org.orcid.persistence.jpa.entities.keys.CustomEmailPk;
 public class CustomEmailEntity extends BaseEntity<CustomEmailPk>{
     
     private static final long serialVersionUID = 1L;
-    private ClientDetailsEntity clientDetailsEntity;
+    private OrcidClientDetailsEntity clientDetailsEntity;
     private EmailType emailType;
     private String sender;
     private String subject;
@@ -51,11 +51,11 @@ public class CustomEmailEntity extends BaseEntity<CustomEmailPk>{
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     @JoinColumn(name = "client_details_id")        
-    public ClientDetailsEntity getClientDetailsEntity() {
+    public OrcidClientDetailsEntity getClientDetailsEntity() {
         return clientDetailsEntity;
     }
 
-    public void setClientDetailsEntity(ClientDetailsEntity clientDetails) {
+    public void setClientDetailsEntity(OrcidClientDetailsEntity clientDetails) {
         this.clientDetailsEntity = clientDetails;
     }
     

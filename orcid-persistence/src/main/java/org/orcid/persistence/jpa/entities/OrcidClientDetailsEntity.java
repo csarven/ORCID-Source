@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.Basic;
@@ -51,7 +50,7 @@ import org.springframework.util.StringUtils;
  */
 @Entity
 @Table(name = "client_details")
-public class ClientDetailsEntity extends BaseEntity<String> implements ClientDetails, ProfileAware {
+public class OrcidClientDetailsEntity extends BaseEntity<String> implements ClientDetails, ProfileAware {
     
     private static final long serialVersionUID = 1L;
 
@@ -65,11 +64,11 @@ public class ClientDetailsEntity extends BaseEntity<String> implements ClientDet
     private String clientWebsite;
     private String clientSecret;
     private String decryptedClientSecret;
-    private SortedSet<ClientSecretEntity> clientSecrets;
+    private Set<ClientSecretEntity> clientSecrets;
     private Set<ClientScopeEntity> clientScopes = Collections.emptySet();
     private Set<ClientResourceIdEntity> clientResourceIds = Collections.emptySet();
     private Set<ClientAuthorisedGrantTypeEntity> clientAuthorizedGrantTypes = Collections.emptySet();
-    private SortedSet<ClientRedirectUriEntity> clientRegisteredRedirectUris;
+    private Set<ClientRedirectUriEntity> clientRegisteredRedirectUris;
     private List<ClientGrantedAuthorityEntity> clientGrantedAuthorities = Collections.emptyList();
     private String groupProfileId;
 
@@ -77,14 +76,14 @@ public class ClientDetailsEntity extends BaseEntity<String> implements ClientDet
     private int accessTokenValiditySeconds = DEFAULT_TOKEN_VALIDITY;
     private boolean persistentTokensEnabled = false;
 
-    public ClientDetailsEntity() {
+    public OrcidClientDetailsEntity() {
     }
 
-    public ClientDetailsEntity(String clientId) {
+    public OrcidClientDetailsEntity(String clientId) {
         this.clientId = clientId;
     }
 
-    public ClientDetailsEntity(String clientId, String clientName) {
+    public OrcidClientDetailsEntity(String clientId, String clientName) {
     	this.clientId = clientId;
     	this.clientName = clientName;
 	}
@@ -172,11 +171,11 @@ public class ClientDetailsEntity extends BaseEntity<String> implements ClientDet
 
     @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "clientDetailsEntity", orphanRemoval = true)
     @Sort(type = SortType.NATURAL)
-    public SortedSet<ClientRedirectUriEntity> getClientRegisteredRedirectUris() {
+    public Set<ClientRedirectUriEntity> getClientRegisteredRedirectUris() {
         return clientRegisteredRedirectUris;
     }
 
-    public void setClientRegisteredRedirectUris(SortedSet<ClientRedirectUriEntity> clientRegisteredRedirectUris) {
+    public void setClientRegisteredRedirectUris(Set<ClientRedirectUriEntity> clientRegisteredRedirectUris) {
         this.clientRegisteredRedirectUris = clientRegisteredRedirectUris;
     }
 
@@ -265,7 +264,7 @@ public class ClientDetailsEntity extends BaseEntity<String> implements ClientDet
         return clientSecrets;
     }
 
-    public void setClientSecrets(SortedSet<ClientSecretEntity> clientSecrets) {
+    public void setClientSecrets(Set<ClientSecretEntity> clientSecrets) {
         this.clientSecrets = clientSecrets;
     }
 
@@ -292,7 +291,7 @@ public class ClientDetailsEntity extends BaseEntity<String> implements ClientDet
         if (clientSecrets == null || clientSecrets.isEmpty()) {
             return null;
         }
-        return clientSecrets.first().getClientSecret();
+        return clientSecrets.iterator().next().getClientSecret();
     }
 
     public void setClientSecretForJpa(String clientSecret) {
@@ -421,7 +420,7 @@ public class ClientDetailsEntity extends BaseEntity<String> implements ClientDet
         if (o == null || getClass() != o.getClass())
             return false;
 
-        ClientDetailsEntity that = (ClientDetailsEntity) o;
+        OrcidClientDetailsEntity that = (OrcidClientDetailsEntity) o;
 
         if (!clientId.equals(that.clientId))
             return false;

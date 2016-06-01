@@ -36,7 +36,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.orcid.core.BaseTest;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.orcid.pojo.IdentifierType;
 import org.springframework.test.annotation.Rollback;
@@ -70,7 +70,7 @@ public class IdentifierTypeManagerTest extends BaseTest{
     @Before
     public void before() throws Exception {
         idTypeMan.setSourceManager(sourceManager);
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));   
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));   
     }
     
     @Test
@@ -122,7 +122,7 @@ public class IdentifierTypeManagerTest extends BaseTest{
         id.setValidationRegex("validation"+seed);   
         id.setDateCreated(new Date(10,10,10));
         id.setLastModified(new Date(11,11,11));
-        ClientDetailsEntity client = new ClientDetailsEntity();
+        OrcidClientDetailsEntity client = new OrcidClientDetailsEntity();
         client.setClientName(CLIENT_1_ID);
         id.setSourceClient(client);
         return id;

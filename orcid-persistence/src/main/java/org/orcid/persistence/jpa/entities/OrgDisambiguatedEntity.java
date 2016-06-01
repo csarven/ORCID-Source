@@ -33,6 +33,8 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -171,6 +173,7 @@ public class OrgDisambiguatedEntity extends BaseEntity<Long> {
     }
 
     @Column(name = "last_indexed_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getLastIndexedDate() {
         return lastIndexedDate;
     }

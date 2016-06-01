@@ -37,7 +37,7 @@ import org.orcid.jaxb.model.clientgroup.RedirectUriType;
 import org.orcid.jaxb.model.message.OrcidProfile;
 import org.orcid.jaxb.model.message.OrcidType;
 import org.orcid.persistence.dao.ResearcherUrlDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.pojo.ajaxForm.PojoUtil;
 import org.orcid.pojo.ajaxForm.RedirectUri;
@@ -136,7 +136,7 @@ public class DeveloperToolsController extends BaseWorkspaceController {
             String clientName = ssoCredentials.getClientName().getValue();
             String clientDescription = ssoCredentials.getClientDescription().getValue();
             String clientWebsite = ssoCredentials.getClientWebsite().getValue();
-            ClientDetailsEntity clientDetails = orcidSSOManager.grantSSOAccess(orcid, clientName, clientDescription, clientWebsite, redirectUriStrings);
+            OrcidClientDetailsEntity clientDetails = orcidSSOManager.grantSSOAccess(orcid, clientName, clientDescription, clientWebsite, redirectUriStrings);
             ssoCredentials = SSOCredentials.toSSOCredentials(clientDetails);
         } else {
             List<String> errors = ssoCredentials.getErrors();
@@ -179,7 +179,7 @@ public class DeveloperToolsController extends BaseWorkspaceController {
             String clientName = ssoCredentials.getClientName().getValue();
             String clientDescription = ssoCredentials.getClientDescription().getValue();
             String clientWebsite = ssoCredentials.getClientWebsite().getValue();
-            ClientDetailsEntity clientDetails = orcidSSOManager.updateUserCredentials(orcid, clientName, clientDescription, clientWebsite, redirectUriStrings);
+            OrcidClientDetailsEntity clientDetails = orcidSSOManager.updateUserCredentials(orcid, clientName, clientDescription, clientWebsite, redirectUriStrings);
             ssoCredentials = SSOCredentials.toSSOCredentials(clientDetails);
             ssoCredentials.setClientWebsite(Text.valueOf(clientWebsite));
         } else {
@@ -209,7 +209,7 @@ public class DeveloperToolsController extends BaseWorkspaceController {
     public @ResponseBody
     boolean resetClientSecret(@RequestBody String clientId) {
         //Verify this client belongs to the user
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
         if(clientDetails == null)
             return false;
         ProfileEntity groupProfile = profileEntityCacheManager.retrieve(clientDetails.getGroupProfileId());
@@ -225,7 +225,7 @@ public class DeveloperToolsController extends BaseWorkspaceController {
     SSOCredentials getSSOCredentialsJson() {
         SSOCredentials credentials = new SSOCredentials();
         String userOrcid = getEffectiveUserOrcid();
-        ClientDetailsEntity existingClientDetails = orcidSSOManager.getUserCredentials(userOrcid);
+        OrcidClientDetailsEntity existingClientDetails = orcidSSOManager.getUserCredentials(userOrcid);
         if (existingClientDetails != null)
             credentials = SSOCredentials.toSSOCredentials(existingClientDetails);
 

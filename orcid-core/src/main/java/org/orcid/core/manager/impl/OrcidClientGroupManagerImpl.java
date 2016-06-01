@@ -56,7 +56,7 @@ import org.orcid.jaxb.model.message.Visibility;
 import org.orcid.persistence.dao.ClientDetailsDao;
 import org.orcid.persistence.dao.ClientScopeDao;
 import org.orcid.persistence.dao.ProfileDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientRedirectUriEntity;
 import org.orcid.persistence.jpa.entities.ClientScopeEntity;
 import org.orcid.persistence.jpa.entities.EmailEntity;
@@ -102,7 +102,7 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
         // Use the profile DAO to link the clients to the group, so get the
         // group profile entity.
         ProfileEntity groupProfileEntity = profileDao.find(groupOrcid);
-        SortedSet<ClientDetailsEntity> clientDetailsEntities = groupProfileEntity.getClients();
+        Set<OrcidClientDetailsEntity> clientDetailsEntities = groupProfileEntity.getClients();
         if (clientDetailsEntities == null) {
             clientDetailsEntities = new TreeSet<>(new OrcidEntityIdComparator<String>());
             groupProfileEntity.setClients(clientDetailsEntities);
@@ -164,7 +164,7 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
         // Use the profile DAO to link the clients to the group, so get the
         // group profile entity.
         ProfileEntity groupProfileEntity = profileDao.find(groupOrcid);
-        SortedSet<ClientDetailsEntity> clientProfileEntities = groupProfileEntity.getClients();
+        Set<OrcidClientDetailsEntity> clientProfileEntities = groupProfileEntity.getClients();
         if (clientProfileEntities == null) {
             clientProfileEntities = new TreeSet<>(new OrcidEntityIdComparator<String>());
             groupProfileEntity.setClients(clientProfileEntities);
@@ -262,9 +262,9 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
      * */
     @Transactional
     private void updateClientTypeDueGroupTypeUpdate(ProfileEntity groupProfileEntity) {
-        Set<ClientDetailsEntity> clients = groupProfileEntity.getClients();
+        Set<OrcidClientDetailsEntity> clients = groupProfileEntity.getClients();
         ClientType clientType = this.getClientType(groupProfileEntity.getGroupType());
-        for (ClientDetailsEntity client : clients) {
+        for (OrcidClientDetailsEntity client : clients) {
             Set<String> newSetOfScopes = this.createScopes(clientType);
             Set<ClientScopeEntity> existingScopes = client.getClientScopes();
             Iterator<ClientScopeEntity> scopesIterator = existingScopes.iterator();
@@ -341,10 +341,10 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
         ProfileEntity groupProfileEntity = profileDao.find(groupOrcid);
         checkAndSetClientType(client, groupProfileEntity.getGroupType());
         // Use the client details service to create the client details
-        ClientDetailsEntity clientDetailsEntity = createClientDetails(groupOrcid, client, client.getType());
+        OrcidClientDetailsEntity clientDetailsEntity = createClientDetails(groupOrcid, client, client.getType());
         // Link the client to the copy of the profile cached in
         // memory by Hibernate
-        SortedSet<ClientDetailsEntity> clientProfileEntities = groupProfileEntity.getClients();
+        Set<OrcidClientDetailsEntity> clientProfileEntities = groupProfileEntity.getClients();
         if (clientProfileEntities == null) {
             clientProfileEntities = new TreeSet<>(new OrcidEntityIdComparator<String>());
             groupProfileEntity.setClients(clientProfileEntities);
@@ -412,7 +412,7 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
      * @return the updated OrcidClient
      * */
     public OrcidClient updateClient(String groupOrcid, OrcidClient client) {
-        ClientDetailsEntity clientDetailsEntity = null;
+        OrcidClientDetailsEntity clientDetailsEntity = null;
         if (client.getClientId() != null) {
             // Look up the existing client.
             String clientId = client.getClientId();
@@ -447,7 +447,7 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
      * @return the updated OrcidClient
      * */
     public OrcidClient updateClient(OrcidClient client) {
-        ClientDetailsEntity clientDetailsEntity = null;
+        OrcidClientDetailsEntity clientDetailsEntity = null;
         if (client.getClientId() != null) {
             // Look up the existing client.
             String clientId = client.getClientId();
@@ -480,12 +480,12 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
      * @param clientType
      *            The type of client
      * */
-    private void processClient(String groupOrcid, SortedSet<ClientDetailsEntity> clientDetailsEntities, OrcidClient client, ClientType clientType) {
+    private void processClient(String groupOrcid, Set<OrcidClientDetailsEntity> clientDetailsEntities, OrcidClient client, ClientType clientType) {
         if (client.getClientId() == null) {
             // If the client ID in the incoming client is null, then create
             // a new client.
             // Use the client details service to create the client details
-            ClientDetailsEntity clientDetailsEntity = createClientDetails(groupOrcid, client, clientType);
+            OrcidClientDetailsEntity clientDetailsEntity = createClientDetails(groupOrcid, client, clientType);
             // And link the client to the copy of the profile cached in
             // memory by Hibernate
             clientDetailsEntities.add(clientDetailsEntity);
@@ -493,7 +493,7 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
             // If the client ID in the incoming client is not null, then
             // look up the existing client.
             String clientId = client.getClientId();
-            ClientDetailsEntity clientDetailsEntity = clientDetailsManager.findByClientId(clientId);
+            OrcidClientDetailsEntity clientDetailsEntity = clientDetailsManager.findByClientId(clientId);
             if (clientDetailsEntity == null) {
                 // If the existing client can't be found then raise an
                 // error.
@@ -524,7 +524,7 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
      * @param isUpdate
      *            Indicates if this will be an update or is a new client
      * */
-    private void updateClientDetailsEntityFromClient(OrcidClient client, ClientDetailsEntity clientDetailsEntity, boolean isUpdate) {
+    private void updateClientDetailsEntityFromClient(OrcidClient client, OrcidClientDetailsEntity clientDetailsEntity, boolean isUpdate) {
         clientDetailsEntity.setClientType(client.getType());
         clientDetailsEntity.setClientName(client.getDisplayName());
         clientDetailsEntity.setClientDescription(client.getShortDescription());
@@ -610,7 +610,7 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
         return orcidProfile;
     }
 
-    private ClientDetailsEntity createClientDetails(String groupOrcid, OrcidClient orcidClient, ClientType clientType) {
+    private OrcidClientDetailsEntity createClientDetails(String groupOrcid, OrcidClient orcidClient, ClientType clientType) {
         Set<String> clientResourceIds = new HashSet<String>();
         clientResourceIds.add("orcid");
         Set<String> clientAuthorizedGrantTypes = new HashSet<String>();
@@ -628,7 +628,7 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
         String description = orcidClient.getShortDescription();
         String website = orcidClient.getWebsite();
 
-        ClientDetailsEntity clientDetails = clientDetailsManager.createClientDetails(groupOrcid, name, description, website, clientType, createScopes(clientType),
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.createClientDetails(groupOrcid, name, description, website, clientType, createScopes(clientType),
                 clientResourceIds, clientAuthorizedGrantTypes, redirectUrisToAdd, clientGrantedAuthorities);
         return clientDetails;
     }

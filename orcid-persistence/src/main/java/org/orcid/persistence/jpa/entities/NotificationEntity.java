@@ -39,6 +39,8 @@ import javax.persistence.SqlResultSetMappings;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.ColumnResult;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.orcid.jaxb.model.notification_rc2.NotificationType;
 
@@ -112,6 +114,7 @@ abstract public class NotificationEntity extends BaseEntity<Long> implements Pro
     }
 
     @Column(name = "sent_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getSentDate() {
         return sentDate;
     }
@@ -121,6 +124,7 @@ abstract public class NotificationEntity extends BaseEntity<Long> implements Pro
     }
 
     @Column(name = "read_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getReadDate() {
         return readDate;
     }
@@ -130,6 +134,7 @@ abstract public class NotificationEntity extends BaseEntity<Long> implements Pro
     }
 
     @Column(name = "archived_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getArchivedDate() {
         return archivedDate;
     }
@@ -155,6 +160,7 @@ abstract public class NotificationEntity extends BaseEntity<Long> implements Pro
     }
     
     @Column(name = "actioned_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getActionedDate() {
         return actionedDate;
     }

@@ -42,7 +42,7 @@ import org.orcid.jaxb.model.notification_rc2.Notification;
 import org.orcid.jaxb.model.notification_rc2.NotificationType;
 import org.orcid.persistence.dao.NotificationDao;
 import org.orcid.persistence.dao.ProfileDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.NotificationAddItemsEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -231,7 +231,7 @@ public class NotificationController extends BaseController {
         if (source != null) {
             String sourcePath = source.retrieveSourcePath();
             if (sourcePath != null) {
-                ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(sourcePath);
+                OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(sourcePath);
                 if (clientDetails != null) {
                     notification.setSourceDescription(clientDetails.getClientDescription());
                 }

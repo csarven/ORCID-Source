@@ -35,7 +35,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.WebhookEntity;
 import org.orcid.persistence.jpa.entities.keys.WebhookEntityPk;
@@ -82,7 +82,7 @@ public class WebhookDaoTest extends DBUnitTest {
         profileDao.merge(profile);
         ProfileEntity clientProfile = new ProfileEntity("4444-4444-4444-4449");
         profileDao.merge(clientProfile);
-        ClientDetailsEntity clientDetails = new ClientDetailsEntity();
+        OrcidClientDetailsEntity clientDetails = new OrcidClientDetailsEntity();
         clientDetails.setGroupProfileId(clientProfile.getId());
         clientDetails.setId(clientProfile.getId());
         clientDetailsDao.merge(clientDetails);

@@ -39,7 +39,7 @@ import org.mockito.Mock;
 import org.orcid.core.BaseTest;
 import org.orcid.core.manager.WebhookManager;
 import org.orcid.persistence.dao.WebhookDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.WebhookEntity;
 import org.orcid.pojo.ajaxForm.PojoUtil;
@@ -57,7 +57,7 @@ public class WebhookManagerImplTest extends BaseTest {
     @Mock
     private WebhookDao mockWebhookDao;
     
-    private ClientDetailsEntity clientDetails;
+    private OrcidClientDetailsEntity clientDetails;
 
     private ProfileEntity testProfile;
 
@@ -81,7 +81,7 @@ public class WebhookManagerImplTest extends BaseTest {
 
         ProfileEntity profile = new ProfileEntity();
         profile.setId("0000-0000-0000-0001");
-        clientDetails = new ClientDetailsEntity();
+        clientDetails = new OrcidClientDetailsEntity();
         clientDetails.setGroupProfileId(profile.getId());
         clientDetails.setId("123456789");
 

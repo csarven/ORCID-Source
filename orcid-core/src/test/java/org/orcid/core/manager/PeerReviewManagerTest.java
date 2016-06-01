@@ -46,7 +46,7 @@ import org.orcid.jaxb.model.record_rc2.PeerReview;
 import org.orcid.jaxb.model.record_rc2.PeerReviewType;
 import org.orcid.jaxb.model.record_rc2.Relationship;
 import org.orcid.jaxb.model.record_rc2.Role;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.orcid.test.OrcidJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
@@ -86,7 +86,7 @@ public class PeerReviewManagerTest extends BaseTest {
     
     @Test
     public void testAddPeerReviewToUnclaimedRecordPreservePeerReviewVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));   
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));   
         PeerReview peer = getPeerReview();
         
         peer = peerReviewManager.createPeerReview(unclaimedOrcid, peer, true);
@@ -98,7 +98,7 @@ public class PeerReviewManagerTest extends BaseTest {
     
     @Test
     public void testAddPeerReviewToClaimedRecordPreserveUserDefaultVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));                
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));                
         PeerReview peer = getPeerReview();
         
         peer = peerReviewManager.createPeerReview(claimedOrcid, peer, true);

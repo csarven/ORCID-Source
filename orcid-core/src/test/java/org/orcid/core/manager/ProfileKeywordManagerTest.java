@@ -36,7 +36,7 @@ import org.mockito.Mock;
 import org.orcid.core.BaseTest;
 import org.orcid.jaxb.model.common_rc2.Visibility;
 import org.orcid.jaxb.model.record_rc2.Keyword;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.orcid.test.OrcidJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
@@ -76,7 +76,7 @@ public class ProfileKeywordManagerTest extends BaseTest {
 
     @Test
     public void testAddKeywordToUnclaimedRecordPreserveKeywordVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));
         Keyword keyword = getKeyword();
 
         keyword = profileKeywordManager.createKeyword(unclaimedOrcid, keyword, true);
@@ -88,7 +88,7 @@ public class ProfileKeywordManagerTest extends BaseTest {
 
     @Test
     public void testAddKeywordToClaimedRecordPreserveUserDefaultVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));
         Keyword keyword = getKeyword();
 
         keyword = profileKeywordManager.createKeyword(claimedOrcid, keyword, true);

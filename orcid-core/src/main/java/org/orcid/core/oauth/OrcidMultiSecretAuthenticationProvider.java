@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 
 import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.core.manager.EncryptionManager;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientSecretEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,7 +51,7 @@ public class OrcidMultiSecretAuthenticationProvider extends DaoAuthenticationPro
         }
 
         String presentedPassword = authentication.getCredentials().toString();
-        ClientDetailsEntity clientDetailsEntity = clientDetailsManager.findByClientId(userDetails.getUsername());
+        OrcidClientDetailsEntity clientDetailsEntity = clientDetailsManager.findByClientId(userDetails.getUsername());
         for (ClientSecretEntity clientSecretEntity : clientDetailsEntity.getClientSecrets()) {
             if (getPasswordEncoder().isPasswordValid(encryptionManager.decryptForInternalUse(clientSecretEntity.getClientSecret()), presentedPassword, null)) {
                 return;

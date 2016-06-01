@@ -34,7 +34,7 @@ import org.orcid.core.oauth.OrcidOauth2AuthInfo;
 import org.orcid.core.oauth.OrcidOauth2UserAuthentication;
 import org.orcid.core.oauth.OrcidProfileUserDetails;
 import org.orcid.persistence.dao.OrcidOauth2AuthoriziationCodeDetailDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.OrcidOauth2AuthoriziationCodeDetail;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.slf4j.Logger;
@@ -116,7 +116,7 @@ public class OrcidAuthorizationCodeServiceImpl extends RandomValueAuthorizationC
         Map<String, String> requestParameters = oAuth2Request.getRequestParameters();
         if (requestParameters != null && !requestParameters.isEmpty()) {
             String clientId = (String) requestParameters.get(CLIENT_ID);
-            ClientDetailsEntity clientDetails = getClientDetails(clientId);
+            OrcidClientDetailsEntity clientDetails = getClientDetails(clientId);
 
             if (clientDetails == null) {
                 return null;
@@ -174,7 +174,7 @@ public class OrcidAuthorizationCodeServiceImpl extends RandomValueAuthorizationC
         return detail;
     }
 
-    private ClientDetailsEntity getClientDetails(String clientId) {
+    private OrcidClientDetailsEntity getClientDetails(String clientId) {
         try {
             return clientDetailsEntityCacheManager.retrieve(clientId);
         } catch (NoResultException e) {

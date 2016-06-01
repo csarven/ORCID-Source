@@ -45,7 +45,7 @@ import org.orcid.jaxb.model.clientgroup.OrcidClientGroup;
 import org.orcid.jaxb.model.clientgroup.RedirectUri;
 import org.orcid.jaxb.model.clientgroup.RedirectUris;
 import org.orcid.jaxb.model.message.ScopePathType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,7 +126,7 @@ public class OrcidClientGroupManagerTest extends BaseTest {
         assertEquals("http://www.journals.elsevier.com/ecological-complexity/orcid-callback", createdRedirectUris.get(0).getValue());
         assertEquals("grant-read-wizard", createdRedirectUris.get(0).getType().value());
         // Look up client details directly to check scopes
-        ClientDetailsEntity complexityEntity = clientDetailsManager.findByClientId(complexityClient.getClientId());
+        OrcidClientDetailsEntity complexityEntity = clientDetailsManager.findByClientId(complexityClient.getClientId());
         Set<String> clientScopeTypes = complexityEntity.getScope();
         assertNotNull(clientScopeTypes);
         assertTrue(clientScopeTypes.contains("/orcid-bio/update"));
@@ -166,7 +166,7 @@ public class OrcidClientGroupManagerTest extends BaseTest {
         assertEquals(1, createdRedirectUris.size());
         assertEquals("http://www.journals.elsevier.com/ecological-complexity/orcid-callback", createdRedirectUris.get(0).getValue());
         // Look up client details directly to check scopes
-        ClientDetailsEntity complexityEntity = clientDetailsManager.findByClientId(complexityClient.getClientId());
+        OrcidClientDetailsEntity complexityEntity = clientDetailsManager.findByClientId(complexityClient.getClientId());
         Set<String> clientScopeTypes = complexityEntity.getScope();
         assertNotNull(clientScopeTypes);
         assertTrue(clientScopeTypes.contains("/orcid-profile/read-limited"));
@@ -475,8 +475,8 @@ public class OrcidClientGroupManagerTest extends BaseTest {
         Set<String> premiumScopes = orcidClientGroupManager.premiumUpdaterScopes();
         
         //Get existing clients
-        List<ClientDetailsEntity> clients = clientDetailsManager.findByGroupId(createdGroup.getGroupOrcid());
-        for(ClientDetailsEntity clientDetails : clients) {
+        List<OrcidClientDetailsEntity> clients = clientDetailsManager.findByGroupId(createdGroup.getGroupOrcid());
+        for(OrcidClientDetailsEntity clientDetails : clients) {
             assertEquals(ClientType.PREMIUM_UPDATER, clientDetails.getClientType());
             assertTrue(clientDetails.isScoped());
             assertEquals(premiumScopes.size(), clientDetails.getScope().size());
@@ -495,7 +495,7 @@ public class OrcidClientGroupManagerTest extends BaseTest {
         Set<String> premiumInstitutionScopes = orcidClientGroupManager.premiumCreatorScopes();
         
         clients = clientDetailsManager.findByGroupId(createdGroup.getGroupOrcid());
-        for(ClientDetailsEntity clientDetails : clients) {
+        for(OrcidClientDetailsEntity clientDetails : clients) {
             assertEquals(ClientType.PREMIUM_CREATOR, clientDetails.getClientType());
             assertTrue(clientDetails.isScoped());
             assertEquals(premiumInstitutionScopes.size(), clientDetails.getScope().size());

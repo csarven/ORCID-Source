@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.orcid.core.BaseTest;
 import org.orcid.core.adapter.impl.IdentifierTypePOJOConverter;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.IdentifierTypeEntity;
 import org.orcid.pojo.IdentifierType;
 import org.orcid.test.OrcidJUnit4ClassRunner;
@@ -41,7 +41,7 @@ public class IdentifierTypeConverterTest extends BaseTest {
         id.setValidationRegex("validation");   
         id.setDateCreated(new Date(10,10,10));
         id.setLastModified(new Date(11,11,11));
-        ClientDetailsEntity client = new ClientDetailsEntity();
+        OrcidClientDetailsEntity client = new OrcidClientDetailsEntity();
         client.setClientName("clientName");
         id.setSourceClient(client);
         
@@ -66,7 +66,7 @@ public class IdentifierTypeConverterTest extends BaseTest {
         entity1.setValidationRegex("validation");   
         entity1.setDateCreated(new Date(10,10,10));
         entity1.setLastModified(new Date(11,11,11));
-        ClientDetailsEntity client = new ClientDetailsEntity();
+        OrcidClientDetailsEntity client = new OrcidClientDetailsEntity();
         client.setClientName("clientName");
         entity1.setSourceClient(client);
         

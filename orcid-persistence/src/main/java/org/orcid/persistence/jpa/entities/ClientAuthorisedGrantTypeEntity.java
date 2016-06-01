@@ -42,7 +42,7 @@ public class ClientAuthorisedGrantTypeEntity extends BaseEntity<ClientAuthorised
      */
     private static final long serialVersionUID = 1L;
     private String grantType;
-    private ClientDetailsEntity clientDetailsEntity;
+    private OrcidClientDetailsEntity clientDetailsEntity;
 
     /**
      * As this uses a composite key this is not used. Always returns null
@@ -68,11 +68,11 @@ public class ClientAuthorisedGrantTypeEntity extends BaseEntity<ClientAuthorised
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     @JoinColumn(name = "client_details_id")
-    public ClientDetailsEntity getClientDetailsEntity() {
+    public OrcidClientDetailsEntity getClientDetailsEntity() {
         return clientDetailsEntity;
     }
 
-    public void setClientDetailsEntity(ClientDetailsEntity clientDetailsEntity) {
+    public void setClientDetailsEntity(OrcidClientDetailsEntity clientDetailsEntity) {
         this.clientDetailsEntity = clientDetailsEntity;
     }
 

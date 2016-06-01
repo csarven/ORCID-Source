@@ -42,7 +42,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.orcid.jaxb.model.clientgroup.MemberType;
 import org.orcid.jaxb.model.message.OrcidType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.IndexingStatus;
 import org.orcid.persistence.jpa.entities.OrcidEntityIdComparator;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
@@ -246,13 +246,13 @@ public class ProfileDaoTest extends DBUnitTest {
         groupProfile.setOrcidType(OrcidType.GROUP);
         groupProfile.setGroupType(MemberType.BASIC);
 
-        SortedSet<ClientDetailsEntity> clients = new TreeSet<>(new OrcidEntityIdComparator<String>());
+        SortedSet<OrcidClientDetailsEntity> clients = new TreeSet<>(new OrcidEntityIdComparator<String>());
         String clientOrcid1 = "4444-4444-4444-4442";
-        ClientDetailsEntity clientProfile1 = new ClientDetailsEntity();
+        OrcidClientDetailsEntity clientProfile1 = new OrcidClientDetailsEntity();
         clientProfile1.setId(clientOrcid1);
         clients.add(clientProfile1);
         String clientOrcid2 = "4444-4444-4444-4443";
-        ClientDetailsEntity clientProfile2 = new ClientDetailsEntity();
+        OrcidClientDetailsEntity clientProfile2 = new OrcidClientDetailsEntity();
         clientProfile2.setId(clientOrcid2);
         clients.add(clientProfile2);
         groupProfile.setClients(clients);
@@ -267,7 +267,7 @@ public class ProfileDaoTest extends DBUnitTest {
         assertEquals(MemberType.BASIC, groupProfile.getGroupType());
         assertNotNull(groupProfile.getClients());
         assertEquals(2, groupProfile.getClients().size());
-        Map<String, ClientDetailsEntity> map = ProfileEntity.mapById(groupProfile.getClients());
+        Map<String, OrcidClientDetailsEntity> map = ProfileEntity.mapById(groupProfile.getClients());
         assertTrue(map.containsKey(clientOrcid1));
         assertTrue(map.containsKey(clientOrcid2));
     }
@@ -277,7 +277,7 @@ public class ProfileDaoTest extends DBUnitTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void testInsertClient() {
         String clientOrcid = "4444-1111-6666-4444";
-        ClientDetailsEntity client = new ClientDetailsEntity();
+        OrcidClientDetailsEntity client = new OrcidClientDetailsEntity();
         client.setId(clientOrcid);
         String groupOrcid = "4444-4444-4444-4441";
         client.setGroupProfileId(groupOrcid);

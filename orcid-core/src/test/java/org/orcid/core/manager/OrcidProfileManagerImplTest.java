@@ -110,7 +110,7 @@ import org.orcid.persistence.dao.GenericDao;
 import org.orcid.persistence.dao.OrcidOauth2TokenDetailDao;
 import org.orcid.persistence.dao.ProfileDao;
 import org.orcid.persistence.jpa.entities.AddressEntity;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.IndexingStatus;
 import org.orcid.persistence.jpa.entities.OrcidOauth2TokenDetail;
 import org.orcid.persistence.jpa.entities.OrgEntity;
@@ -201,7 +201,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         applicationPersonalDetails.setCreditName(new CreditName("Brown University"));
         orcidProfileManager.createOrcidProfile(applicationProfile, false, false);
 
-        ClientDetailsEntity clientDetails = new ClientDetailsEntity();
+        OrcidClientDetailsEntity clientDetails = new OrcidClientDetailsEntity();
         clientDetails.setId(applicationProfile.getOrcidIdentifier().getPath());
         ProfileEntity applicationProfileEntity = profileDao.find(applicationProfile.getOrcidIdentifier().getPath());
         profileDao.refresh(applicationProfileEntity);

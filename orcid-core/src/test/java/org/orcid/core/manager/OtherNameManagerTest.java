@@ -36,7 +36,7 @@ import org.mockito.Mock;
 import org.orcid.core.BaseTest;
 import org.orcid.jaxb.model.common_rc2.Visibility;
 import org.orcid.jaxb.model.record_rc2.OtherName;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.orcid.test.OrcidJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
@@ -76,7 +76,7 @@ public class OtherNameManagerTest extends BaseTest {
     
     @Test
     public void testAddOtherNameToUnclaimedRecordPreserveOtherNameVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));   
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));   
         OtherName otherName = getOtherName();
         
         otherName = otherNameManager.createOtherName(unclaimedOrcid, otherName, true);
@@ -88,7 +88,7 @@ public class OtherNameManagerTest extends BaseTest {
     
     @Test
     public void testAddOtherNameToClaimedRecordPreserveUserDefaultVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));                
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));                
         OtherName otherName = getOtherName();
         
         otherName = otherNameManager.createOtherName(claimedOrcid, otherName, true);

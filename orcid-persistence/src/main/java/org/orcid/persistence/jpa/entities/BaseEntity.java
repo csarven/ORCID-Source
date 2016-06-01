@@ -21,6 +21,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -50,6 +53,7 @@ public abstract class BaseEntity<T extends Serializable> implements OrcidEntity<
      * @return the dateCreated
      */
     @Column(name = "date_created")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getDateCreated() {
         return dateCreated;
     }
@@ -72,6 +76,7 @@ public abstract class BaseEntity<T extends Serializable> implements OrcidEntity<
      * @return the lastModified
      */
     @Column(name = "last_modified")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getLastModified() {
         return lastModified;
     }

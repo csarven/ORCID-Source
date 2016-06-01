@@ -41,7 +41,7 @@ import org.orcid.core.security.OrcidWebRole;
 import org.orcid.frontend.web.util.BaseControllerTest;
 import org.orcid.persistence.dao.ClientDetailsDao;
 import org.orcid.persistence.dao.ProfileDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientSecretEntity;
 import org.orcid.pojo.ajaxForm.PojoUtil;
 import org.orcid.pojo.ajaxForm.RedirectUri;
@@ -282,7 +282,7 @@ public class DeveloperToolsControllerTest extends BaseControllerTest {
         
         assertTrue(developerToolsController.resetClientSecret(result.getClientOrcid().getValue()));
         
-        ClientDetailsEntity clientDetails = clientDetailsDao.findByClientId(result.getClientOrcid().getValue(), System.currentTimeMillis());
+        OrcidClientDetailsEntity clientDetails = clientDetailsDao.findByClientId(result.getClientOrcid().getValue(), System.currentTimeMillis());
         
         assertEquals(result.getClientName().getValue(), clientDetails.getClientName());
         assertEquals(result.getClientDescription().getValue(), clientDetails.getClientDescription());

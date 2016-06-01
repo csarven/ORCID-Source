@@ -28,6 +28,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.orcid.persistence.jpa.entities.keys.OrcidSocialPk;
@@ -80,6 +82,7 @@ public class OrcidSocialEntity extends BaseEntity<OrcidSocialPk>{
     }
 
     @Column(name = "last_run")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getLastRun() {
         return lastRun;
     }

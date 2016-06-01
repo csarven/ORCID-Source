@@ -36,7 +36,7 @@ public class SourceEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private ProfileEntity sourceProfile;
-    private ClientDetailsEntity sourceClient;
+    private OrcidClientDetailsEntity sourceClient;
     private String cachedSourceId;
     private String cachedSourceName;
     private boolean isDetached;
@@ -48,14 +48,14 @@ public class SourceEntity implements Serializable {
         this.sourceProfile = sourceProfile;
     }
 
-    public SourceEntity(ClientDetailsEntity cde) {
+    public SourceEntity(OrcidClientDetailsEntity cde) {
         this.sourceClient = cde;
     }
 
     public SourceEntity(String sourceId) {
         if (sourceId != null) {
             if (sourceId.startsWith("APP-")) {
-                sourceClient = new ClientDetailsEntity();
+                sourceClient = new OrcidClientDetailsEntity();
                 sourceClient.setId(sourceId);
             } else {
                 sourceProfile = new ProfileEntity(sourceId);
@@ -75,11 +75,11 @@ public class SourceEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "client_source_id")
-    public ClientDetailsEntity getSourceClient() {
+    public OrcidClientDetailsEntity getSourceClient() {
         return sourceClient;
     }
 
-    public void setSourceClient(ClientDetailsEntity sourceClient) {
+    public void setSourceClient(OrcidClientDetailsEntity sourceClient) {
         this.sourceClient = sourceClient;
     }
 

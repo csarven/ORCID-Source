@@ -25,7 +25,7 @@ import org.orcid.core.manager.SourceManager;
 import org.orcid.core.oauth.OrcidProfileUserDetails;
 import org.orcid.jaxb.model.message.OrcidType;
 import org.orcid.persistence.dao.ProfileDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -75,9 +75,9 @@ public class SourceManagerImpl implements SourceManager {
         if (OAuth2Authentication.class.isAssignableFrom(authentication.getClass())) {
             OAuth2Request authorizationRequest = ((OAuth2Authentication) authentication).getOAuth2Request();
             String clientId = authorizationRequest.getClientId();
-            ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
+            OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
             SourceEntity sourceEntity = new SourceEntity();
-            sourceEntity.setSourceClient(new ClientDetailsEntity(clientId, clientDetails.getClientName()));
+            sourceEntity.setSourceClient(new OrcidClientDetailsEntity(clientId, clientDetails.getClientName()));
             return sourceEntity;
         }
         String userOrcid = retrieveEffectiveOrcid(authentication);

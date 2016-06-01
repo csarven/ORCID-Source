@@ -41,7 +41,7 @@ import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.core.oauth.OrcidOauth2ClientAuthentication;
 import org.orcid.core.oauth.OrcidOauth2TokenDetailService;
 import org.orcid.core.oauth.OrcidRandomValueTokenServices;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.test.DBUnitTest;
 import org.orcid.test.OrcidJUnit4ClassRunner;
 import org.springframework.security.core.Authentication;
@@ -95,7 +95,7 @@ public class OrcidRandomValueTokenServicesTest extends DBUnitTest {
         authorizationParameters.put(OAuth2Utils.SCOPE, "/orcid-profile/read-limited");
         OAuth2Request request = new OAuth2Request(Collections.<String, String> emptyMap(), clientId, Collections.<GrantedAuthority> emptyList(), true, new HashSet<String>(Arrays.asList("/orcid-profile/read-limited")), Collections.<String> emptySet(), null, Collections.<String> emptySet(), Collections.<String, Serializable> emptyMap());
                 
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
         Authentication userAuthentication = new OrcidOauth2ClientAuthentication(clientDetails);
         OAuth2Authentication authentication = new OAuth2Authentication(request, userAuthentication);
         OAuth2AccessToken oauth2AccessToken = tokenServices.createAccessToken(authentication);
@@ -118,7 +118,7 @@ public class OrcidRandomValueTokenServicesTest extends DBUnitTest {
         authorizationParameters.put(OAuth2Utils.CLIENT_ID, clientId);
         authorizationParameters.put(OAuth2Utils.SCOPE, "/orcid-works/create");
         OAuth2Request request = new OAuth2Request(Collections.<String, String> emptyMap(), clientId, Collections.<GrantedAuthority> emptyList(), true, new HashSet<String>(Arrays.asList("/orcid-profile/read-limited")), Collections.<String> emptySet(), null, Collections.<String> emptySet(), Collections.<String, Serializable> emptyMap());
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
         Authentication userAuthentication = new OrcidOauth2ClientAuthentication(clientDetails);
         OAuth2Authentication authentication = new OAuth2Authentication(request, userAuthentication);
         OAuth2AccessToken oauth2AccessToken = tokenServices.createAccessToken(authentication);
@@ -141,7 +141,7 @@ public class OrcidRandomValueTokenServicesTest extends DBUnitTest {
         authorizationParameters.put(OAuth2Utils.CLIENT_ID, clientId);
         authorizationParameters.put(OAuth2Utils.SCOPE, "/orcid-works/create");
         OAuth2Request request = new OAuth2Request(Collections.<String, String> emptyMap(), clientId, Collections.<GrantedAuthority> emptyList(), true, new HashSet<String>(Arrays.asList("/orcid-profile/read-limited")), Collections.<String> emptySet(), null, Collections.<String> emptySet(), Collections.<String, Serializable> emptyMap());
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
         Authentication userAuthentication = new OrcidOauth2ClientAuthentication(clientDetails);
         OAuth2Authentication authentication = new OAuth2Authentication(request, userAuthentication);
         OAuth2AccessToken oauth2AccessToken = tokenServices.createAccessToken(authentication);
@@ -193,7 +193,7 @@ public class OrcidRandomValueTokenServicesTest extends DBUnitTest {
         authorizationParameters.put("code", "code2");
         
         OAuth2Request request = new OAuth2Request(Collections.<String, String> emptyMap(), clientId, Collections.<GrantedAuthority> emptyList(), true, new HashSet<String>(Arrays.asList("/orcid-profile/read-limited")), Collections.<String> emptySet(), null, Collections.<String> emptySet(), Collections.<String, Serializable> emptyMap());
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
         Authentication userAuthentication = new OrcidOauth2ClientAuthentication(clientDetails);
         OAuth2Authentication authentication = new OAuth2Authentication(request, userAuthentication);
         OAuth2AccessToken oauth2AccessToken = tokenServices.createAccessToken(authentication);
@@ -225,7 +225,7 @@ public class OrcidRandomValueTokenServicesTest extends DBUnitTest {
         requestParameters.put(OrcidOauth2Constants.IS_PERSISTENT, "true");
         
         OAuth2Request request = new OAuth2Request(requestParameters, clientId, Collections.<GrantedAuthority> emptyList(), true, new HashSet<String>(Arrays.asList("/orcid-profile/read-limited")), Collections.<String> emptySet(), null, Collections.<String> emptySet(), Collections.<String, Serializable> emptyMap());
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientId);
         Authentication userAuthentication = new OrcidOauth2ClientAuthentication(clientDetails);
         OAuth2Authentication authentication = new OAuth2Authentication(request, userAuthentication);
         OAuth2AccessToken oauth2AccessToken = tokenServices.createAccessToken(authentication);

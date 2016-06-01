@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.orcid.persistence.dao.ClientDetailsDao;
 import org.orcid.persistence.dao.ClientSecretDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientSecretEntity;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -64,7 +64,7 @@ public class UpdateSecretKeyStatus {
         return latest;
     }
         
-    public void updateClientSecretKeys(final ClientDetailsEntity clientDetails) {  
+    public void updateClientSecretKeys(final OrcidClientDetailsEntity clientDetails) {  
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
@@ -81,9 +81,9 @@ public class UpdateSecretKeyStatus {
     }
     
     public void execute() {
-        List<ClientDetailsEntity> allClientDetails = clientDetailsDao.getAll();
+        List<OrcidClientDetailsEntity> allClientDetails = clientDetailsDao.getAll();
         if(allClientDetails != null && !allClientDetails.isEmpty()) {
-            for(ClientDetailsEntity clientDetails : allClientDetails) {
+            for(OrcidClientDetailsEntity clientDetails : allClientDetails) {
                 System.out.println("Processing client: " + clientDetails.getClientId());
                 updateClientSecretKeys(clientDetails);
                 System.out.println("Done with client: " + clientDetails.getClientId());

@@ -26,7 +26,7 @@ import javax.persistence.TypedQuery;
 
 import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.persistence.dao.ClientDetailsDao;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientSecretEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,18 +37,18 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Declan Newman
  */
 @PersistenceContext(unitName = "orcid")
-public class ClientDetailsDaoImpl extends GenericDaoImpl<ClientDetailsEntity, String> implements ClientDetailsDao {
+public class ClientDetailsDaoImpl extends GenericDaoImpl<OrcidClientDetailsEntity, String> implements ClientDetailsDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientDetailsDaoImpl.class);
 
     public ClientDetailsDaoImpl() {
-        super(ClientDetailsEntity.class);
+        super(OrcidClientDetailsEntity.class);
     }
 
     @Override
     @Cacheable(value = "client-details", key = "#clientId.concat('-').concat(#lastModified)")
-    public ClientDetailsEntity findByClientId(String clientId, long lastModified) {
-        TypedQuery<ClientDetailsEntity> query = entityManager.createQuery("from ClientDetailsEntity where id = :clientId", ClientDetailsEntity.class);
+    public OrcidClientDetailsEntity findByClientId(String clientId, long lastModified) {
+        TypedQuery<OrcidClientDetailsEntity> query = entityManager.createQuery("from ClientDetailsEntity where id = :clientId", OrcidClientDetailsEntity.class);
         query.setParameter("clientId", clientId);
         try {
             return query.getSingleResult();
@@ -109,8 +109,8 @@ public class ClientDetailsDaoImpl extends GenericDaoImpl<ClientDetailsEntity, St
 
     @Override
     public boolean belongsTo(String clientId, String groupId) {
-        TypedQuery<ClientDetailsEntity> query = entityManager.createQuery("from ClientDetailsEntity where id = :clientId and groupProfileId = :groupId",
-                ClientDetailsEntity.class);
+        TypedQuery<OrcidClientDetailsEntity> query = entityManager.createQuery("from ClientDetailsEntity where id = :clientId and groupProfileId = :groupId",
+                OrcidClientDetailsEntity.class);
         query.setParameter("clientId", clientId);
         query.setParameter("groupId", groupId);
         try {
@@ -132,7 +132,7 @@ public class ClientDetailsDaoImpl extends GenericDaoImpl<ClientDetailsEntity, St
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ClientDetailsEntity> findByGroupId(String groupId) {
+    public List<OrcidClientDetailsEntity> findByGroupId(String groupId) {
         Query query = entityManager.createQuery("from ClientDetailsEntity where groupProfileId = :groupId");
         query.setParameter("groupId", groupId);
         return query.getResultList();
@@ -141,7 +141,7 @@ public class ClientDetailsDaoImpl extends GenericDaoImpl<ClientDetailsEntity, St
     @Override
     @Transactional
     public void removeClient(String clientId) {
-        ClientDetailsEntity clientDetailsEntity = this.find(clientId);
+        OrcidClientDetailsEntity clientDetailsEntity = this.find(clientId);
         this.remove(clientDetailsEntity);
     }
 
@@ -153,9 +153,9 @@ public class ClientDetailsDaoImpl extends GenericDaoImpl<ClientDetailsEntity, St
      * @return the public client that belongs to the given user
      * */
     @Override
-    public ClientDetailsEntity getPublicClient(String ownerId) {
-        TypedQuery<ClientDetailsEntity> query = entityManager.createQuery("from ClientDetailsEntity where groupProfileId = :ownerId and clientType = :clientType",
-                ClientDetailsEntity.class);
+    public OrcidClientDetailsEntity getPublicClient(String ownerId) {
+        TypedQuery<OrcidClientDetailsEntity> query = entityManager.createQuery("from ClientDetailsEntity where groupProfileId = :ownerId and clientType = :clientType",
+                OrcidClientDetailsEntity.class);
         query.setParameter("ownerId", ownerId);
         query.setParameter("clientType", ClientType.PUBLIC_CLIENT);
         try {

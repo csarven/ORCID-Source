@@ -16,13 +16,13 @@
  */
 package org.orcid.core.manager;
 
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 
 public interface ClientDetailsEntityCacheManager {
 
-    public ClientDetailsEntity retrieve(String clientId) throws IllegalArgumentException;
+    public OrcidClientDetailsEntity retrieve(String clientId) throws IllegalArgumentException;
     
-    public void put(ClientDetailsEntity clientDetailsEntity);
+    public void put(OrcidClientDetailsEntity clientDetailsEntity);
     
     public void removeAll();
     

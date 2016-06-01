@@ -30,7 +30,7 @@ import org.mockito.MockitoAnnotations;
 import org.orcid.core.manager.ClientDetailsEntityCacheManager;
 import org.orcid.core.oauth.service.OrcidOAuth2RequestValidator;
 import org.orcid.jaxb.model.message.ScopePathType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientScopeEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
@@ -94,7 +94,7 @@ public class OrcidClientCredentialsCheckerTest {
     }
     
     private void setupMocks(String clientId, String memberId) {
-        ClientDetailsEntity clientDetailsEntity = new ClientDetailsEntity();
+        OrcidClientDetailsEntity clientDetailsEntity = new OrcidClientDetailsEntity();
         Set<ClientScopeEntity> scopes = new HashSet<ClientScopeEntity>(3);
         scopes.add(new ClientScopeEntity(ScopePathType.ORCID_WORKS_UPDATE.value()));
         scopes.add(new ClientScopeEntity(ScopePathType.ORCID_BIO_READ_LIMITED.value()));

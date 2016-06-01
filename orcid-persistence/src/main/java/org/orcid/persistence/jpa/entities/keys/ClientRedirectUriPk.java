@@ -56,14 +56,6 @@ public class ClientRedirectUriPk implements Serializable {
         this.redirectUri = redirectUri;
     }
 
-    public String getRedirectUriType() {
-        return redirectUriType;
-    }
-
-    public void setRedirectUriType(String redirectUriType) {
-        this.redirectUriType = redirectUriType;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)

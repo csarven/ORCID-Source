@@ -22,7 +22,7 @@ import java.util.List;
 import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.jaxb.model.message.ScopePathType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientScopeEntity;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -63,11 +63,11 @@ public class AddReadPublicScopeToNoneInstitutionMembers {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                List<ClientDetailsEntity> clients = clientDetailsManager.getAll();
-                for (ClientDetailsEntity client : clients) {
+                List<OrcidClientDetailsEntity> clients = clientDetailsManager.getAll();
+                for (OrcidClientDetailsEntity client : clients) {
                     // Only updater clients should be updated
                     if (client.getClientType().equals(ClientType.PREMIUM_UPDATER) || client.getClientType().equals(ClientType.UPDATER)) {
-                        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(client.getId());
+                        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(client.getId());
                         updateScopes(clientDetails);
                     }
                 }
@@ -75,7 +75,7 @@ public class AddReadPublicScopeToNoneInstitutionMembers {
         });
     }
 
-    private void updateScopes(ClientDetailsEntity clientDetails) {
+    private void updateScopes(OrcidClientDetailsEntity clientDetails) {
         String readPublicScope = ScopePathType.READ_PUBLIC.value();
         boolean alreadyHaveReadPublicScope = false;
         for (ClientScopeEntity scope : clientDetails.getClientScopes()) {

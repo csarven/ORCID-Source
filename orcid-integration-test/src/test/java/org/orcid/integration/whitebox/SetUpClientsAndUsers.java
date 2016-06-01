@@ -82,7 +82,7 @@ import org.orcid.persistence.dao.ProfileKeywordDao;
 import org.orcid.persistence.dao.ResearcherUrlDao;
 import org.orcid.persistence.dao.WorkDao;
 import org.orcid.persistence.jpa.entities.AddressEntity;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.EmailEntity;
 import org.orcid.persistence.jpa.entities.ExternalIdentifierEntity;
 import org.orcid.persistence.jpa.entities.GivenPermissionToEntity;
@@ -357,28 +357,28 @@ public class SetUpClientsAndUsers {
 
         // Create public client
         Map<String, String> publicClientParams = getParams(publicClientId);
-        ClientDetailsEntity publicClient = clientDetailsManager.findByClientId(publicClientId);
+        OrcidClientDetailsEntity publicClient = clientDetailsManager.findByClientId(publicClientId);
         if (publicClient == null) {
             createClient(publicClientParams);
         } 
 
         // Create client 1
         Map<String, String> client1Params = getParams(client1ClientId);
-        ClientDetailsEntity client1 = clientDetailsManager.findByClientId(client1ClientId);
+        OrcidClientDetailsEntity client1 = clientDetailsManager.findByClientId(client1ClientId);
         if (client1 == null) {
             createClient(client1Params);
         } 
 
         // Create client 2
         Map<String, String> client2Params = getParams(client2ClientId);
-        ClientDetailsEntity client2 = clientDetailsManager.findByClientId(client2ClientId);
+        OrcidClientDetailsEntity client2 = clientDetailsManager.findByClientId(client2ClientId);
         if (client2 == null) {
             createClient(client2Params);
         } 
 
         // Create locked client
         Map<String, String> lockedClientParams = getParams(lockedMemberClient1ClientId);
-        ClientDetailsEntity lockedClient = clientDetailsManager.findByClientId(lockedMemberClient1ClientId);
+        OrcidClientDetailsEntity lockedClient = clientDetailsManager.findByClientId(lockedMemberClient1ClientId);
         if (lockedClient == null) {
             createClient(lockedClientParams);
         } 
@@ -778,7 +778,7 @@ public class SetUpClientsAndUsers {
         assertNotNull(existingProfile.getOrcidBio().getContactDetails().retrievePrimaryEmail());
         assertEquals(member1Email, existingProfile.getOrcidBio().getContactDetails().retrievePrimaryEmail().getValue());
         
-        ClientDetailsEntity existingClient = clientDetailsManager.findByClientId(publicClientId);
+        OrcidClientDetailsEntity existingClient = clientDetailsManager.findByClientId(publicClientId);
         assertNotNull(existingClient);
         assertEquals(user1OrcidId, existingClient.getGroupProfileId());
         assertNotNull(existingClient.getRegisteredRedirectUri());
@@ -830,7 +830,7 @@ public class SetUpClientsAndUsers {
         a1.setPrimary(true);
         a1.setLastModified(new Date());
         a1.setUser(new ProfileEntity(orcid));
-        a1.setSource(new SourceEntity(new ClientDetailsEntity(client1ClientId)));
+        a1.setSource(new SourceEntity(new OrcidClientDetailsEntity(client1ClientId)));
         a1.setVisibility(org.orcid.jaxb.model.common_rc2.Visibility.PUBLIC);
         addressDao.persist(a1);        
     }
@@ -847,7 +847,7 @@ public class SetUpClientsAndUsers {
         o1.setDisplayName("other-name-1");
         o1.setLastModified(new Date());
         o1.setProfile(new ProfileEntity(orcid));
-        o1.setSource(new SourceEntity(new ClientDetailsEntity(client1ClientId)));
+        o1.setSource(new SourceEntity(new OrcidClientDetailsEntity(client1ClientId)));
         o1.setVisibility(org.orcid.jaxb.model.common_rc2.Visibility.PUBLIC);
         otherNameDao.persist(o1);
         
@@ -857,7 +857,7 @@ public class SetUpClientsAndUsers {
         o2.setDisplayName("other-name-2");
         o2.setLastModified(new Date());
         o2.setProfile(new ProfileEntity(orcid));
-        o2.setSource(new SourceEntity(new ClientDetailsEntity(client1ClientId)));
+        o2.setSource(new SourceEntity(new OrcidClientDetailsEntity(client1ClientId)));
         o2.setVisibility(org.orcid.jaxb.model.common_rc2.Visibility.PUBLIC);
         otherNameDao.persist(o2);
         
@@ -875,7 +875,7 @@ public class SetUpClientsAndUsers {
         k1.setKeywordName("keyword-1");
         k1.setLastModified(new Date());
         k1.setProfile(new ProfileEntity(orcid));
-        k1.setSource(new SourceEntity(new ClientDetailsEntity(client1ClientId)));
+        k1.setSource(new SourceEntity(new OrcidClientDetailsEntity(client1ClientId)));
         k1.setVisibility(org.orcid.jaxb.model.common_rc2.Visibility.PUBLIC);
         profileKeywordDao.persist(k1);
         
@@ -885,7 +885,7 @@ public class SetUpClientsAndUsers {
         k2.setKeywordName("keyword-2");
         k2.setLastModified(new Date());
         k2.setProfile(new ProfileEntity(orcid));
-        k2.setSource(new SourceEntity(new ClientDetailsEntity(client1ClientId)));
+        k2.setSource(new SourceEntity(new OrcidClientDetailsEntity(client1ClientId)));
         k2.setVisibility(org.orcid.jaxb.model.common_rc2.Visibility.PUBLIC);
         profileKeywordDao.persist(k2);
     }
@@ -900,7 +900,7 @@ public class SetUpClientsAndUsers {
         email.setDateCreated(new Date());
         email.setLastModified(new Date());
         email.setProfile(new ProfileEntity(orcid));
-        email.setSource(new SourceEntity(new ClientDetailsEntity(client1ClientId)));
+        email.setSource(new SourceEntity(new OrcidClientDetailsEntity(client1ClientId)));
         email.setVisibility(Visibility.LIMITED);
         email.setVerified(true);
         email.setCurrent(false);
@@ -923,7 +923,7 @@ public class SetUpClientsAndUsers {
         e1.setExternalIdCommonName("A-0001");
         e1.setExternalIdReference("A-0001");
         e1.setExternalIdUrl("http://ext-id/A-0001");
-        e1.setSource(new SourceEntity(new ClientDetailsEntity(client1ClientId)));
+        e1.setSource(new SourceEntity(new OrcidClientDetailsEntity(client1ClientId)));
         e1.setOwner(new ProfileEntity(orcid));
         e1.setVisibility(org.orcid.jaxb.model.common_rc2.Visibility.PUBLIC);
         externalIdentifierDao.persist(e1);
@@ -934,7 +934,7 @@ public class SetUpClientsAndUsers {
         e2.setExternalIdCommonName("A-0002");
         e2.setExternalIdReference("A-0002");
         e2.setExternalIdUrl("http://ext-id/A-0002");
-        e2.setSource(new SourceEntity(new ClientDetailsEntity(client1ClientId)));
+        e2.setSource(new SourceEntity(new OrcidClientDetailsEntity(client1ClientId)));
         e2.setOwner(new ProfileEntity(orcid));
         e2.setVisibility(org.orcid.jaxb.model.common_rc2.Visibility.LIMITED);        
         externalIdentifierDao.persist(e2);                        

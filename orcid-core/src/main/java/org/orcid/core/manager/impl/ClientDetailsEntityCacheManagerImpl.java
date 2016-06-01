@@ -25,7 +25,7 @@ import net.sf.ehcache.Element;
 
 import org.orcid.core.manager.ClientDetailsEntityCacheManager;
 import org.orcid.core.manager.ClientDetailsManager;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.utils.ReleaseNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +45,10 @@ public class ClientDetailsEntityCacheManagerImpl implements ClientDetailsEntityC
     LockerObjectsManager lockers = new LockerObjectsManager();
     
     @Override
-    public ClientDetailsEntity retrieve(String clientId) throws IllegalArgumentException {
+    public OrcidClientDetailsEntity retrieve(String clientId) throws IllegalArgumentException {
         Object key = new ClientIdCacheKey(clientId, releaseName);
         Date dbDate = retrieveLastModifiedDate(clientId);
-        ClientDetailsEntity clientDetails = toClientDetailsEntity(clientDetailsCache.get(key));
+        OrcidClientDetailsEntity clientDetails = toClientDetailsEntity(clientDetailsCache.get(key));
         if (needsFresh(dbDate, clientDetails)) {
             try {
                 synchronized (lockers.obtainLock(clientId)) {
@@ -68,12 +68,12 @@ public class ClientDetailsEntityCacheManagerImpl implements ClientDetailsEntityC
     }
 
     @Override
-    public void put(ClientDetailsEntity clientDetailsEntity) {
+    public void put(OrcidClientDetailsEntity clientDetailsEntity) {
         put(clientDetailsEntity.getId(), clientDetailsEntity);
         
     }
 
-    public void put(String clientId, ClientDetailsEntity client) {
+    public void put(String clientId, OrcidClientDetailsEntity client) {
         try {
             synchronized (lockers.obtainLock(clientId)) {
                 clientDetailsCache.put(new Element(new ClientIdCacheKey(clientId, releaseName), client));
@@ -104,11 +104,11 @@ public class ClientDetailsEntityCacheManagerImpl implements ClientDetailsEntityC
         return date;
     }
     
-    static public ClientDetailsEntity toClientDetailsEntity(Element element) {
-        return (ClientDetailsEntity) (element != null ? element.getObjectValue() : null);
+    static public OrcidClientDetailsEntity toClientDetailsEntity(Element element) {
+        return (OrcidClientDetailsEntity) (element != null ? element.getObjectValue() : null);
     }
     
-    static public boolean needsFresh(Date dbDate, ClientDetailsEntity clientDetailsEntity) {
+    static public boolean needsFresh(Date dbDate, OrcidClientDetailsEntity clientDetailsEntity) {
         if (clientDetailsEntity == null)
             return true;
         if (dbDate == null) // not sure when this happens?

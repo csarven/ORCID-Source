@@ -44,7 +44,7 @@ import org.orcid.jaxb.model.common_rc2.Visibility;
 import org.orcid.jaxb.model.common_rc2.Year;
 import org.orcid.jaxb.model.record_rc2.Education;
 import org.orcid.jaxb.model.record_rc2.Employment;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 
 public class AffiliationsManagerTest extends BaseTest {
@@ -81,7 +81,7 @@ public class AffiliationsManagerTest extends BaseTest {
     
     @Test
     public void testAddEducationToUnclaimedRecordPreserveEducationVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));   
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));   
         Education education = getEducation();
         education = affiliationsManager.createEducationAffiliation(unclaimedOrcid, education, true);
         education = affiliationsManager.getEducationAffiliation(unclaimedOrcid, education.getPutCode());
@@ -92,7 +92,7 @@ public class AffiliationsManagerTest extends BaseTest {
     
     @Test
     public void testAddEmploymentToUnclaimedRecordPreserveEmploymentVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));   
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));   
         
         Employment employment = getEmployment();
         employment = affiliationsManager.createEmploymentAffiliation(unclaimedOrcid, employment, true);
@@ -104,7 +104,7 @@ public class AffiliationsManagerTest extends BaseTest {
     
     @Test
     public void testAddEducationToClaimedRecordPreserveUserDefaultVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));        
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));        
         Education education = getEducation();
         education = affiliationsManager.createEducationAffiliation(claimedOrcid, education, true);
         education = affiliationsManager.getEducationAffiliation(claimedOrcid, education.getPutCode());
@@ -115,7 +115,7 @@ public class AffiliationsManagerTest extends BaseTest {
     
     @Test
     public void testAddEmploymentToClaimedRecordPreserveUserDefaultVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));        
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));        
 
         Employment employment = getEmployment();
         employment = affiliationsManager.createEmploymentAffiliation(claimedOrcid, employment, true);

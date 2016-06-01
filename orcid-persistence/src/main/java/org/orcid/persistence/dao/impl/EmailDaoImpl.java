@@ -24,6 +24,7 @@ import javax.persistence.TypedQuery;
 import org.orcid.jaxb.model.message.Visibility;
 import org.orcid.persistence.dao.EmailDao;
 import org.orcid.persistence.jpa.entities.EmailEntity;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -50,7 +51,7 @@ public class EmailDaoImpl extends GenericDaoImpl<EmailEntity, String> implements
     @Override
     public EmailEntity findCaseInsensitive(String email) {
         Assert.hasText(email, "Cannot find using an empty email address");
-        TypedQuery<EmailEntity> query = entityManager.createQuery("from EmailEntity where trim(lower(email)) = trim(lower(:email))", EmailEntity.class);
+        TypedQuery<EmailEntity> query = entityManager.createQuery("select e from EmailEntity e where e.id = :email", EmailEntity.class);
         query.setParameter("email", email);
         List<EmailEntity> results = query.getResultList();
         return results.isEmpty() ? null : results.get(0);

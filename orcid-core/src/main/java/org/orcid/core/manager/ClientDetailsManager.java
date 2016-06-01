@@ -23,7 +23,7 @@ import java.util.Set;
 import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.jaxb.model.clientgroup.OrcidClient;
 import org.orcid.jaxb.model.clientgroup.RedirectUri;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
@@ -54,11 +54,11 @@ public interface ClientDetailsManager extends ClientDetailsService {
      *            only "ROLE_CLIENT"
      * @return
      */
-    ClientDetailsEntity createClientDetails(String groupOrcid, String name, String description, String website, ClientType clientType, Set<String> clientScopes,
+    OrcidClientDetailsEntity createClientDetails(String groupOrcid, String name, String description, String website, ClientType clientType, Set<String> clientScopes,
             Set<String> clientResourceIds, Set<String> clientAuthorizedGrantTypes, Set<RedirectUri> clientRegisteredRedirectUris, List<String> clientGrantedAuthorities);
 
     /**
-     * Creates a new {@link ClientDetailsEntity} using the component parts, and
+     * Creates a new {@link OrcidClientDetailsEntity} using the component parts, and
      * not the underyling entity directly.
      * 
      * @param groupOrcid
@@ -88,42 +88,42 @@ public interface ClientDetailsManager extends ClientDetailsService {
      *            only "ROLE_CLIENT"
      * @return
      */
-    ClientDetailsEntity createClientDetails(String groupOrcid, String name, String description, String website, String clientId, String clientSecret,
+    OrcidClientDetailsEntity createClientDetails(String groupOrcid, String name, String description, String website, String clientId, String clientSecret,
             ClientType clientType, Set<String> clientScopes, Set<String> clientResourceIds, Set<String> clientAuthorizedGrantTypes,
             Set<RedirectUri> clientRegisteredRedirectUris, List<String> clientGrantedAuthorities);
 
     /**
-     * Create new {@link ClientDetailsEntity} using the entity object
+     * Create new {@link OrcidClientDetailsEntity} using the entity object
      * 
      * @param clientDetailsEntity
-     *            the {@link ClientDetailsEntity} to be persisted
-     * @return the newly persisted {@link ClientDetailsEntity}
+     *            the {@link OrcidClientDetailsEntity} to be persisted
+     * @return the newly persisted {@link OrcidClientDetailsEntity}
      */
-    ClientDetailsEntity createClientDetails(ClientDetailsEntity clientDetailsEntity);
+    OrcidClientDetailsEntity createClientDetails(OrcidClientDetailsEntity clientDetailsEntity);
 
     /**
-     * Delete the {@link ClientDetailsEntity} from the persistence layer that
+     * Delete the {@link OrcidClientDetailsEntity} from the persistence layer that
      * has the corresponding id
      * 
      * @param clientId
      *            the id corresponding to the persisted
-     *            {@link ClientDetailsEntity}
+     *            {@link OrcidClientDetailsEntity}
      */
     void deleteClientDetail(String clientId);
 
-    ClientDetailsEntity findByClientId(String orcid);
+    OrcidClientDetailsEntity findByClientId(String orcid);
 
     void removeByClientId(String clientId);
 
-    void persist(ClientDetailsEntity clientDetails);
+    void persist(OrcidClientDetailsEntity clientDetails);
 
     public void addClientRedirectUri(String clientId, String uri);
 
-    ClientDetailsEntity merge(ClientDetailsEntity clientDetails);
+    OrcidClientDetailsEntity merge(OrcidClientDetailsEntity clientDetails);
 
     void remove(String clientId);
 
-    List<ClientDetailsEntity> getAll();
+    List<OrcidClientDetailsEntity> getAll();
 
     void updateLastModified(String clientId);
     
@@ -162,18 +162,18 @@ public interface ClientDetailsManager extends ClientDetailsService {
      *  Group id
      * @return A list containing all clients that belongs to the given group
      * */
-    List<ClientDetailsEntity> findByGroupId(String groupId);
+    List<OrcidClientDetailsEntity> findByGroupId(String groupId);
     
-    ClientDetailsEntity getPublicClient(String ownerId);
+    OrcidClientDetailsEntity getPublicClient(String ownerId);
     
     String getMemberName(String clientId);
 
-    OrcidClient toOrcidClient(ClientDetailsEntity clientEntity);
+    OrcidClient toOrcidClient(OrcidClientDetailsEntity clientEntity);
     
     /**
      * Utility function that will help us to create and persist a clientDetailsEntity giving all the details
      * */
-    ClientDetailsEntity populateClientDetailsEntity(String clientId, ProfileEntity profileEntity, String name, String description, String website,
+    OrcidClientDetailsEntity populateClientDetailsEntity(String clientId, ProfileEntity profileEntity, String name, String description, String website,
             String clientSecret, ClientType clientType, Set<String> clientScopes, Set<String> clientResourceIds, Set<String> clientAuthorizedGrantTypes,
             Set<RedirectUri> clientRegisteredRedirectUris, List<String> clientGrantedAuthorities);
 }

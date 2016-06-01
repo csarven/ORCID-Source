@@ -64,7 +64,7 @@ import org.orcid.jaxb.model.message.Title;
 import org.orcid.jaxb.model.message.Visibility;
 import org.orcid.jaxb.model.message.WorkTitle;
 import org.orcid.jaxb.model.message.WorkType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.OrcidOauth2TokenDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -551,7 +551,7 @@ public class T2OrcidOAuthApiClientIntegrationTest extends BaseT2OrcidOAuthApiCli
         OrcidHistory orcidHistory = message.getOrcidProfile().getOrcidHistory();
         assertTrue(orcidHistory != null && orcidHistory.getSource() != null);
         String orcid = orcidHistory.getSource().getSourceClientId().getPath();
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(orcid);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(orcid);
         assertNotNull(clientDetails);
         assertEquals("Ecological Complexity", clientDetails.getClientName());
 
@@ -601,7 +601,7 @@ public class T2OrcidOAuthApiClientIntegrationTest extends BaseT2OrcidOAuthApiCli
         OrcidHistory orcidHistory = message.getOrcidProfile().getOrcidHistory();
         assertTrue(orcidHistory != null && orcidHistory.getSource() != null);
         String clientOrcid = orcidHistory.getSource().retrieveSourcePath();
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientOrcid);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(clientOrcid);
         assertEquals("Ecological Complexity", clientDetails.getClientName());
 
         ExternalIdentifiers externalIdentifiers = orcidBio.getExternalIdentifiers();
@@ -655,7 +655,7 @@ public class T2OrcidOAuthApiClientIntegrationTest extends BaseT2OrcidOAuthApiCli
         OrcidHistory orcidHistory = message.getOrcidProfile().getOrcidHistory();
         assertTrue(orcidHistory != null && orcidHistory.getSource() != null);
         String orcid = orcidHistory.getSource().getSourceClientId().getPath();
-        ClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(orcid);
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.findByClientId(orcid);
         assertNotNull(clientDetails);
         assertEquals("Ecological Complexity", clientDetails.getClientName());
 

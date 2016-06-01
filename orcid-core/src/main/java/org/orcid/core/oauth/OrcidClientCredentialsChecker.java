@@ -28,7 +28,7 @@ import org.orcid.core.constants.OrcidOauth2Constants;
 import org.orcid.core.manager.ClientDetailsEntityCacheManager;
 import org.orcid.core.oauth.service.OrcidOAuth2RequestValidator;
 import org.orcid.jaxb.model.message.ScopePathType;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
@@ -66,7 +66,7 @@ public class OrcidClientCredentialsChecker {
     public OAuth2Request validateCredentials(String grantType, TokenRequest tokenRequest) {
         String clientId = tokenRequest.getClientId();
         Set<String> scopes = tokenRequest.getScope();
-        ClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(clientId);                        
+        OrcidClientDetailsEntity clientDetails = clientDetailsEntityCacheManager.retrieve(clientId);                        
         orcidOAuth2RequestValidator.validateClientIsEnabled(clientDetails);
         validateGrantType(grantType, clientDetails);
         if (scopes != null) {

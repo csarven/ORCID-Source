@@ -35,7 +35,7 @@ import org.junit.runner.RunWith;
 import org.orcid.core.manager.ClientDetailsManager;
 import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.jaxb.model.clientgroup.RedirectUri;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.test.DBUnitTest;
 import org.orcid.test.OrcidJUnit4ClassRunner;
 import org.springframework.security.core.GrantedAuthority;
@@ -73,9 +73,9 @@ public class ClientDetailsManagerTest extends DBUnitTest {
     @Rollback
     @Transactional
     public void testLoadClientByClientId() throws Exception {
-        List<ClientDetailsEntity> all = clientDetailsManager.getAll();
+        List<OrcidClientDetailsEntity> all = clientDetailsManager.getAll();
         assertEquals(9, all.size());
-        for (ClientDetailsEntity clientDetailsEntity : all) {
+        for (OrcidClientDetailsEntity clientDetailsEntity : all) {
             ClientDetails clientDetails = clientDetailsManager.loadClientByClientId(clientDetailsEntity.getId());
             assertNotNull(clientDetails);
             if (!"APP-5555555555555555".equals(clientDetailsEntity.getId()) && !"APP-5555555555555556".equals(clientDetailsEntity.getId())
@@ -104,7 +104,7 @@ public class ClientDetailsManagerTest extends DBUnitTest {
         List<String> clientGrantedAuthorities = new ArrayList<String>();
         clientGrantedAuthorities.add("ROLE_ADMIN");
 
-        ClientDetailsEntity clientDetails = clientDetailsManager.createClientDetails("4444-4444-4444-4499", CLIENT_NAME, CLIENT_DESCRIPTION, CLIENT_WEBSITE, clientId,
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.createClientDetails("4444-4444-4444-4499", CLIENT_NAME, CLIENT_DESCRIPTION, CLIENT_WEBSITE, clientId,
                 clientSecret, ClientType.CREATOR, clientScopes, clientResourceIds, clientAuthorizedGrantTypes, clientRegisteredRedirectUris, clientGrantedAuthorities);
         assertNotNull(clientDetails);
         checkClientDetails(clientDetails);
@@ -127,7 +127,7 @@ public class ClientDetailsManagerTest extends DBUnitTest {
         List<String> clientGrantedAuthorities = new ArrayList<String>();
         clientGrantedAuthorities.add("ROLE_ADMIN");
 
-        ClientDetailsEntity clientDetails = clientDetailsManager.createClientDetails("4444-4444-4444-4446", CLIENT_NAME, CLIENT_DESCRIPTION, CLIENT_WEBSITE,
+        OrcidClientDetailsEntity clientDetails = clientDetailsManager.createClientDetails("4444-4444-4444-4446", CLIENT_NAME, CLIENT_DESCRIPTION, CLIENT_WEBSITE,
                 ClientType.CREATOR, clientScopes, clientResourceIds, clientAuthorizedGrantTypes, clientRegisteredRedirectUris, clientGrantedAuthorities);
         assertNotNull(clientDetails);
         checkClientDetails(clientDetails);
@@ -158,9 +158,9 @@ public class ClientDetailsManagerTest extends DBUnitTest {
     @Rollback
     @Transactional
     public void testDeleteClientDetail() throws Exception {
-        List<ClientDetailsEntity> all = clientDetailsManager.getAll();
+        List<OrcidClientDetailsEntity> all = clientDetailsManager.getAll();
         assertEquals(9, all.size());
-        for (ClientDetailsEntity clientDetailsEntity : all) {
+        for (OrcidClientDetailsEntity clientDetailsEntity : all) {
             if (!"APP-5555555555555555".equals(clientDetailsEntity.getId()) &&
                     !"APP-5555555555555556".equals(clientDetailsEntity.getId())) {
                 clientDetailsManager.deleteClientDetail(clientDetailsEntity.getId());
@@ -170,7 +170,7 @@ public class ClientDetailsManagerTest extends DBUnitTest {
         assertEquals(2, all.size());
     }
 
-    private void checkClientDetails(ClientDetailsEntity clientDetails) {
+    private void checkClientDetails(OrcidClientDetailsEntity clientDetails) {
         assertNotNull(clientDetails);
         assertEquals(clientDetails.getClientDescription(), CLIENT_DESCRIPTION);
         assertEquals(clientDetails.getClientName(), CLIENT_NAME);

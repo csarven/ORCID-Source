@@ -46,7 +46,7 @@ import org.orcid.jaxb.model.record_rc2.Funding;
 import org.orcid.jaxb.model.record_rc2.FundingTitle;
 import org.orcid.jaxb.model.record_rc2.FundingType;
 import org.orcid.jaxb.model.record_rc2.Relationship;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.orcid.test.OrcidJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
@@ -86,7 +86,7 @@ public class ProfileFundingManagerTest extends BaseTest {
     
     @Test
     public void testAddFundingToUnclaimedRecordPreserveFundingVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));   
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));   
         Funding funding = getFunding();
         
         funding = profileFundingManager.createFunding(unclaimedOrcid, funding, true);
@@ -99,7 +99,7 @@ public class ProfileFundingManagerTest extends BaseTest {
     
     @Test
     public void testAddFundingToClaimedRecordPreserveUserDefaultVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));                
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));                
         Funding funding = getFunding();
         
         funding = profileFundingManager.createFunding(claimedOrcid, funding, true);

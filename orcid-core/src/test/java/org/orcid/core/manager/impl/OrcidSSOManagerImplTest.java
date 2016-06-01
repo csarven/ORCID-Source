@@ -39,7 +39,7 @@ import org.orcid.core.manager.OrcidSSOManager;
 import org.orcid.core.manager.ProfileEntityManager;
 import org.orcid.jaxb.model.clientgroup.RedirectUriType;
 import org.orcid.persistence.jpa.entities.ClientAuthorisedGrantTypeEntity;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.ClientGrantedAuthorityEntity;
 import org.orcid.persistence.jpa.entities.ClientRedirectUriEntity;
 import org.orcid.test.OrcidJUnit4ClassRunner;
@@ -81,7 +81,7 @@ public class OrcidSSOManagerImplTest extends BaseTest {
         uris.add("http://1.com");
         uris.add("http://2.com");
         orcidSSOManager.grantSSOAccess(orcid1, "My App", "My Description", "MyWebsite", uris);
-        ClientDetailsEntity clientDetails = orcidSSOManager.getUserCredentials(orcid1);
+        OrcidClientDetailsEntity clientDetails = orcidSSOManager.getUserCredentials(orcid1);
         assertNotNull(clientDetails);
         assertNotNull(clientDetails.getAuthorizedGrantTypes());
         assertTrue(clientDetails.getAuthorizedGrantTypes().contains("authorization_code"));
@@ -115,13 +115,13 @@ public class OrcidSSOManagerImplTest extends BaseTest {
         uris.add("http://2.com");
         // Grant SSO
         orcidSSOManager.grantSSOAccess(orcid1, "My App", "My Description", "MyWebsite", uris);
-        ClientDetailsEntity clientDetails = orcidSSOManager.getUserCredentials(orcid1);
+        OrcidClientDetailsEntity clientDetails = orcidSSOManager.getUserCredentials(orcid1);
         // Check the client details have been granted
         assertNotNull(clientDetails);
         // Revoke SSO
         orcidSSOManager.revokeSSOAccess(orcid1);
         // Fetch the profile and check
-        ClientDetailsEntity clientDetails2 = orcidSSOManager.getUserCredentials(orcid1);
+        OrcidClientDetailsEntity clientDetails2 = orcidSSOManager.getUserCredentials(orcid1);
         // Check the profile doesnt have client details entity
         assertNull(clientDetails2);
     }

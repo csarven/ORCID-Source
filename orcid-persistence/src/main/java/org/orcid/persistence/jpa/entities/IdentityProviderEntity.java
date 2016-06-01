@@ -25,6 +25,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * @author Will Simpson
@@ -101,6 +103,7 @@ public class IdentityProviderEntity extends BaseEntity<Long> {
     }
 
     @Column(name="last_failed")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getLastFailed() {
         return lastFailed;
     }

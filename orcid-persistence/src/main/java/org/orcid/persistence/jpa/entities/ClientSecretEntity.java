@@ -45,19 +45,19 @@ public class ClientSecretEntity extends BaseEntity<ClientSecretPk> implements Co
 
     private String clientSecret;
     private String decryptedClientSecret;
-    private ClientDetailsEntity clientDetailsEntity;
+    private OrcidClientDetailsEntity clientDetailsEntity;
     private boolean primary;
     
     public ClientSecretEntity() {
         super();
     }
 
-    public ClientSecretEntity(String clientSecret, ClientDetailsEntity clientDetailsEntity) {
+    public ClientSecretEntity(String clientSecret, OrcidClientDetailsEntity clientDetailsEntity) {
         this.clientSecret = clientSecret;
         this.clientDetailsEntity = clientDetailsEntity;
     }
     
-    public ClientSecretEntity(String clientSecret, ClientDetailsEntity clientDetailsEntity, boolean primary) {
+    public ClientSecretEntity(String clientSecret, OrcidClientDetailsEntity clientDetailsEntity, boolean primary) {
         this.clientSecret = clientSecret;
         this.clientDetailsEntity = clientDetailsEntity;
         this.primary = primary;
@@ -87,11 +87,11 @@ public class ClientSecretEntity extends BaseEntity<ClientSecretPk> implements Co
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     @JoinColumn(name = "client_details_id")
-    public ClientDetailsEntity getClientDetailsEntity() {
+    public OrcidClientDetailsEntity getClientDetailsEntity() {
         return clientDetailsEntity;
     }
 
-    public void setClientDetailsEntity(ClientDetailsEntity clientDetailsEntity) {
+    public void setClientDetailsEntity(OrcidClientDetailsEntity clientDetailsEntity) {
         this.clientDetailsEntity = clientDetailsEntity;
     }
 

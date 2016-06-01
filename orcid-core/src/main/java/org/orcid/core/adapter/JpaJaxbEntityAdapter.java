@@ -21,7 +21,7 @@ import org.orcid.jaxb.model.clientgroup.OrcidClient;
 import org.orcid.jaxb.model.clientgroup.OrcidClientGroup;
 import org.orcid.jaxb.model.message.DisambiguatedOrganization;
 import org.orcid.jaxb.model.message.OrcidProfile;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.OrgDisambiguatedEntity;
 import org.orcid.persistence.jpa.entities.ProfileEntity;
 
@@ -43,7 +43,7 @@ public interface JpaJaxbEntityAdapter {
 
     ProfileEntity toProfileEntity(OrcidProfile profile, ProfileEntity existingProfileEntity);
 
-    OrcidClient toOrcidClient(ClientDetailsEntity clientDetailsEntity);
+    OrcidClient toOrcidClient(OrcidClientDetailsEntity clientDetailsEntity);
 
     OrcidClientGroup toOrcidClientGroup(ProfileEntity profileEntity);
 

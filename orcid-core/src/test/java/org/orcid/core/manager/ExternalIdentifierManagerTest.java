@@ -38,7 +38,7 @@ import org.orcid.jaxb.model.common_rc2.Url;
 import org.orcid.jaxb.model.common_rc2.Visibility;
 import org.orcid.jaxb.model.record_rc2.PersonExternalIdentifier;
 import org.orcid.jaxb.model.record_rc2.Relationship;
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 import org.orcid.persistence.jpa.entities.SourceEntity;
 import org.orcid.test.OrcidJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
@@ -78,7 +78,7 @@ public class ExternalIdentifierManagerTest extends BaseTest {
 
     @Test
     public void testAddExternalIdentifierToUnclaimedRecordPreserveExternalIdentifierVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));
         PersonExternalIdentifier extId = getExternalIdentifier();
 
         extId = externalIdentifierManager.createExternalIdentifier(unclaimedOrcid, extId, true);
@@ -90,7 +90,7 @@ public class ExternalIdentifierManagerTest extends BaseTest {
 
     @Test
     public void testAddExternalIdentifierToClaimedRecordPreserveUserDefaultVisibility() {
-        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new ClientDetailsEntity(CLIENT_1_ID)));
+        when(sourceManager.retrieveSourceEntity()).thenReturn(new SourceEntity(new OrcidClientDetailsEntity(CLIENT_1_ID)));
         PersonExternalIdentifier extId = getExternalIdentifier();
 
         extId = externalIdentifierManager.createExternalIdentifier(claimedOrcid, extId, true);

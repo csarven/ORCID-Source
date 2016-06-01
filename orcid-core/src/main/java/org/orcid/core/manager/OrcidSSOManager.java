@@ -18,13 +18,13 @@ package org.orcid.core.manager;
 
 import java.util.Set;
 
-import org.orcid.persistence.jpa.entities.ClientDetailsEntity;
+import org.orcid.persistence.jpa.entities.OrcidClientDetailsEntity;
 
 public interface OrcidSSOManager {
 
-    ClientDetailsEntity grantSSOAccess(String orcid, String name, String description, String website, Set<String> redirectUris);
-    ClientDetailsEntity getUserCredentials(String orcid);
-    ClientDetailsEntity updateUserCredentials(String orcid, String name, String description, String website, Set<String> redirectUris);
+    OrcidClientDetailsEntity grantSSOAccess(String orcid, String name, String description, String website, Set<String> redirectUris);
+    OrcidClientDetailsEntity getUserCredentials(String orcid);
+    OrcidClientDetailsEntity updateUserCredentials(String orcid, String name, String description, String website, Set<String> redirectUris);
     void revokeSSOAccess(String orcid);   
     boolean resetClientSecret(String clientDetailsId);    
 }

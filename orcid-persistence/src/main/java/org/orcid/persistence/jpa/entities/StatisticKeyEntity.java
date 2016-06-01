@@ -27,6 +27,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "statistic_key")
@@ -51,6 +53,7 @@ public class StatisticKeyEntity implements Serializable {
     }
     
     @Column(name = "generation_date")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getGenerationDate(){
         return generationDate;
     }
