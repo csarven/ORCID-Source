@@ -18,11 +18,13 @@ package org.orcid.core.oauth;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.orcid.core.security.OrcidWebRole;
 import org.orcid.jaxb.model.clientgroup.MemberType;
 import org.orcid.jaxb.model.message.OrcidType;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -99,7 +101,11 @@ public class OrcidProfileUserDetails implements UserDetails {
             result = Arrays.asList(OrcidWebRole.ROLE_USER);
         }
 
-        return result;
+        return result.stream().map(e -> toSimple(e)).collect(Collectors.toList());
+    }
+    
+    private SimpleGrantedAuthority toSimple(OrcidWebRole orcidWebRole) {
+        return new SimpleGrantedAuthority(orcidWebRole.name());
     }
 
     /**
