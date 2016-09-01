@@ -37,10 +37,12 @@
 <#if devSandboxUrl != ''>
 	<div class="dev-watermark"></div>
 </#if>
-<div class="container">
+<#if RequestParameters['angular2']??>
+	<orcid-app></orcid-app>
+</#if>
+<div class="container">	
 	<div class="header center" ng-controller="headerCtrl">
 		<div class="row">
-
 			<div class="search col-md-11 col-md-offset-1 col-sm-12 col-xs-12"
 				id="search" ng-show="searchVisible == true || settingsVisible == true" ng-cloak>
 				

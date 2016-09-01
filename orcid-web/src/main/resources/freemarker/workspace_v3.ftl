@@ -66,8 +66,8 @@
                         </div>
                     </div>
                 </div>
-            </div>            	       	
-	       	
+            </div>
+            
 	       	<!-- Other Names -->	       	
        		<div ng-controller="OtherNamesCtrl" class="workspace-section other-names" id="other-names-section">        	   
         	   <div class="workspace-section-header">
