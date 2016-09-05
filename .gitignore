@@ -18,3 +18,4 @@ orcid-solr-web/src/main/webapp/solr/org/data/
 orcid-solr-web/src/main/webapp/solr/profile/data/
 orcid-solr-web/src/main/webapp/solr/fundingSubType/data
 orcid-solr-web/**/_rest_managed.json
+orcid-web/src/main/webapp/static/javascript/angular2/node_modules
