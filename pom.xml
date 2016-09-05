@@ -232,6 +232,10 @@ the software.
                         	<exclude>**/src/main/webapp/static/css/bootstrap*</exclude>
                         	<exclude>**/src/main/webapp/static/twitter-bootstrap/**</exclude>
                         	<exclude>**/src/main/webapp/static/html/respond-proxy.html</exclude>
+                        	<exclude>**/src/main/webapp/static/javascript/angular2/package.json</exclude>
+                        	<exclude>**/src/main/webapp/static/javascript/angular2/gulpfile.js</exclude>
+                        	<exclude>**/src/main/webapp/static/javascript/angular2/node/**</exclude>
+                        	<exclude>**/src/main/webapp/static/javascript/angular2/node_modules/**</exclude>
                             <exclude>**/src/main/java/org/orcid/core/cli/TransformFundRefDataIntoCSV.java</exclude>
                             <exclude>**/src/main/webapp/solr/**/*.txt</exclude>
                             <exclude>**/src/main/webapp/solr/**/*.xml</exclude>
@@ -247,6 +251,7 @@ the software.
                             <exclude>**/src/main/webapp/static/css/glyphicons.css</exclude>
                             <exclude>**/src/main/webapp/static/css/idpselect.css</exclude>
                             <exclude>**/src/main/webapp/static/css/idpselect.old.css</exclude>
+                            <exclude>**/src/main/webapp/static/img/**</exclude>
                             <exclude>**/src/test/javascript/node_modules/**</exclude>
                             <exclude>**/src/test/manual-test/**</exclude>
                             <exclude>**/src/main/webapp/static/javascript/iframeResizer**</exclude>
