@@ -4,23 +4,27 @@
   "description": "Angular 2 Orcid App",
   "main": "index.js",
   "dependencies": {
-  	"@angular/common": "^2.0.0-beta.17",
+    "@angular/common": "^2.0.0-beta.17",
     "@angular/compiler": "^2.0.0-beta.17",
     "@angular/compiler-cli": "^0.6.0",
     "@angular/core": "^2.0.0-beta.17",
     "@angular/forms": "^2.0.0-beta.17",
     "@angular/http": "^2.0.0-beta.17",
     "@angular/platform-browser": "^2.0.0-beta.17",
-    "@angular/platform-browser-dynamic": "^2.0.0-beta.17",    
+    "@angular/platform-browser-dynamic": "^2.0.0-beta.17",
     "@angular/upgrade": "^2.0.0-beta.17",
     "rxjs": "^5.0.0-beta.11",
     "core-js": "^2.4.1",
     "zone.js": "^0.6.17",
-    "reflect-metadata": "^0.1.3",
-    "gulp": "^3.9.1",
-    "gulp-typescript": "^2.13.6"
+    "reflect-metadata": "^0.1.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-plumber": "^1.1.0",
+    "gulp-typescript": "^2.13.6",
+    "gulp-watch": "^4.3.9"
+  },
   "author": "Fran Ramírez",
   "license": "MIT"
 }
