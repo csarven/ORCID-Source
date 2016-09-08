@@ -209,6 +209,7 @@ the software.
                         <strictCheck>true</strictCheck>
                         <mapping>
                             <xjb>XML_STYLE</xjb>
+                            <ts>SLASHSTAR_STYLE</ts>                            
                         </mapping>
                         <excludes>
                         	<exclude>**/src/main/webapp/static/swagger/**</exclude>
@@ -269,7 +270,7 @@ the software.
                             <exclude>**.xjb</exclude>
                             <exclude>**.lock</exclude>
                             <exclude>atlassian-ide-plugin.xml</exclude>
-                        </excludes>
+                        </excludes>                       
                     </configuration>
                     <executions>
                         <execution>
